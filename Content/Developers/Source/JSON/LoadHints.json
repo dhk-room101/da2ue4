@@ -1,0 +1,33 @@
+{"LoadHints": [
+      {
+        "ID": "0",
+        "LABEL": "Invalid",
+        "STRREF": "0"
+      },
+      {
+        "ID": "1",
+        "LABEL": "gameplay",
+        "STRREF": "396007"
+      },
+      {
+        "ID": "2",
+        "LABEL": "gameplay",
+        "STRREF": "396008"
+      },
+      {
+        "ID": "3",
+        "LABEL": "gameplay",
+        "STRREF": "396009"
+      },
+      {
+        "ID": "4",
+        "LABEL": "gameplay",
+        "STRREF": "396010"
+      },
+      {
+        "ID": "5",
+        "LABEL": "gameplay",
+        "STRREF": "396011"
+      }
+    ]
+}

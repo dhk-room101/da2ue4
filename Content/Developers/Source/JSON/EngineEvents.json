@@ -1,0 +1,915 @@
+{"EngineEvents": [
+      {
+        "ID": "0",
+        "Label": "EVENT_TYPE_INVALID",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "1",
+        "Label": "EVENT_TYPE_SPELLCASTAT",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "2",
+        "Label": "EVENT_TYPE_DAMAGED",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "3",
+        "Label": "EVENT_TYPE_SPAWN",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "4",
+        "Label": "EVENT_TYPE_DEATH",
+        "Comment": "{0} (type: {2} - partymember:{3}) was killed by {1}. ",
+        "Script": "****"
+      },
+      {
+        "ID": "5",
+        "Label": "EVENT_TYPE_MELEE_ATTACK_START",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "6",
+        "Label": "EVENT_TYPE_INVENTORY_ADDED",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "7",
+        "Label": "EVENT_TYPE_INVENTORY_REMOVED",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "8",
+        "Label": "EVENT_TYPE_ENTER",
+        "Comment": "{0} enters {1}",
+        "Script": "****"
+      },
+      {
+        "ID": "9",
+        "Label": "EVENT_TYPE_EXIT",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "10",
+        "Label": "EVENT_TYPE_BLOCKED",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "11",
+        "Label": "EVENT_TYPE_EQUIP",
+        "Comment": "{0} equips {1}.",
+        "Script": "****"
+      },
+      {
+        "ID": "12",
+        "Label": "EVENT_TYPE_UNEQUIP",
+        "Comment": "{0} unequips {1}",
+        "Script": "****"
+      },
+      {
+        "ID": "13",
+        "Label": "EVENT_TYPE_FAILTOOPEN",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "14",
+        "Label": "EVENT_TYPE_USE",
+        "Comment": "{0} performs action {3} on {1}. Result: {4}",
+        "Script": "****"
+      },
+      {
+        "ID": "15",
+        "Label": "EVENT_TYPE_CLICK",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "16",
+        "Label": "EVENT_TYPE_TRAP_TRIGGERED",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "17",
+        "Label": "EVENT_TYPE_TRAP_DISARMED",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "18",
+        "Label": "EVENT_TYPE_DIALOGUE",
+        "Comment": "Dialog {4} started with {0}. ",
+        "Script": "****"
+      },
+      {
+        "ID": "19",
+        "Label": "EVENT_TYPE_MODULE_START",
+        "Comment": "Module {0} was started. Event {2}.",
+        "Script": "****"
+      },
+      {
+        "ID": "20",
+        "Label": "EVENT_TYPE_MODULE_LOAD",
+        "Comment": "Module {0} was loaded from savegame. Event {2}",
+        "Script": "****"
+      },
+      {
+        "ID": "21",
+        "Label": "EVENT_TYPE_LISTENER",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "22",
+        "Label": "EVENT_TYPE_LOCKED",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "23",
+        "Label": "EVENT_TYPE_UNLOCKED",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "24",
+        "Label": "EVENT_TYPE_PLAYERLEVELUP",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "25",
+        "Label": "EVENT_TYPE_PERCEPTION_APPEAR",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "26",
+        "Label": "EVENT_TYPE_PERCEPTION_DISAPPEAR",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "27",
+        "Label": "EVENT_TYPE_SET_PLOT",
+        "Comment": "Plot {4} Flag {5} set to {2} from {3} in conversation with {0}",
+        "Script": "****"
+      },
+      {
+        "ID": "28",
+        "Label": "EVENT_TYPE_GET_PLOT",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "29",
+        "Label": "EVENT_TYPE_ATTACK_IMPACT",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "30",
+        "Label": "EVENT_TYPE_COMBAT_INITIATED",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "31",
+        "Label": "EVENT_TYPE_ABILITY_CAST_IMPACT",
+        "Comment": "{0} uses ability #{2} at {1} - ResistanceResult: {3}",
+        "Script": "****"
+      },
+      {
+        "ID": "32",
+        "Label": "EVENT_TYPE_ABILITY_CAST_START",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "33",
+        "Label": "EVENT_TYPE_APPLY_EFFECT",
+        "Comment": "****",
+        "Script": "rules_core"
+      },
+      {
+        "ID": "34",
+        "Label": "EVENT_TYPE_REMOVE_EFFECT",
+        "Comment": "****",
+        "Script": "rules_core"
+      },
+      {
+        "ID": "35",
+        "Label": "EVENT_TYPE_COMMAND_PENDING",
+        "Comment": "****",
+        "Script": "rules_core"
+      },
+      {
+        "ID": "36",
+        "Label": "EVENT_TYPE_COMMAND_COMPLETE",
+        "Comment": "****",
+        "Script": "rules_core"
+      },
+      {
+        "ID": "37",
+        "Label": "EVENT_TYPE_GAMEOBJECTSLOADED",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "38",
+        "Label": "EVENT_TYPE_AREALOAD_PRELOADEXIT",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "39",
+        "Label": "EVENT_TYPE_AREALOAD_POSTLOADEXIT",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "40",
+        "Label": "EVENT_TYPE_AREALOAD_SPECIAL",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "41",
+        "Label": "EVENT_TYPE_AREALOADSAVE_SPECIAL",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "44",
+        "Label": "EVENT_TYPE_CHARGEN_START",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "45",
+        "Label": "EVENT_TYPE_CHARGEN_SCREEN_ENTERED",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "46",
+        "Label": "EVENT_TYPE_CHARGEN_SELECT_RACE",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "47",
+        "Label": "EVENT_TYPE_CHARGEN_SELECT_CLASS",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "48",
+        "Label": "EVENT_TYPE_CHARGEN_SELECT_SOUNDSET",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "49",
+        "Label": "EVENT_TYPE_CHARGEN_SELECT_NAME",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "50",
+        "Label": "EVENT_TYPE_CHARGEN_ASSIGN_ATTRIBUTES",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "51",
+        "Label": "EVENT_TYPE_CHARGEN_ASSIGN_ABILITIES",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "52",
+        "Label": "EVENT_TYPE_CHARGEN_SELECT_SPEC",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "53",
+        "Label": "EVENT_TYPE_CHARGEN_IMPORT_HERO",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "54",
+        "Label": "EVENT_TYPE_CHARGEN_SELECT_GENDER",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "55",
+        "Label": "EVENT_TYPE_CHARGEN_SELECT_BACKGROUND",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "56",
+        "Label": "EVENT_TYPE_CHARGEN_AUTOLEVEL",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "59",
+        "Label": "EVENT_TYPE_CHARGEN_END",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "60",
+        "Label": "EVENT_TYPE_GAMEMODE_CHANGE",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "61",
+        "Label": "EVENT_TYPE_DEATH_RES_PARTY ",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "62",
+        "Label": "EVENT_TYPE_MODULE_PRESAVE",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "64",
+        "Label": "EVENT_TYPE_MANA_STAM_DEPLETED",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "65",
+        "Label": "EVENT_TYPE_ITEM_ONHIT",
+        "Comment": "****",
+        "Script": "rules_core"
+      },
+      {
+        "ID": "66",
+        "Label": "EVENT_TYPE_PARTYMEMBER_ADDED",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "67",
+        "Label": "EVENT_TYPE_PARTYMEMBER_DROPPED",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "73",
+        "Label": "EVENT_TYPE_ABILITY_ACQUIRED",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "74",
+        "Label": "EVENT_TYPE_AOE_HEARTBEAT",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "75",
+        "Label": "EVENT_TYPE_WORLD_MAP_CLOSED",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "76",
+        "Label": "EVENT_TYPE_POPUP_RESULT",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "77",
+        "Label": "EVENT_TYPE_PLACEABLE_COLLISION",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "78",
+        "Label": "EVENT_TYPE_PLACEABLE_ONCLICK",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "79",
+        "Label": "EVENT_TYPE_REACHED_WAYPOINT",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "80",
+        "Label": "EVENT_TYPE_AREALIST_POSTLOAD",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "81",
+        "Label": "EVENT_TYPE_HEARTBEAT2",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "82",
+        "Label": "EVENT_TYPE_GIFT_ITEM",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "83",
+        "Label": "EVENT_TYPE_LOAD_TACTICS_PRESET",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "84",
+        "Label": "EVENT_TYPE_GUI_OPENED",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "85",
+        "Label": "EVENT_TYPE_INVENTORY_FULL",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "86",
+        "Label": "EVENT_TYPE_CREATURE_ENTERS_DIALOGUE",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "87",
+        "Label": "EVENT_TYPE_RUBBER_BAND",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "88",
+        "Label": "EVENT_TYPE_GIVE_UP",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "89",
+        "Label": "EVENT_TYPE_ON_SELECT",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "90",
+        "Label": " EVENT_TYPE_ON_ORDER_RECEIVED",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "101",
+        "Label": "EVENT_TYPE_USE_ABILTY_IMMEDIATE",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "1001",
+        "Label": "EVENT_TYPE_ATTACKED",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "1002",
+        "Label": "EVENT_TYPE_ALLY_ATTACKED",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "1003",
+        "Label": "EVENT_TYPE_WORLD_MAP_USED",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "1004",
+        "Label": "EVENT_TYPE_DELAYED_SHOUT",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "1005",
+        "Label": "EVENT_TYPE_SPELLSCRIPT_PENDING",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "1006",
+        "Label": "EVENT_TYPE_SPELLSCRIPT_CAST",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "1007",
+        "Label": "EVENT_TYPE_SPELLSCRIPT_IMPACT",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "1008",
+        "Label": "EVENT_TYPE_SPELLSCRIPT_DEACTIVATE",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "1010",
+        "Label": "EVENT_TYPE_DOT_TICK",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "1011",
+        "Label": "EVENT_TYPE_CAST_AT",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "1012",
+        "Label": "EVENT_TYPE_STAT_REGEN",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "1013",
+        "Label": "EVENT_TYPE_AFTER_DEATH",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "1014",
+        "Label": "EVENT_TYPE_SET_OBJECT_ACTIVE",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "1015",
+        "Label": "EVENT_TYPE_AMBIENT_AI_TIMEOUT",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "1016",
+        "Label": "EVENT_TYPE_HANDLE_CUSTOM_AI",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "1017",
+        "Label": "EVENT_TYPE_OUT_OF_AMMO",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "1018",
+        "Label": "EVENT_TYPE_HEARTBEAT",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "1019",
+        "Label": "EVENT_TYPE_TEAM_DESTROYED",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "1020",
+        "Label": "EVENT_TYPE_CAMPAIGN_ITEM_ACQUIRED",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "1021",
+        "Label": "EVENT_TYPE_SET_GAME_MODE",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "1022",
+        "Label": "EVENT_TYPE_COMBAT_END",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "1023",
+        "Label": "EVENT_TYPE_DYING",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "1024",
+        "Label": "EVENT_TYPE_PLAYER_LEVELUP",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "1025",
+        "Label": "EVENT_TYPE_AMBIENT_PAUSE",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "1026",
+        "Label": "EVENT_TYPE_AMBIENT_CONTINUE",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "1027",
+        "Label": "EVENT_TYPE_MODULE_CHARGEN_DONE",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "1028",
+        "Label": "EVENT_TYPE_PARTY_MEMBER_HIRED",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "1029",
+        "Label": "EVENT_TYPE_SUMMON_DIED",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "1030",
+        "Label": "EVENT_TYPE_CONFUSION_CALLBACK",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "1031",
+        "Label": "EVENT_TYPE_PARTY_MEMBER_FIRED",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "1032",
+        "Label": "EVENT_TYPE_UNIQUE_POWER",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "1045",
+        "Label": "EVENT_TYPE_TRAP_TRIGGER_DISARMED",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "1046",
+        "Label": "EVENT_TYPE_UNLOCK_FAILED",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "1047",
+        "Label": "EVENT_TYPE_OPENED",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "1048",
+        "Label": "EVENT_TYPE_TRAP_RESET",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "1049",
+        "Label": "EVENT_TYPE_TRAP_DISARM",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "1050",
+        "Label": "EVENT_TYPE_TRAP_ARM",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "1051",
+        "Label": "EVENT_TYPE_TRAP_TRIGGER_ENTER",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "1052",
+        "Label": "EVENT_TYPE_TRAP_TRIGGER_EXIT",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "1053",
+        "Label": "EVENT_TYPE_TRAP_TRIGGER_ARMED",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "1054",
+        "Label": "EVENT_TYPE_CUSTOM_COMMAND_COMPLETE",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "1055",
+        "Label": "EVENT_TYPE_MODULE_HANDLE_GIFT",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "1056",
+        "Label": "EVENT_TYPE_MODULE_HANDLE_FOLLOWER_DEATH",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "1070",
+        "Label": "EVENT_TYPE_DESTROY_OBJECT",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "1080",
+        "Label": "EVENT_TYPE_COMBO_IGNITE",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "1090",
+        "Label": "EVENT_TYPE_DROP_STEALTH",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "1100",
+        "Label": "EVENT_TYPE_CREATURE_SHAPESHIFTED",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "1200",
+        "Label": "EVENT_TYPE_PARTY_MEMBER_RES_TIMER",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "2000",
+        "Label": "EVENT_TYPE_DELAYED_GM_CHANGE",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "12001",
+        "Label": "EVENT_TYPE_ASSERTION",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "12002",
+        "Label": "EVENT_TYPE_WARNING",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "12003",
+        "Label": "EVENT_TYPE_ERROR",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "1057",
+        "Label": "EVENT_TYPE_SET_INTERACTIVE",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "2001",
+        "Label": "EVENT_TYPE_AUTOPAUSE",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "1058",
+        "Label": "EVENT_TYPE_OBJECT_ACTIVE",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "1059",
+        "Label": "EVENT_TYPE_TRAINING_BEGIN",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "1060",
+        "Label": "EVENT_TYPE_TRAINING_FOLLOWER_SELECTED",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "1061",
+        "Label": "EVENT_TYPE_TRAINING_GUI_TACTICS_OPENED",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "1062",
+        "Label": "EVENT_TYPE_TRAINING_GUI_LEVLUP_OPENED",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "1063",
+        "Label": "EVENT_TYPE_TRAINING_GUI_INVENTORY_OPENED",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "1064",
+        "Label": "EVENT_TYPE_TRAINING_QBAR_ITEM_EQUIPPED",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "1065",
+        "Label": "EVENT_TYPE_TRAINING_MAXIMUM_ZOOM_IN",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "1066",
+        "Label": "EVENT_TYPE_AOE_INDIVIDUAL_IMPACT",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "1067",
+        "Label": "EVENT_TYPE_TRAINING_WEAPON_EQUIPPED",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "1068",
+        "Label": "EVENT_TYPE_TRAINING_DELAYED_NOACTION",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "1069",
+        "Label": "EVENT_TYPE_TRAINING_UNPAUSE",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "1070",
+        "Label": "EVENT_TYPE_TRAINING_ITEM_UNEQUIPPED",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "1071",
+        "Label": "EVENT_TYPE_TRAINING_ITEM_EQUIPPED",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "1072",
+        "Label": "EVENT_TYPE_TRAINING_TACTIC_PRESET_SELECTED",
+        "Comment": "****",
+        "Script": "****"
+      },
+      {
+        "ID": "1073",
+        "Label": "EVENT_TYPE_TRAINING_MOVEMENT_COMMAND_ISSUED",
+        "Comment": "****",
+        "Script": "****"
+      }
+    ]
+}

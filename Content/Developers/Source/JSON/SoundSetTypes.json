@@ -1,0 +1,663 @@
+{"SoundSetTypes": [
+      {
+        "ID": "1",
+        "NODENAME": "COMBAT ATTACK",
+        "ENTRYIDX": "100",
+        "PROBABILITY": "0.20",
+        "BCACHE": "0",
+        "bRestricted": "0",
+        "bUseProbabilityModifier": "1",
+        "bUseInChargen": "0"
+      },
+      {
+        "ID": "2",
+        "NODENAME": "COMBAT BATTLE CRY",
+        "ENTRYIDX": "200",
+        "PROBABILITY": "0.20",
+        "BCACHE": "0",
+        "bRestricted": "0",
+        "bUseProbabilityModifier": "1",
+        "bUseInChargen": "0"
+      },
+      {
+        "ID": "3",
+        "NODENAME": "COMBAT STAMINA LOW",
+        "ENTRYIDX": "300",
+        "PROBABILITY": "0.10",
+        "BCACHE": "0",
+        "bRestricted": "1",
+        "bUseProbabilityModifier": "1",
+        "bUseInChargen": "0"
+      },
+      {
+        "ID": "4",
+        "NODENAME": "MANA LOW",
+        "ENTRYIDX": "400",
+        "PROBABILITY": "0.30",
+        "BCACHE": "0",
+        "bRestricted": "1",
+        "bUseProbabilityModifier": "1",
+        "bUseInChargen": "0"
+      },
+      {
+        "ID": "5",
+        "NODENAME": "COMBAT HEAL ME",
+        "ENTRYIDX": "500",
+        "PROBABILITY": "0.20",
+        "BCACHE": "0",
+        "bRestricted": "1",
+        "bUseProbabilityModifier": "1",
+        "bUseInChargen": "0"
+      },
+      {
+        "ID": "6",
+        "NODENAME": "EXPLORE HEAL ME",
+        "ENTRYIDX": "600",
+        "PROBABILITY": "0.20",
+        "BCACHE": "0",
+        "bRestricted": "1",
+        "bUseProbabilityModifier": "1",
+        "bUseInChargen": "0"
+      },
+      {
+        "ID": "7",
+        "NODENAME": "SCRIPTED HELP",
+        "ENTRYIDX": "700",
+        "PROBABILITY": "1.00",
+        "BCACHE": "0",
+        "bRestricted": "0",
+        "bUseProbabilityModifier": "1",
+        "bUseInChargen": "0"
+      },
+      {
+        "ID": "8",
+        "NODENAME": "EXPLORE ENEMIES SIGHTED UNDEAD",
+        "ENTRYIDX": "800",
+        "PROBABILITY": "0.30",
+        "BCACHE": "0",
+        "bRestricted": "0",
+        "bUseProbabilityModifier": "1",
+        "bUseInChargen": "0"
+      },
+      {
+        "ID": "9",
+        "NODENAME": "EXPLORE ENEMIES SIGHTED DARKSPAWN",
+        "ENTRYIDX": "900",
+        "PROBABILITY": "0.30",
+        "BCACHE": "0",
+        "bRestricted": "0",
+        "bUseProbabilityModifier": "1",
+        "bUseInChargen": "0"
+      },
+      {
+        "ID": "10",
+        "NODENAME": "EXPLORE ENEMIES SIGHTED DRAGON",
+        "ENTRYIDX": "1000",
+        "PROBABILITY": "0.30",
+        "BCACHE": "0",
+        "bRestricted": "0",
+        "bUseProbabilityModifier": "1",
+        "bUseInChargen": "0"
+      },
+      {
+        "ID": "11",
+        "NODENAME": "EXPLORE ENEMIES SIGHTED ANIMAL",
+        "ENTRYIDX": "1100",
+        "PROBABILITY": "0.30",
+        "BCACHE": "0",
+        "bRestricted": "0",
+        "bUseProbabilityModifier": "1",
+        "bUseInChargen": "0"
+      },
+      {
+        "ID": "12",
+        "NODENAME": "EXPLORE ENEMIES SIGHTED BEAST",
+        "ENTRYIDX": "1200",
+        "PROBABILITY": "0.30",
+        "BCACHE": "0",
+        "bRestricted": "0",
+        "bUseProbabilityModifier": "1",
+        "bUseInChargen": "0"
+      },
+      {
+        "ID": "13",
+        "NODENAME": "EXPLORE ENEMIES SIGHTED OTHER",
+        "ENTRYIDX": "1300",
+        "PROBABILITY": "0.30",
+        "BCACHE": "0",
+        "bRestricted": "0",
+        "bUseProbabilityModifier": "1",
+        "bUseInChargen": "0"
+      },
+      {
+        "ID": "14",
+        "NODENAME": "COMBAT TAUNT",
+        "ENTRYIDX": "1400",
+        "PROBABILITY": "0.20",
+        "BCACHE": "0",
+        "bRestricted": "0",
+        "bUseProbabilityModifier": "1",
+        "bUseInChargen": "0"
+      },
+      {
+        "ID": "15",
+        "NODENAME": "COMBAT ATTACK GRUNT",
+        "ENTRYIDX": "1500",
+        "PROBABILITY": "0.50",
+        "BCACHE": "0",
+        "bRestricted": "0",
+        "bUseProbabilityModifier": "0",
+        "bUseInChargen": "0"
+      },
+      {
+        "ID": "16",
+        "NODENAME": "COMBAT PAIN GRUNT",
+        "ENTRYIDX": "1600",
+        "PROBABILITY": "0.50",
+        "BCACHE": "0",
+        "bRestricted": "0",
+        "bUseProbabilityModifier": "0",
+        "bUseInChargen": "0"
+      },
+      {
+        "ID": "17",
+        "NODENAME": "COMBAT NEAR DEATH",
+        "ENTRYIDX": "1700",
+        "PROBABILITY": "0.30",
+        "BCACHE": "0",
+        "bRestricted": "1",
+        "bUseProbabilityModifier": "1",
+        "bUseInChargen": "0"
+      },
+      {
+        "ID": "18",
+        "NODENAME": "COMBAT DEATH",
+        "ENTRYIDX": "1800",
+        "PROBABILITY": "1.00",
+        "BCACHE": "0",
+        "bRestricted": "0",
+        "bUseProbabilityModifier": "0",
+        "bUseInChargen": "0"
+      },
+      {
+        "ID": "19",
+        "NODENAME": "POISONED",
+        "ENTRYIDX": "1900",
+        "PROBABILITY": "1.00",
+        "BCACHE": "0",
+        "bRestricted": "0",
+        "bUseProbabilityModifier": "1",
+        "bUseInChargen": "0"
+      },
+      {
+        "ID": "20",
+        "NODENAME": "SPELL FAILED",
+        "ENTRYIDX": "2000",
+        "PROBABILITY": "1.00",
+        "BCACHE": "0",
+        "bRestricted": "0",
+        "bUseProbabilityModifier": "1",
+        "bUseInChargen": "0"
+      },
+      {
+        "ID": "21",
+        "NODENAME": "COMBAT ENEMY KILLED",
+        "ENTRYIDX": "2100",
+        "PROBABILITY": "0.10",
+        "BCACHE": "0",
+        "bRestricted": "0",
+        "bUseProbabilityModifier": "1",
+        "bUseInChargen": "1"
+      },
+      {
+        "ID": "22",
+        "NODENAME": "COMBAT MONSTER SLEW PARTY MEMBER",
+        "ENTRYIDX": "2200",
+        "PROBABILITY": "0.25",
+        "BCACHE": "0",
+        "bRestricted": "0",
+        "bUseProbabilityModifier": "1",
+        "bUseInChargen": "0"
+      },
+      {
+        "ID": "23",
+        "NODENAME": "COMBAT CHEER PARTY",
+        "ENTRYIDX": "2300",
+        "PROBABILITY": "0.10",
+        "BCACHE": "0",
+        "bRestricted": "0",
+        "bUseProbabilityModifier": "1",
+        "bUseInChargen": "0"
+      },
+      {
+        "ID": "24",
+        "NODENAME": "COMBAT WEAPON INEFFECTIVE",
+        "ENTRYIDX": "2400",
+        "PROBABILITY": "1.00",
+        "BCACHE": "0",
+        "bRestricted": "0",
+        "bUseProbabilityModifier": "1",
+        "bUseInChargen": "0"
+      },
+      {
+        "ID": "25",
+        "NODENAME": "EXPLORE TRAP DETECTED",
+        "ENTRYIDX": "2500",
+        "PROBABILITY": "1.00",
+        "BCACHE": "0",
+        "bRestricted": "0",
+        "bUseProbabilityModifier": "0",
+        "bUseInChargen": "1"
+      },
+      {
+        "ID": "26",
+        "NODENAME": "EXPLORE LOOK HERE",
+        "ENTRYIDX": "2600",
+        "PROBABILITY": "0.40",
+        "BCACHE": "0",
+        "bRestricted": "0",
+        "bUseProbabilityModifier": "0",
+        "bUseInChargen": "0"
+      },
+      {
+        "ID": "27",
+        "NODENAME": "EXPLORE MOVE OVER",
+        "ENTRYIDX": "2700",
+        "PROBABILITY": "0.40",
+        "BCACHE": "0",
+        "bRestricted": "0",
+        "bUseProbabilityModifier": "0",
+        "bUseInChargen": "0"
+      },
+      {
+        "ID": "28",
+        "NODENAME": "EXPLORE START TASK",
+        "ENTRYIDX": "2800",
+        "PROBABILITY": "0.40",
+        "BCACHE": "0",
+        "bRestricted": "0",
+        "bUseProbabilityModifier": "0",
+        "bUseInChargen": "1"
+      },
+      {
+        "ID": "29",
+        "NODENAME": "EXPLORE STEALTH",
+        "ENTRYIDX": "2900",
+        "PROBABILITY": "1.00",
+        "BCACHE": "0",
+        "bRestricted": "0",
+        "bUseProbabilityModifier": "0",
+        "bUseInChargen": "0"
+      },
+      {
+        "ID": "30",
+        "NODENAME": "CANNOT DO",
+        "ENTRYIDX": "3000",
+        "PROBABILITY": "1.00",
+        "BCACHE": "0",
+        "bRestricted": "0",
+        "bUseProbabilityModifier": "0",
+        "bUseInChargen": "0"
+      },
+      {
+        "ID": "31",
+        "NODENAME": "TASK COMPLETE",
+        "ENTRYIDX": "3100",
+        "PROBABILITY": "0.40",
+        "BCACHE": "0",
+        "bRestricted": "0",
+        "bUseProbabilityModifier": "0",
+        "bUseInChargen": "0"
+      },
+      {
+        "ID": "32",
+        "NODENAME": "COMBAT SELECT NEUTRAL",
+        "ENTRYIDX": "3200",
+        "PROBABILITY": "0.40",
+        "BCACHE": "0",
+        "bRestricted": "0",
+        "bUseProbabilityModifier": "0",
+        "bUseInChargen": "0"
+      },
+      {
+        "ID": "33",
+        "NODENAME": "CUT",
+        "ENTRYIDX": "3300",
+        "PROBABILITY": "0.00",
+        "BCACHE": "0",
+        "bRestricted": "0",
+        "bUseProbabilityModifier": "1",
+        "bUseInChargen": "0"
+      },
+      {
+        "ID": "34",
+        "NODENAME": "CUT",
+        "ENTRYIDX": "3400",
+        "PROBABILITY": "0.00",
+        "BCACHE": "0",
+        "bRestricted": "0",
+        "bUseProbabilityModifier": "1",
+        "bUseInChargen": "0"
+      },
+      {
+        "ID": "35",
+        "NODENAME": "CUT",
+        "ENTRYIDX": "3500",
+        "PROBABILITY": "0.00",
+        "BCACHE": "0",
+        "bRestricted": "0",
+        "bUseProbabilityModifier": "1",
+        "bUseInChargen": "0"
+      },
+      {
+        "ID": "36",
+        "NODENAME": "EXPLORE SELECT NEUTRAL",
+        "ENTRYIDX": "3600",
+        "PROBABILITY": "0.30",
+        "BCACHE": "0",
+        "bRestricted": "0",
+        "bUseProbabilityModifier": "1",
+        "bUseInChargen": "1"
+      },
+      {
+        "ID": "37",
+        "NODENAME": "EXPLORE SELECT FRIENDLY",
+        "ENTRYIDX": "3700",
+        "PROBABILITY": "0.30",
+        "BCACHE": "0",
+        "bRestricted": "0",
+        "bUseProbabilityModifier": "1",
+        "bUseInChargen": "0"
+      },
+      {
+        "ID": "38",
+        "NODENAME": "EXPLORE SELECT HATE",
+        "ENTRYIDX": "3800",
+        "PROBABILITY": "0.30",
+        "BCACHE": "0",
+        "bRestricted": "0",
+        "bUseProbabilityModifier": "1",
+        "bUseInChargen": "0"
+      },
+      {
+        "ID": "39",
+        "NODENAME": "EXPLORE SELECT LOVE",
+        "ENTRYIDX": "3900",
+        "PROBABILITY": "0.30",
+        "BCACHE": "0",
+        "bRestricted": "0",
+        "bUseProbabilityModifier": "1",
+        "bUseInChargen": "0"
+      },
+      {
+        "ID": "40",
+        "NODENAME": "CUT",
+        "ENTRYIDX": "4000",
+        "PROBABILITY": "0.00",
+        "BCACHE": "0",
+        "bRestricted": "0",
+        "bUseProbabilityModifier": "1",
+        "bUseInChargen": "0"
+      },
+      {
+        "ID": "41",
+        "NODENAME": "CUT",
+        "ENTRYIDX": "4100",
+        "PROBABILITY": "0.00",
+        "BCACHE": "0",
+        "bRestricted": "0",
+        "bUseProbabilityModifier": "1",
+        "bUseInChargen": "0"
+      },
+      {
+        "ID": "42",
+        "NODENAME": "GIFT NEUTRAL",
+        "ENTRYIDX": "4200",
+        "PROBABILITY": "1.00",
+        "BCACHE": "0",
+        "bRestricted": "0",
+        "bUseProbabilityModifier": "0",
+        "bUseInChargen": "0"
+      },
+      {
+        "ID": "43",
+        "NODENAME": "GIFT NEGATIVE",
+        "ENTRYIDX": "4300",
+        "PROBABILITY": "1.00",
+        "BCACHE": "0",
+        "bRestricted": "0",
+        "bUseProbabilityModifier": "0",
+        "bUseInChargen": "0"
+      },
+      {
+        "ID": "44",
+        "NODENAME": "GIFT POSITIVE",
+        "ENTRYIDX": "4400",
+        "PROBABILITY": "1.00",
+        "BCACHE": "0",
+        "bRestricted": "0",
+        "bUseProbabilityModifier": "0",
+        "bUseInChargen": "0"
+      },
+      {
+        "ID": "45",
+        "NODENAME": "GIFT ECSTATIC",
+        "ENTRYIDX": "4500",
+        "PROBABILITY": "1.00",
+        "BCACHE": "0",
+        "bRestricted": "0",
+        "bUseProbabilityModifier": "0",
+        "bUseInChargen": "0"
+      },
+      {
+        "ID": "46",
+        "NODENAME": "HELLO",
+        "ENTRYIDX": "4600",
+        "PROBABILITY": "1.00",
+        "BCACHE": "0",
+        "bRestricted": "0",
+        "bUseProbabilityModifier": "0",
+        "bUseInChargen": "0"
+      },
+      {
+        "ID": "47",
+        "NODENAME": "YES",
+        "ENTRYIDX": "4700",
+        "PROBABILITY": "1.00",
+        "BCACHE": "0",
+        "bRestricted": "0",
+        "bUseProbabilityModifier": "0",
+        "bUseInChargen": "0"
+      },
+      {
+        "ID": "48",
+        "NODENAME": "NO",
+        "ENTRYIDX": "4800",
+        "PROBABILITY": "1.00",
+        "BCACHE": "0",
+        "bRestricted": "0",
+        "bUseProbabilityModifier": "0",
+        "bUseInChargen": "0"
+      },
+      {
+        "ID": "49",
+        "NODENAME": "STOP",
+        "ENTRYIDX": "4900",
+        "PROBABILITY": "1.00",
+        "BCACHE": "0",
+        "bRestricted": "0",
+        "bUseProbabilityModifier": "0",
+        "bUseInChargen": "0"
+      },
+      {
+        "ID": "50",
+        "NODENAME": "BORED",
+        "ENTRYIDX": "5000",
+        "PROBABILITY": "1.00",
+        "BCACHE": "0",
+        "bRestricted": "0",
+        "bUseProbabilityModifier": "0",
+        "bUseInChargen": "0"
+      },
+      {
+        "ID": "51",
+        "NODENAME": "GOODBYE",
+        "ENTRYIDX": "5100",
+        "PROBABILITY": "1.00",
+        "BCACHE": "0",
+        "bRestricted": "0",
+        "bUseProbabilityModifier": "0",
+        "bUseInChargen": "0"
+      },
+      {
+        "ID": "52",
+        "NODENAME": "THANK YOU",
+        "ENTRYIDX": "5200",
+        "PROBABILITY": "1.00",
+        "BCACHE": "0",
+        "bRestricted": "0",
+        "bUseProbabilityModifier": "0",
+        "bUseInChargen": "1"
+      },
+      {
+        "ID": "53",
+        "NODENAME": "LAUGH",
+        "ENTRYIDX": "5300",
+        "PROBABILITY": "1.00",
+        "BCACHE": "0",
+        "bRestricted": "0",
+        "bUseProbabilityModifier": "0",
+        "bUseInChargen": "0"
+      },
+      {
+        "ID": "54",
+        "NODENAME": "CUSS",
+        "ENTRYIDX": "5400",
+        "PROBABILITY": "1.00",
+        "BCACHE": "0",
+        "bRestricted": "0",
+        "bUseProbabilityModifier": "0",
+        "bUseInChargen": "1"
+      },
+      {
+        "ID": "55",
+        "NODENAME": "CHEER",
+        "ENTRYIDX": "5500",
+        "PROBABILITY": "1.00",
+        "BCACHE": "0",
+        "bRestricted": "0",
+        "bUseProbabilityModifier": "0",
+        "bUseInChargen": "0"
+      },
+      {
+        "ID": "56",
+        "NODENAME": "SOMETHING TO SAY",
+        "ENTRYIDX": "5600",
+        "PROBABILITY": "1.00",
+        "BCACHE": "0",
+        "bRestricted": "0",
+        "bUseProbabilityModifier": "0",
+        "bUseInChargen": "0"
+      },
+      {
+        "ID": "57",
+        "NODENAME": "GOOD IDEA",
+        "ENTRYIDX": "5700",
+        "PROBABILITY": "1.00",
+        "BCACHE": "0",
+        "bRestricted": "0",
+        "bUseProbabilityModifier": "0",
+        "bUseInChargen": "0"
+      },
+      {
+        "ID": "58",
+        "NODENAME": "BAD IDEA",
+        "ENTRYIDX": "5800",
+        "PROBABILITY": "1.00",
+        "BCACHE": "0",
+        "bRestricted": "0",
+        "bUseProbabilityModifier": "0",
+        "bUseInChargen": "0"
+      },
+      {
+        "ID": "59",
+        "NODENAME": "THREATEN",
+        "ENTRYIDX": "5900",
+        "PROBABILITY": "1.00",
+        "BCACHE": "0",
+        "bRestricted": "0",
+        "bUseProbabilityModifier": "0",
+        "bUseInChargen": "1"
+      },
+      {
+        "ID": "60",
+        "NODENAME": "BERSERK",
+        "ENTRYIDX": "6000",
+        "PROBABILITY": "1.00",
+        "BCACHE": "0",
+        "bRestricted": "0",
+        "bUseProbabilityModifier": "1",
+        "bUseInChargen": "0"
+      },
+      {
+        "ID": "61",
+        "NODENAME": "WARCRY",
+        "ENTRYIDX": "6100",
+        "PROBABILITY": "1.00",
+        "BCACHE": "0",
+        "bRestricted": "0",
+        "bUseProbabilityModifier": "1",
+        "bUseInChargen": "0"
+      },
+      {
+        "ID": "62",
+        "NODENAME": "I WAS CAUGHT STEALING VO CUE",
+        "ENTRYIDX": "6200",
+        "PROBABILITY": "1.00",
+        "BCACHE": "0",
+        "bRestricted": "0",
+        "bUseProbabilityModifier": "0",
+        "bUseInChargen": "0"
+      },
+      {
+        "ID": "63",
+        "NODENAME": "IF FIGHTING WITHOUT A WEAPON",
+        "ENTRYIDX": "6300",
+        "PROBABILITY": "1.00",
+        "BCACHE": "0",
+        "bRestricted": "0",
+        "bUseProbabilityModifier": "0",
+        "bUseInChargen": "0"
+      },
+      {
+        "ID": "64",
+        "NODENAME": "ORDER RECEIVED",
+        "ENTRYIDX": "6400",
+        "PROBABILITY": "0.00",
+        "BCACHE": "0",
+        "bRestricted": "0",
+        "bUseProbabilityModifier": "0",
+        "bUseInChargen": "0"
+      },
+      {
+        "ID": "65",
+        "NODENAME": "EXPLORE ENEMIES SIGHTED DEMON",
+        "ENTRYIDX": "6500",
+        "PROBABILITY": "0.30",
+        "BCACHE": "0",
+        "bRestricted": "0",
+        "bUseProbabilityModifier": "1",
+        "bUseInChargen": "0"
+      },
+      {
+        "ID": "66",
+        "NODENAME": "SKILL FAILURE",
+        "ENTRYIDX": "6600",
+        "PROBABILITY": "1.00",
+        "BCACHE": "0",
+        "bRestricted": "0",
+        "bUseProbabilityModifier": "0",
+        "bUseInChargen": "0"
+      }
+    ]
+}

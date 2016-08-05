@@ -1,0 +1,211 @@
+{"Experience": [
+      {
+        "ID": "0",
+        "XP": "0",
+        "Points": "0",
+        "fPointVal": "10",
+        "Tactics": "0",
+        "SpecPoint": "0"
+      },
+      {
+        "ID": "1",
+        "XP": "1",
+        "Points": "7",
+        "fPointVal": "285.9",
+        "Tactics": "2",
+        "SpecPoint": "0"
+      },
+      {
+        "ID": "2",
+        "XP": "2001",
+        "Points": "27",
+        "fPointVal": "166.7",
+        "Tactics": "2",
+        "SpecPoint": "0"
+      },
+      {
+        "ID": "3",
+        "XP": "4501",
+        "Points": "50",
+        "fPointVal": "150",
+        "Tactics": "3",
+        "SpecPoint": "0"
+      },
+      {
+        "ID": "4",
+        "XP": "7501",
+        "Points": "70",
+        "fPointVal": "157.2",
+        "Tactics": "3",
+        "SpecPoint": "0"
+      },
+      {
+        "ID": "5",
+        "XP": "11001",
+        "Points": "95",
+        "fPointVal": "157.9",
+        "Tactics": "3",
+        "SpecPoint": "0"
+      },
+      {
+        "ID": "6",
+        "XP": "15001",
+        "Points": "131",
+        "fPointVal": "148.9",
+        "Tactics": "4",
+        "SpecPoint": "0"
+      },
+      {
+        "ID": "7",
+        "XP": "19501",
+        "Points": "173",
+        "fPointVal": "141.6",
+        "Tactics": "4",
+        "SpecPoint": "1"
+      },
+      {
+        "ID": "8",
+        "XP": "24501",
+        "Points": "221",
+        "fPointVal": "135.8",
+        "Tactics": "4",
+        "SpecPoint": "0"
+      },
+      {
+        "ID": "9",
+        "XP": "30001",
+        "Points": "275",
+        "fPointVal": "130.9",
+        "Tactics": "4",
+        "SpecPoint": "0"
+      },
+      {
+        "ID": "10",
+        "XP": "36001",
+        "Points": "335",
+        "fPointVal": "126.9",
+        "Tactics": "5",
+        "SpecPoint": "0"
+      },
+      {
+        "ID": "11",
+        "XP": "42501",
+        "Points": "412",
+        "fPointVal": "120.1",
+        "Tactics": "5",
+        "SpecPoint": "0"
+      },
+      {
+        "ID": "12",
+        "XP": "49501",
+        "Points": "496",
+        "fPointVal": "114.9",
+        "Tactics": "5",
+        "SpecPoint": "0"
+      },
+      {
+        "ID": "13",
+        "XP": "57001",
+        "Points": "587",
+        "fPointVal": "110.7",
+        "Tactics": "5",
+        "SpecPoint": "0"
+      },
+      {
+        "ID": "14",
+        "XP": "65001",
+        "Points": "685",
+        "fPointVal": "107.3",
+        "Tactics": "5",
+        "SpecPoint": "2"
+      },
+      {
+        "ID": "15",
+        "XP": "73501",
+        "Points": "790",
+        "fPointVal": "104.4",
+        "Tactics": "6",
+        "SpecPoint": "0"
+      },
+      {
+        "ID": "16",
+        "XP": "82501",
+        "Points": "918",
+        "fPointVal": "100.2",
+        "Tactics": "6",
+        "SpecPoint": "0"
+      },
+      {
+        "ID": "17",
+        "XP": "92001",
+        "Points": "1054",
+        "fPointVal": "96.8",
+        "Tactics": "6",
+        "SpecPoint": "0"
+      },
+      {
+        "ID": "18",
+        "XP": "102001",
+        "Points": "1198",
+        "fPointVal": "93.9",
+        "Tactics": "6",
+        "SpecPoint": "0"
+      },
+      {
+        "ID": "19",
+        "XP": "112501",
+        "Points": "1350",
+        "fPointVal": "91.5",
+        "Tactics": "6",
+        "SpecPoint": "0"
+      },
+      {
+        "ID": "20",
+        "XP": "123501",
+        "Points": "1530",
+        "fPointVal": "88.2",
+        "Tactics": "7",
+        "SpecPoint": "0"
+      },
+      {
+        "ID": "21",
+        "XP": "135001",
+        "Points": "1635",
+        "fPointVal": "89.9",
+        "Tactics": "7",
+        "SpecPoint": "0"
+      },
+      {
+        "ID": "22",
+        "XP": "147001",
+        "Points": "1745",
+        "fPointVal": "91.4",
+        "Tactics": "7",
+        "SpecPoint": "0"
+      },
+      {
+        "ID": "23",
+        "XP": "159501",
+        "Points": "1860",
+        "fPointVal": "92.7",
+        "Tactics": "7",
+        "SpecPoint": "0"
+      },
+      {
+        "ID": "24",
+        "XP": "172501",
+        "Points": "1980",
+        "fPointVal": "93.9",
+        "Tactics": "7",
+        "SpecPoint": "0"
+      },
+      {
+        "ID": "25",
+        "XP": "186001",
+        "Points": "2105",
+        "fPointVal": "0",
+        "Tactics": "7",
+        "SpecPoint": "0"
+      }
+    ]
+}

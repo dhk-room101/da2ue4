@@ -1,0 +1,27 @@
+{"AIP_Default": [
+      {
+        "ID": "1",
+        "TargetType": "3",
+        "TargetTypeLabel": "Enemy",
+        "Condition": "8",
+        "ConditionLabel": "HP >= 75%",
+        "Command": "4",
+        "CommandLabel": "Use Ability",
+        "SubCommand": "617",
+        "SubCommandLabel": "Shield Bash",
+        "UseChance": "100"
+      },
+      {
+        "ID": "2",
+        "TargetType": "3",
+        "TargetTypeLabel": "Enemy",
+        "Condition": "31",
+        "ConditionLabel": "Nearest Visible",
+        "Command": "4",
+        "CommandLabel": "Use Ability",
+        "SubCommand": "1",
+        "SubCommandLabel": "Shield Pummel",
+        "UseChance": "100"
+      }
+    ]
+}

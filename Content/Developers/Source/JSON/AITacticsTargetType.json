@@ -1,0 +1,165 @@
+{"AITacticsTargetType": [
+      {
+        "ID": "1",
+        "Label": "Self",
+        "StrRef": "352334",
+        "Type": "1",
+        "FollowerAI": "1",
+        "Tag": "****",
+        "GeneratePerFollower": "0"
+      },
+      {
+        "ID": "2",
+        "Label": "Ally",
+        "StrRef": "352335",
+        "Type": "2",
+        "FollowerAI": "1",
+        "Tag": "****",
+        "GeneratePerFollower": "0"
+      },
+      {
+        "ID": "3",
+        "Label": "Enemy",
+        "StrRef": "352336",
+        "Type": "4",
+        "FollowerAI": "1",
+        "Tag": "****",
+        "GeneratePerFollower": "0"
+      },
+      {
+        "ID": "4",
+        "Label": "Placeable",
+        "StrRef": "352337",
+        "Type": "8",
+        "FollowerAI": "0",
+        "Tag": "****",
+        "GeneratePerFollower": "0"
+      },
+      {
+        "ID": "5",
+        "Label": "Hero",
+        "StrRef": "352338",
+        "Type": "16",
+        "FollowerAI": "1",
+        "Tag": "****",
+        "GeneratePerFollower": "0"
+      },
+      {
+        "ID": "6",
+        "Label": "Follower",
+        "StrRef": "****",
+        "Type": "32",
+        "FollowerAI": "1",
+        "Tag": "****",
+        "GeneratePerFollower": "1"
+      },
+      {
+        "ID": "7",
+        "Label": "Enemy: Most Hated",
+        "StrRef": "371169",
+        "Type": "64",
+        "FollowerAI": "0",
+        "Tag": "****",
+        "GeneratePerFollower": "0"
+      },
+      {
+        "ID": "8",
+        "Label": "CUT",
+        "StrRef": "****",
+        "Type": "128",
+        "FollowerAI": "0",
+        "Tag": "****",
+        "GeneratePerFollower": "0"
+      },
+      {
+        "ID": "9",
+        "Label": "CUT",
+        "StrRef": "****",
+        "Type": "256",
+        "FollowerAI": "0",
+        "Tag": "****",
+        "GeneratePerFollower": "0"
+      },
+      {
+        "ID": "10",
+        "Label": "CUT",
+        "StrRef": "****",
+        "Type": "512",
+        "FollowerAI": "0",
+        "Tag": "****",
+        "GeneratePerFollower": "0"
+      },
+      {
+        "ID": "11",
+        "Label": "CUT",
+        "StrRef": "****",
+        "Type": "1024",
+        "FollowerAI": "0",
+        "Tag": "****",
+        "GeneratePerFollower": "0"
+      },
+      {
+        "ID": "12",
+        "Label": "CUT",
+        "StrRef": "****",
+        "Type": "2048",
+        "FollowerAI": "0",
+        "Tag": "****",
+        "GeneratePerFollower": "0"
+      },
+      {
+        "ID": "13",
+        "Label": "CUT",
+        "StrRef": "****",
+        "Type": "4096",
+        "FollowerAI": "0",
+        "Tag": "****",
+        "GeneratePerFollower": "0"
+      },
+      {
+        "ID": "14",
+        "Label": "CUT",
+        "StrRef": "****",
+        "Type": "8192",
+        "FollowerAI": "0",
+        "Tag": "****",
+        "GeneratePerFollower": "0"
+      },
+      {
+        "ID": "15",
+        "Label": "CUT",
+        "StrRef": "****",
+        "Type": "16384",
+        "FollowerAI": "0",
+        "Tag": "****",
+        "GeneratePerFollower": "0"
+      },
+      {
+        "ID": "16",
+        "Label": "CUT",
+        "StrRef": "****",
+        "Type": "32768",
+        "FollowerAI": "0",
+        "Tag": "****",
+        "GeneratePerFollower": "0"
+      },
+      {
+        "ID": "17",
+        "Label": "CUT",
+        "StrRef": "****",
+        "Type": "65536",
+        "FollowerAI": "0",
+        "Tag": "****",
+        "GeneratePerFollower": "0"
+      },
+      {
+        "ID": "18",
+        "Label": "Main Controlled",
+        "StrRef": "352339",
+        "Type": "131072",
+        "FollowerAI": "1",
+        "Tag": "****",
+        "GeneratePerFollower": "0"
+      }
+    ]
+}

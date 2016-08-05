@@ -1,0 +1,111 @@
+{"CreatureRanks": [
+      {
+        "ID": "0",
+        "Label": "INVALID",
+        "Portraitframe": "****",
+        "Strref": "0",
+        "fDeathblow": "0",
+        "color": "0xFFFFFF",
+        "tempxp": "0",
+        "IsSpecial": "0",
+        "IsBoss": "0",
+        "RankRating": "0"
+      },
+      {
+        "ID": "1",
+        "Label": "Critter",
+        "Portraitframe": "****",
+        "Strref": "181302",
+        "fDeathblow": "0.2",
+        "color": "0xFFFFFF",
+        "tempxp": "2",
+        "IsSpecial": "0",
+        "IsBoss": "0",
+        "RankRating": "0.3"
+      },
+      {
+        "ID": "2",
+        "Label": "Normal",
+        "Portraitframe": "****",
+        "Strref": "181303",
+        "fDeathblow": "0.2",
+        "color": "0xFFFFFF",
+        "tempxp": "4",
+        "IsSpecial": "0",
+        "IsBoss": "0",
+        "RankRating": "0.7"
+      },
+      {
+        "ID": "3",
+        "Label": "Lieutenant",
+        "Portraitframe": "****",
+        "Strref": "181304",
+        "fDeathblow": "0.75",
+        "color": "16776960",
+        "tempxp": "5",
+        "IsSpecial": "1",
+        "IsBoss": "0",
+        "RankRating": "1"
+      },
+      {
+        "ID": "4",
+        "Label": "Boss",
+        "Portraitframe": "****",
+        "Strref": "181305",
+        "fDeathblow": "1",
+        "color": "16737792",
+        "tempxp": "6",
+        "IsSpecial": "1",
+        "IsBoss": "1",
+        "RankRating": "2"
+      },
+      {
+        "ID": "5",
+        "Label": "Elite Boss",
+        "Portraitframe": "****",
+        "Strref": "181306",
+        "fDeathblow": "1",
+        "color": "16737792",
+        "tempxp": "10",
+        "IsSpecial": "1",
+        "IsBoss": "1",
+        "RankRating": "5"
+      },
+      {
+        "ID": "100",
+        "Label": "Player",
+        "Portraitframe": "****",
+        "Strref": "0",
+        "fDeathblow": "1",
+        "color": "0xFFFFFF",
+        "tempxp": "0",
+        "IsSpecial": "1",
+        "IsBoss": "0",
+        "RankRating": "0"
+      },
+      {
+        "ID": "12",
+        "Label": "One-Hit Kill",
+        "Portraitframe": "****",
+        "Strref": "0",
+        "fDeathblow": "0.2",
+        "color": "0xFFFFFF",
+        "tempxp": "1",
+        "IsSpecial": "0",
+        "IsBoss": "0",
+        "RankRating": "0.1"
+      },
+      {
+        "ID": "11",
+        "Label": "Weak normal",
+        "Portraitframe": "****",
+        "Strref": "0",
+        "fDeathblow": "0.2",
+        "color": "0xFFFFFF",
+        "tempxp": "3",
+        "IsSpecial": "0",
+        "IsBoss": "0",
+        "RankRating": "0.5"
+      }
+    ]
+}

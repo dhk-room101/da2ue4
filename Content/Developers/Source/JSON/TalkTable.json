@@ -1,0 +1,31 @@
+{"TalkTable": [
+      {
+        "tlkID": "376669",
+        "tlkString": "Debug: Impact (Attack)"
+      },
+      {
+        "tlkID": "397775",
+        "tlkString": "+"
+      },
+      {
+        "tlkID": "396007",
+        "tlkString": "area load hint 1"
+      },
+      {
+        "tlkID": "396008",
+        "tlkString": "area load hint 2"
+      },
+      {
+        "tlkID": "396009",
+        "tlkString": "area load hint 3"
+      },
+      {
+        "tlkID": "396010",
+        "tlkString": "area load hint 4"
+      },
+      {
+        "tlkID": "396011",
+        "tlkString": "area load hint 5"
+      }
+    ]
+}

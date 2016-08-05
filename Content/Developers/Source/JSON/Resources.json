@@ -1,0 +1,253 @@
+{"Resources": [
+      {
+        "ID": "1",
+        "Name": "area_core",
+        "Type": "nss"
+      },
+      {
+        "ID": "12869",
+        "Name": "genip_invis_small",
+        "Type": "utp"
+      },
+      {
+        "ID": "2",
+        "Name": "creature_core",
+        "Type": "nss"
+      },
+      {
+        "ID": "15",
+        "Name": "gen00pt_random",
+        "Type": "nss"
+      },
+      {
+        "ID": "16",
+        "Name": "gen00pt_skill",
+        "Type": "nss"
+      },
+      {
+        "ID": "25",
+        "Name": "gen00pt_random",
+        "Type": "plo"
+      },
+      {
+        "ID": "26",
+        "Name": "gen00pt_skill",
+        "Type": "plo"
+      },
+      {
+        "ID": "37",
+        "Name": "player_core",
+        "Type": "nss"
+      },
+      {
+        "ID": "5138",
+        "Name": "gen_im_cth_com_b00",
+        "Type": "uti"
+      },
+      {
+        "ID": "5139",
+        "Name": "gen_im_cth_com_a00",
+        "Type": "uti"
+      },
+      {
+        "ID": "5140",
+        "Name": "gen_im_cth_com_e00",
+        "Type": "uti"
+      },
+      {
+        "ID": "5146",
+        "Name": "gen_im_cth_com_f00",
+        "Type": "uti"
+      },
+      {
+        "ID": "5147",
+        "Name": "gen_im_cth_com_g00",
+        "Type": "uti"
+      },
+      {
+        "ID": "18197",
+        "Name": "gen_im_wep_mel_lsw_lsw",
+        "Type": "uti"
+      },
+      {
+        "ID": "21645",
+        "Name": "demo000cr_player",
+        "Type": "utc"
+      },
+      {
+        "ID": "21646",
+        "Name": "demo100ar_wilderness",
+        "Type": "are"
+      },
+      {
+        "ID": "21647",
+        "Name": "demo200ar_tavern",
+        "Type": "are"
+      },
+      {
+        "ID": "21648",
+        "Name": "demo100cr_barkeep",
+        "Type": "utc"
+      },
+      {
+        "ID": "21649",
+        "Name": "demo100cr_barkeep",
+        "Type": "dlg"
+      },
+      {
+        "ID": "21650",
+        "Name": "demo100cr_statue",
+        "Type": "stg"
+      },
+      {
+        "ID": "21651",
+        "Name": "demo000pl_main",
+        "Type": "plo"
+      },
+      {
+        "ID": "21652",
+        "Name": "demo200cr_bandit",
+        "Type": "chr"
+      },
+      {
+        "ID": "21653",
+        "Name": "demo200cr_bandit",
+        "Type": "utc"
+      },
+      {
+        "ID": "21654",
+        "Name": "demo200cr_bar",
+        "Type": "stg"
+      },
+      {
+        "ID": "21655",
+        "Name": "demo100cr_barkeep",
+        "Type": "chr"
+      },
+      {
+        "ID": "21656",
+        "Name": "demo200cr_bandit",
+        "Type": "dlg"
+      },
+      {
+        "ID": "21657",
+        "Name": "demo200cr_patron1",
+        "Type": "utc"
+      },
+      {
+        "ID": "21658",
+        "Name": "demo200cr_patron2",
+        "Type": "utc"
+      },
+      {
+        "ID": "21659",
+        "Name": "demo_module",
+        "Type": "nss"
+      },
+      {
+        "ID": "21660",
+        "Name": "demo200tr_attack",
+        "Type": "utt"
+      },
+      {
+        "ID": "21661",
+        "Name": "demo200tr_attack",
+        "Type": "nss"
+      },
+      {
+        "ID": "21662",
+        "Name": "demo200pl_security_lever",
+        "Type": "utp"
+      },
+      {
+        "ID": "21663",
+        "Name": "demo200ar_stairs",
+        "Type": "stg"
+      },
+      {
+        "ID": "21664",
+        "Name": "demo100im_innkeeper_key",
+        "Type": "uti"
+      },
+      {
+        "ID": "21665",
+        "Name": "demo000pl_main",
+        "Type": "nss"
+      },
+      {
+        "ID": "21666",
+        "Name": "demo200pl_security_lever",
+        "Type": "nss"
+      },
+      {
+        "ID": "21667",
+        "Name": "demo200pl_barrier_barrel",
+        "Type": "utp"
+      },
+      {
+        "ID": "21668",
+        "Name": "demo200pl_innkeepers_chest",
+        "Type": "utp"
+      },
+      {
+        "ID": "21669",
+        "Name": "demo200im_innkeepers_sword",
+        "Type": "uti"
+      },
+      {
+        "ID": "21670",
+        "Name": "demo200cr_patrons",
+        "Type": "dlg"
+      },
+      {
+        "ID": "21671",
+        "Name": "demo200ar_confrontation",
+        "Type": "dlg"
+      },
+      {
+        "ID": "21672",
+        "Name": "demo100ct_intro",
+        "Type": "cut"
+      },
+      {
+        "ID": "21673",
+        "Name": "demo100ar_wilderness",
+        "Type": "nss"
+      },
+      {
+        "ID": "21674",
+        "Name": "demo000pl_worldmap_at",
+        "Type": "utp"
+      },
+      {
+        "ID": "21675",
+        "Name": "demo000mp_world",
+        "Type": "map"
+      },
+      {
+        "ID": "21676",
+        "Name": "demo300ar_road",
+        "Type": "are"
+      },
+      {
+        "ID": "21677",
+        "Name": "demo_consts_h",
+        "Type": "nss"
+      },
+      {
+        "ID": "3288",
+        "Name": "genip_at_normal",
+        "Type": "utp"
+      },
+      {
+        "ID": "4",
+        "Name": "placeable_core",
+        "Type": "nss"
+      },
+      {
+        "ID": "6543",
+        "Name": "genip_door_fer_sml",
+        "Type": "utp"
+      }
+    ]
+}

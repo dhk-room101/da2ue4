@@ -1,0 +1,534 @@
+{"AIAbilitiesCond": [
+      {
+        "ID": "0",
+        "Label": "INVALID",
+        "Follower_TrigOutComb": "0",
+        "TrigOutComb": "0",
+        "MagicalBuff": "0",
+        "MagicalDebuf": "0",
+        "HostileAOE": "0"
+      },
+      {
+        "ID": "700",
+        "Label": "BERSERK",
+        "Follower_TrigOutComb": "0",
+        "TrigOutComb": "0",
+        "MagicalBuff": "0",
+        "MagicalDebuf": "0",
+        "HostileAOE": "0"
+      },
+      {
+        "ID": "3071",
+        "Label": "RAPID_SHOT",
+        "Follower_TrigOutComb": "0",
+        "TrigOutComb": "0",
+        "MagicalBuff": "0",
+        "MagicalDebuf": "0",
+        "HostileAOE": "0"
+      },
+      {
+        "ID": "500",
+        "Label": "AIM",
+        "Follower_TrigOutComb": "0",
+        "TrigOutComb": "0",
+        "MagicalBuff": "0",
+        "MagicalDebuf": "0",
+        "HostileAOE": "0"
+      },
+      {
+        "ID": "10104",
+        "Label": "HEAL",
+        "Follower_TrigOutComb": "1",
+        "TrigOutComb": "1",
+        "MagicalBuff": "0",
+        "MagicalDebuf": "0",
+        "HostileAOE": "0"
+      },
+      {
+        "ID": "10200",
+        "Label": "CURE",
+        "Follower_TrigOutComb": "1",
+        "TrigOutComb": "1",
+        "MagicalBuff": "0",
+        "MagicalDebuf": "0",
+        "HostileAOE": "0"
+      },
+      {
+        "ID": "10207",
+        "Label": "Purify",
+        "Follower_TrigOutComb": "1",
+        "TrigOutComb": "1",
+        "MagicalBuff": "0",
+        "MagicalDebuf": "0",
+        "HostileAOE": "0"
+      },
+      {
+        "ID": "10700",
+        "Label": "Blood Magic",
+        "Follower_TrigOutComb": "1",
+        "TrigOutComb": "0",
+        "MagicalBuff": "1",
+        "MagicalDebuf": "0",
+        "HostileAOE": "0"
+      },
+      {
+        "ID": "10203",
+        "Label": "Heroic Defense",
+        "Follower_TrigOutComb": "1",
+        "TrigOutComb": "0",
+        "MagicalBuff": "1",
+        "MagicalDebuf": "0",
+        "HostileAOE": "0"
+      },
+      {
+        "ID": "10206",
+        "Label": "Heroic Offense",
+        "Follower_TrigOutComb": "1",
+        "TrigOutComb": "0",
+        "MagicalBuff": "1",
+        "MagicalDebuf": "0",
+        "HostileAOE": "0"
+      },
+      {
+        "ID": "10202",
+        "Label": "Heroic Aura",
+        "Follower_TrigOutComb": "1",
+        "TrigOutComb": "0",
+        "MagicalBuff": "1",
+        "MagicalDebuf": "0",
+        "HostileAOE": "0"
+      },
+      {
+        "ID": "10506",
+        "Label": "Lifeward",
+        "Follower_TrigOutComb": "1",
+        "TrigOutComb": "0",
+        "MagicalBuff": "1",
+        "MagicalDebuf": "0",
+        "HostileAOE": "0"
+      },
+      {
+        "ID": "10204",
+        "Label": "Flaming Weapons",
+        "Follower_TrigOutComb": "1",
+        "TrigOutComb": "0",
+        "MagicalBuff": "1",
+        "MagicalDebuf": "0",
+        "HostileAOE": "0"
+      },
+      {
+        "ID": "10210",
+        "Label": "Regeneration",
+        "Follower_TrigOutComb": "1",
+        "TrigOutComb": "0",
+        "MagicalBuff": "1",
+        "MagicalDebuf": "0",
+        "HostileAOE": "0"
+      },
+      {
+        "ID": "10507",
+        "Label": "Cleansing Aura",
+        "Follower_TrigOutComb": "1",
+        "TrigOutComb": "0",
+        "MagicalBuff": "1",
+        "MagicalDebuf": "0",
+        "HostileAOE": "0"
+      },
+      {
+        "ID": "17002",
+        "Label": "Death Magic",
+        "Follower_TrigOutComb": "1",
+        "TrigOutComb": "0",
+        "MagicalBuff": "1",
+        "MagicalDebuf": "0",
+        "HostileAOE": "0"
+      },
+      {
+        "ID": "11007",
+        "Label": "Frost Weapons",
+        "Follower_TrigOutComb": "1",
+        "TrigOutComb": "0",
+        "MagicalBuff": "1",
+        "MagicalDebuf": "0",
+        "HostileAOE": "0"
+      },
+      {
+        "ID": "10205",
+        "Label": "Lightning Weapons",
+        "Follower_TrigOutComb": "1",
+        "TrigOutComb": "0",
+        "MagicalBuff": "1",
+        "MagicalDebuf": "0",
+        "HostileAOE": "0"
+      },
+      {
+        "ID": "10900",
+        "Label": "Antimagic Ward",
+        "Follower_TrigOutComb": "1",
+        "TrigOutComb": "0",
+        "MagicalBuff": "1",
+        "MagicalDebuf": "0",
+        "HostileAOE": "0"
+      },
+      {
+        "ID": "17020",
+        "Label": "Aura of Might",
+        "Follower_TrigOutComb": "1",
+        "TrigOutComb": "0",
+        "MagicalBuff": "1",
+        "MagicalDebuf": "0",
+        "HostileAOE": "0"
+      },
+      {
+        "ID": "10500",
+        "Label": "Death Syphon",
+        "Follower_TrigOutComb": "1",
+        "TrigOutComb": "0",
+        "MagicalBuff": "1",
+        "MagicalDebuf": "0",
+        "HostileAOE": "0"
+      },
+      {
+        "ID": "17019",
+        "Label": "Force Field",
+        "Follower_TrigOutComb": "1",
+        "TrigOutComb": "0",
+        "MagicalBuff": "1",
+        "MagicalDebuf": "0",
+        "HostileAOE": "0"
+      },
+      {
+        "ID": "10208",
+        "Label": "Haste",
+        "Follower_TrigOutComb": "1",
+        "TrigOutComb": "0",
+        "MagicalBuff": "1",
+        "MagicalDebuf": "0",
+        "HostileAOE": "0"
+      },
+      {
+        "ID": "17022",
+        "Label": "Shimmering Shield",
+        "Follower_TrigOutComb": "1",
+        "TrigOutComb": "0",
+        "MagicalBuff": "1",
+        "MagicalDebuf": "0",
+        "HostileAOE": "0"
+      },
+      {
+        "ID": "11005",
+        "Label": "Spellbloom",
+        "Follower_TrigOutComb": "1",
+        "TrigOutComb": "0",
+        "MagicalBuff": "1",
+        "MagicalDebuf": "0",
+        "HostileAOE": "0"
+      },
+      {
+        "ID": "17015",
+        "Label": "Spell Boost",
+        "Follower_TrigOutComb": "1",
+        "TrigOutComb": "0",
+        "MagicalBuff": "1",
+        "MagicalDebuf": "0",
+        "HostileAOE": "0"
+      },
+      {
+        "ID": "17001",
+        "Label": "Spell Might",
+        "Follower_TrigOutComb": "1",
+        "TrigOutComb": "0",
+        "MagicalBuff": "1",
+        "MagicalDebuf": "0",
+        "HostileAOE": "0"
+      },
+      {
+        "ID": "10400",
+        "Label": "Spell Shield",
+        "Follower_TrigOutComb": "1",
+        "TrigOutComb": "0",
+        "MagicalBuff": "1",
+        "MagicalDebuf": "0",
+        "HostileAOE": "0"
+      },
+      {
+        "ID": "11006",
+        "Label": "Spell Wisp",
+        "Follower_TrigOutComb": "1",
+        "TrigOutComb": "0",
+        "MagicalBuff": "1",
+        "MagicalDebuf": "0",
+        "HostileAOE": "0"
+      },
+      {
+        "ID": "11002",
+        "Label": "Stone Weapons",
+        "Follower_TrigOutComb": "1",
+        "TrigOutComb": "0",
+        "MagicalBuff": "1",
+        "MagicalDebuf": "0",
+        "HostileAOE": "0"
+      },
+      {
+        "ID": "100075",
+        "Label": "Stealth",
+        "Follower_TrigOutComb": "1",
+        "TrigOutComb": "1",
+        "MagicalBuff": "0",
+        "MagicalDebuf": "0",
+        "HostileAOE": "0"
+      },
+      {
+        "ID": "17010",
+        "Label": "Bear Shape",
+        "Follower_TrigOutComb": "1",
+        "TrigOutComb": "0",
+        "MagicalBuff": "1",
+        "MagicalDebuf": "0",
+        "HostileAOE": "0"
+      },
+      {
+        "ID": "17008",
+        "Label": "Spider Shape",
+        "Follower_TrigOutComb": "1",
+        "TrigOutComb": "0",
+        "MagicalBuff": "1",
+        "MagicalDebuf": "0",
+        "HostileAOE": "0"
+      },
+      {
+        "ID": "17007",
+        "Label": "Flying Swarm",
+        "Follower_TrigOutComb": "1",
+        "TrigOutComb": "0",
+        "MagicalBuff": "1",
+        "MagicalDebuf": "0",
+        "HostileAOE": "0"
+      },
+      {
+        "ID": "17023",
+        "Label": "Combat Magic",
+        "Follower_TrigOutComb": "1",
+        "TrigOutComb": "0",
+        "MagicalBuff": "1",
+        "MagicalDebuf": "0",
+        "HostileAOE": "0"
+      },
+      {
+        "ID": "11124",
+        "Label": "Petrify",
+        "Follower_TrigOutComb": "1",
+        "TrigOutComb": "1",
+        "MagicalBuff": "0",
+        "MagicalDebuf": "1",
+        "HostileAOE": "0"
+      },
+      {
+        "ID": "11115",
+        "Label": "Daze",
+        "Follower_TrigOutComb": "1",
+        "TrigOutComb": "1",
+        "MagicalBuff": "0",
+        "MagicalDebuf": "1",
+        "HostileAOE": "0"
+      },
+      {
+        "ID": "11106",
+        "Label": "Weakness",
+        "Follower_TrigOutComb": "1",
+        "TrigOutComb": "1",
+        "MagicalBuff": "0",
+        "MagicalDebuf": "1",
+        "HostileAOE": "0"
+      },
+      {
+        "ID": "11112",
+        "Label": "Vulnerability Hex",
+        "Follower_TrigOutComb": "1",
+        "TrigOutComb": "1",
+        "MagicalBuff": "0",
+        "MagicalDebuf": "1",
+        "HostileAOE": "0"
+      },
+      {
+        "ID": "11108",
+        "Label": "Horror",
+        "Follower_TrigOutComb": "1",
+        "TrigOutComb": "1",
+        "MagicalBuff": "0",
+        "MagicalDebuf": "1",
+        "HostileAOE": "0"
+      },
+      {
+        "ID": "11107",
+        "Label": "Paralyze",
+        "Follower_TrigOutComb": "1",
+        "TrigOutComb": "1",
+        "MagicalBuff": "0",
+        "MagicalDebuf": "1",
+        "HostileAOE": "0"
+      },
+      {
+        "ID": "11111",
+        "Label": "Affliction Hex",
+        "Follower_TrigOutComb": "1",
+        "TrigOutComb": "1",
+        "MagicalBuff": "0",
+        "MagicalDebuf": "1",
+        "HostileAOE": "0"
+      },
+      {
+        "ID": "11121",
+        "Label": "Sleep",
+        "Follower_TrigOutComb": "1",
+        "TrigOutComb": "1",
+        "MagicalBuff": "0",
+        "MagicalDebuf": "1",
+        "HostileAOE": "0"
+      },
+      {
+        "ID": "11114",
+        "Label": "Misdirection Hex",
+        "Follower_TrigOutComb": "1",
+        "TrigOutComb": "1",
+        "MagicalBuff": "0",
+        "MagicalDebuf": "1",
+        "HostileAOE": "0"
+      },
+      {
+        "ID": "11101",
+        "Label": "Curse of Mortality",
+        "Follower_TrigOutComb": "1",
+        "TrigOutComb": "1",
+        "MagicalBuff": "0",
+        "MagicalDebuf": "1",
+        "HostileAOE": "0"
+      },
+      {
+        "ID": "11109",
+        "Label": "Waking Nightmare",
+        "Follower_TrigOutComb": "1",
+        "TrigOutComb": "1",
+        "MagicalBuff": "0",
+        "MagicalDebuf": "1",
+        "HostileAOE": "0"
+      },
+      {
+        "ID": "11110",
+        "Label": "Mass Paralysis",
+        "Follower_TrigOutComb": "1",
+        "TrigOutComb": "1",
+        "MagicalBuff": "0",
+        "MagicalDebuf": "1",
+        "HostileAOE": "0"
+      },
+      {
+        "ID": "11100",
+        "Label": "Death Hex",
+        "Follower_TrigOutComb": "1",
+        "TrigOutComb": "1",
+        "MagicalBuff": "0",
+        "MagicalDebuf": "1",
+        "HostileAOE": "0"
+      },
+      {
+        "ID": "12005",
+        "Label": "Walking Bomb",
+        "Follower_TrigOutComb": "1",
+        "TrigOutComb": "1",
+        "MagicalBuff": "0",
+        "MagicalDebuf": "1",
+        "HostileAOE": "0"
+      },
+      {
+        "ID": "12011",
+        "Label": "Virulent Walking Bomb",
+        "Follower_TrigOutComb": "1",
+        "TrigOutComb": "1",
+        "MagicalBuff": "0",
+        "MagicalDebuf": "1",
+        "HostileAOE": "0"
+      },
+      {
+        "ID": "11123",
+        "Label": "Crushing Prison",
+        "Follower_TrigOutComb": "1",
+        "TrigOutComb": "1",
+        "MagicalBuff": "0",
+        "MagicalDebuf": "1",
+        "HostileAOE": "0"
+      },
+      {
+        "ID": "10703",
+        "Label": "Blood Control",
+        "Follower_TrigOutComb": "1",
+        "TrigOutComb": "1",
+        "MagicalBuff": "0",
+        "MagicalDebuf": "1",
+        "HostileAOE": "0"
+      },
+      {
+        "ID": "709",
+        "Label": "Dueling",
+        "Follower_TrigOutComb": "1",
+        "TrigOutComb": "0",
+        "MagicalBuff": "0",
+        "MagicalDebuf": "0",
+        "HostileAOE": "0"
+      },
+      {
+        "ID": "10002",
+        "Label": "Inferno",
+        "Follower_TrigOutComb": "0",
+        "TrigOutComb": "0",
+        "MagicalBuff": "0",
+        "MagicalDebuf": "0",
+        "HostileAOE": "1"
+      },
+      {
+        "ID": "11116",
+        "Label": "Earthquake",
+        "Follower_TrigOutComb": "0",
+        "TrigOutComb": "0",
+        "MagicalBuff": "0",
+        "MagicalDebuf": "0",
+        "HostileAOE": "1"
+      },
+      {
+        "ID": "14002",
+        "Label": "Tempest",
+        "Follower_TrigOutComb": "0",
+        "TrigOutComb": "0",
+        "MagicalBuff": "0",
+        "MagicalDebuf": "0",
+        "HostileAOE": "1"
+      },
+      {
+        "ID": "13000",
+        "Label": "Blizzard",
+        "Follower_TrigOutComb": "0",
+        "TrigOutComb": "0",
+        "MagicalBuff": "0",
+        "MagicalDebuf": "0",
+        "HostileAOE": "1"
+      },
+      {
+        "ID": "15003",
+        "Label": "Death Cloud",
+        "Follower_TrigOutComb": "0",
+        "TrigOutComb": "0",
+        "MagicalBuff": "0",
+        "MagicalDebuf": "0",
+        "HostileAOE": "1"
+      },
+      {
+        "ID": "14004",
+        "Label": "Storm of the Century",
+        "Follower_TrigOutComb": "0",
+        "TrigOutComb": "0",
+        "MagicalBuff": "0",
+        "MagicalDebuf": "0",
+        "HostileAOE": "1"
+      }
+    ]
+}

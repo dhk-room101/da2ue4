@@ -1,0 +1,18 @@
+{"GameSettings": [
+      {
+        "ID": "0",
+        "Label": "Invalid",
+        "Value": "****"
+      },
+      {
+        "ID": "1",
+        "Label": "GameDifficulty",
+        "Value": "1"
+      },
+      {
+        "ID": "2",
+        "Label": "GraphicsDetailLevel",
+        "Value": "1"
+      }
+    ]
+}

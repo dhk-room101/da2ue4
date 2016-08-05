@@ -1,0 +1,83 @@
+{"DamageTypes": [
+      {
+        "ID": "0",
+        "Label": "DAMAGE_TYPE_INVALID",
+        "Immunity": "****",
+        "Color": "****",
+        "Resistance": "****",
+        "Comment": "****"
+      },
+      {
+        "ID": "1",
+        "Label": "DAMAGE_TYPE_PHYSICAL",
+        "Immunity": "****",
+        "Color": "****",
+        "Resistance": "****",
+        "Comment": "****"
+      },
+      {
+        "ID": "2",
+        "Label": "DAMAGE_TYPE_FIRE",
+        "Immunity": "150010",
+        "Color": "0xff6600",
+        "Resistance": "42",
+        "Comment": "****"
+      },
+      {
+        "ID": "3",
+        "Label": "DAMAGE_TYPE_COLD",
+        "Immunity": "150011",
+        "Color": "0x24c4ff",
+        "Resistance": "43",
+        "Comment": "****"
+      },
+      {
+        "ID": "4",
+        "Label": "DAMAGE_TYPE_ELECTRICITY",
+        "Immunity": "150016",
+        "Color": "0xffd427",
+        "Resistance": "44",
+        "Comment": "****"
+      },
+      {
+        "ID": "5",
+        "Label": "DAMAGE_TYPE_NATURE",
+        "Immunity": "150014",
+        "Color": "0x6db200",
+        "Resistance": "45",
+        "Comment": "****"
+      },
+      {
+        "ID": "6",
+        "Label": "DAMAGE_TYPE_PLOT",
+        "Immunity": "****",
+        "Color": "****",
+        "Resistance": "****",
+        "Comment": "****"
+      },
+      {
+        "ID": "7",
+        "Label": "DAMAGE_TYPE_TEMP",
+        "Immunity": "****",
+        "Color": "****",
+        "Resistance": "****",
+        "Comment": "****"
+      },
+      {
+        "ID": "8",
+        "Label": "DAMAGE_TYPE_SPIRIT",
+        "Immunity": "150015",
+        "Color": "0xba00ff",
+        "Resistance": "46",
+        "Comment": "****"
+      },
+      {
+        "ID": "9",
+        "Label": "DAMAGE_TYPE_DOT",
+        "Immunity": "****",
+        "Color": "****",
+        "Resistance": "****",
+        "Comment": "****"
+      }
+    ]
+}

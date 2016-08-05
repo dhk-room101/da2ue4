@@ -1,0 +1,193 @@
+{"Ranges": [
+      {
+        "ID": "0",
+        "Label": "SpellRngPers",
+        "PrimaryRange": "0",
+        "SecondaryRange": "****",
+        "Name": "****",
+        "RangeType": "2",
+        "StrId": "380382",
+        "StringText": "Personal"
+      },
+      {
+        "ID": "1",
+        "Label": "SpellRngTouch",
+        "PrimaryRange": "2.25",
+        "SecondaryRange": "****",
+        "Name": "****",
+        "RangeType": "2",
+        "StrId": "380383",
+        "StringText": "Touch"
+      },
+      {
+        "ID": "2",
+        "Label": "SpellRngShrt",
+        "PrimaryRange": "8",
+        "SecondaryRange": "****",
+        "Name": "****",
+        "RangeType": "2",
+        "StrId": "380384",
+        "StringText": "Short"
+      },
+      {
+        "ID": "3",
+        "Label": "SpellRngMed",
+        "PrimaryRange": "25",
+        "SecondaryRange": "****",
+        "Name": "****",
+        "RangeType": "2",
+        "StrId": "380385",
+        "StringText": "Medium"
+      },
+      {
+        "ID": "4",
+        "Label": "SpellRngLng",
+        "PrimaryRange": "35",
+        "SecondaryRange": "****",
+        "Name": "****",
+        "RangeType": "2",
+        "StrId": "380386",
+        "StringText": "Long"
+      },
+      {
+        "ID": "5",
+        "Label": "WeaponRngShrt",
+        "PrimaryRange": "10",
+        "SecondaryRange": "****",
+        "Name": "****",
+        "RangeType": "3",
+        "StrId": "****",
+        "StringText": "****"
+      },
+      {
+        "ID": "6",
+        "Label": "WeaponRngMed",
+        "PrimaryRange": "30",
+        "SecondaryRange": "****",
+        "Name": "****",
+        "RangeType": "3",
+        "StrId": "****",
+        "StringText": "****"
+      },
+      {
+        "ID": "7",
+        "Label": "WeaponRngLng",
+        "PrimaryRange": "35",
+        "SecondaryRange": "****",
+        "Name": "****",
+        "RangeType": "3",
+        "StrId": "****",
+        "StringText": "****"
+      },
+      {
+        "ID": "8",
+        "Label": "PercepRngShrt",
+        "PrimaryRange": "10",
+        "SecondaryRange": "10",
+        "Name": "6668",
+        "RangeType": "1",
+        "StrId": "****",
+        "StringText": "****"
+      },
+      {
+        "ID": "9",
+        "Label": "PercepRngMed",
+        "PrimaryRange": "30",
+        "SecondaryRange": "20",
+        "Name": "6669",
+        "RangeType": "1",
+        "StrId": "****",
+        "StringText": "****"
+      },
+      {
+        "ID": "10",
+        "Label": "PercepRngLng",
+        "PrimaryRange": "40",
+        "SecondaryRange": "30",
+        "Name": "6670",
+        "RangeType": "1",
+        "StrId": "****",
+        "StringText": "****"
+      },
+      {
+        "ID": "11",
+        "Label": "PercepRngDefault",
+        "PrimaryRange": "30",
+        "SecondaryRange": "30",
+        "Name": "6671",
+        "RangeType": "1",
+        "StrId": "****",
+        "StringText": "****"
+      },
+      {
+        "ID": "12",
+        "Label": "PercepRngPlayer",
+        "PrimaryRange": "35",
+        "SecondaryRange": "30",
+        "Name": "****",
+        "RangeType": "1",
+        "StrId": "****",
+        "StringText": "****"
+      },
+      {
+        "ID": "13",
+        "Label": "PercepRngMonster",
+        "PrimaryRange": "30",
+        "SecondaryRange": "20",
+        "Name": "****",
+        "RangeType": "1",
+        "StrId": "****",
+        "StringText": "****"
+      },
+      {
+        "ID": "14",
+        "Label": "PercepRngCrowd",
+        "PrimaryRange": "5",
+        "SecondaryRange": "5",
+        "Name": "****",
+        "RangeType": "1",
+        "StrId": "****",
+        "StringText": "****"
+      },
+      {
+        "ID": "15",
+        "Label": "PercepRngLargeCreature",
+        "PrimaryRange": "40",
+        "SecondaryRange": "30",
+        "Name": "****",
+        "RangeType": "1",
+        "StrId": "****",
+        "StringText": "****"
+      },
+      {
+        "ID": "16",
+        "Label": "SurvivalMaxRng",
+        "PrimaryRange": "71",
+        "SecondaryRange": "71",
+        "Name": "****",
+        "RangeType": "4",
+        "StrId": "****",
+        "StringText": "****"
+      },
+      {
+        "ID": "17",
+        "Label": "SpellRngXLong",
+        "PrimaryRange": "60",
+        "SecondaryRange": "****",
+        "Name": "****",
+        "RangeType": "2",
+        "StrId": "380387",
+        "StringText": "Very Long"
+      },
+      {
+        "ID": "18",
+        "Label": "SpellRngParty",
+        "PrimaryRange": "0",
+        "SecondaryRange": "****",
+        "Name": "****",
+        "RangeType": "2",
+        "StrId": "380404",
+        "StringText": "Allies"
+      }
+    ]
+}
