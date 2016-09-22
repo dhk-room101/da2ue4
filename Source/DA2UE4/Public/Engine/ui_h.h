@@ -12,10 +12,6 @@ Any function interacting with the UI is wrapped here.
 // @author georg zoeller
 //------------------------------------------------------------------------------
 
-#include "m2da_constants_h.h"
-#include "log_h.h"
-#include "core_h.h"
-
 // const int32 UI_MESSAGE_OUT_OF_AMMO = 1;
 // const int32 UI_MESSAGE_DEATHBLOW = 2;
 // const int32 UI_MESSAGE_ABILITY_CONDITION_NOT_MET = 3;

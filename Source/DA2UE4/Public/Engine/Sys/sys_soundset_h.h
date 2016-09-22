@@ -50,3 +50,7 @@ int32 SSGetSoundSetFlag(AActor* oCreature, int32 nSSEntry);
 * @returns  TRUE_ or FALSE_
 **/
 void SSSetSoundSetFlag(AActor* oCreature, int32 nSSEntry, int32 bSet = TRUE_);
+
+void SSPartyResetSoundsetRestrictions();
+
+void SSResetSoundsetRestrictions(AActor* aActor);

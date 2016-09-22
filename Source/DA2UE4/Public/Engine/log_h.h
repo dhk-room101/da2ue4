@@ -111,7 +111,7 @@ FString Log_GetEventNameById(int32 nEventId);
 *
 *  @author Yaron
 **/
-void Log_Trace_Threat(AActor* OBJECT_SELF, FString sOrigin, FString sMessage = "", int32 nSeverity = LOG_SEVERITY_MESSAGE);
+void Log_Trace_Threat(AActor* aActor, FString sOrigin, FString sMessage = "", int32 nSeverity = LOG_SEVERITY_MESSAGE);
 
 /** @brief Return the name / label of a command by ID.
 *

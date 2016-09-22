@@ -1,36 +1,43 @@
 #include "DA2UE4.h"
+#include "DA2UE4GameInstance.h"
+#include "DA2UE4Party.h"
+#include "DA2UE4Creature.h"
 #include "wrappers_h.h"
 #include "log_h.h"
 #include "commands_h.h"
 #include "events_h.h"
 #include "sys_stealth_h.h"
+#include "ldf.h"
+#include "plot_h.h"
 
-int32 WR_ClearAllCommands(AActor* oActor, int32 bHardClear)
+int32 WR_ClearAllCommands(AActor* oCreature, int32 bHardClear)
 {
 #ifdef DEBUG
-	Log_Trace(LOG_CHANNEL_SYSTEMS_WRAPPERS, "wrappers_h.WR_ClearAllCommands", "", oActor);
+	Log_Trace(LOG_CHANNEL_SYSTEMS_WRAPPERS, "wrappers_h.WR_ClearAllCommands", "", oCreature);
 #endif
 
-	int32 nRet = ClearAllCommands(oActor, bHardClear);
+	int32 nRet = ClearAllCommands(oCreature, bHardClear);
 	return nRet;
 }
 
-void WR_AddCommand(AActor* oActor, FCommand cCommand, int32 bAddToFront, int32 bStatic, int32 nOverrideAddBehavior, float fTimeout)
+void WR_AddCommand(AActor* aCreature, FCommand cCommand, int32 bAddToFront, int32 bStatic, int32 nOverrideAddBehavior, float fTimeout)
 {
+	ADA2UE4Creature* oCreature = Cast<ADA2UE4Creature>(aCreature);
+
 	int32 nCommandType = GetCommandType(cCommand);
 
 	// timeout check
 	// if a timeout was selected AND this is not a follower AND we're in combat AND it's the creatures first timer command
 	// then shorten the timer so if the creature moves he'll stop faster and will then have a chance to reevaluate
 	// his threat towards the party
-	if (fTimeout > 0.0 && !IsFollower(oActor) && GetCombatState(oActor) == TRUE_ &&
-		GetLocalInt(oActor, CREATURE_HAS_TIMER_ATTACK) == 0)
+	if (fTimeout > 0.0 && !IsFollower(oCreature) && GetCombatState(oCreature) == TRUE_ &&
+		oCreature->CREATURE_HAS_TIMER_ATTACK == 0)
 	{
-		SetLocalInt(oActor, CREATURE_HAS_TIMER_ATTACK, 1); // applied only for first timer check
+		oCreature->CREATURE_HAS_TIMER_ATTACK = 1; // applied only for first timer check
 		fTimeout = 1.0; // quick timeout
 	}
 
-	if (!IsObjectValid(oActor))
+	if (!IsObjectValid(oCreature))
 	{
 #ifdef DEBUG
 		Log_Trace_Scripting_Error("WR_AddCommand()", Log_GetCommandNameById(nCommandType) + " used on invalid AActor.");
@@ -48,12 +55,12 @@ void WR_AddCommand(AActor* oActor, FCommand cCommand, int32 bAddToFront, int32 b
 	}
 
 #ifdef DEBUG
-	Log_Trace_Commands("WR_AddCommand()", cCommand, oActor);
+	Log_Trace_Commands("WR_AddCommand()", cCommand, oCreature);
 #endif
 
 
 #ifdef DEBUG
-	Log_Trace(LOG_CHANNEL_COMMANDS, "WR_AddCommand", "*** START, AActor= " + GetTag(oActor) + ". command= " + IntToString(nCommandType));
+	Log_Trace(LOG_CHANNEL_COMMANDS, "WR_AddCommand", "*** START, AActor= " + GetTag(oCreature) + ". command= " + IntToString(nCommandType));
 	if (bAddToFront)
 		Log_Trace(LOG_CHANNEL_COMMANDS, "WR_AddCommand()", "*** Adding command to front");
 	if (bStatic)
@@ -62,38 +69,38 @@ void WR_AddCommand(AActor* oActor, FCommand cCommand, int32 bAddToFront, int32 b
 		Log_Trace(LOG_CHANNEL_COMMANDS, "WR_AddCommand()", "*** Timeout: " + FloatToString(fTimeout));
 #endif
 
-	FCommand cCurrent = GetCurrentCommand(oActor);
+	FCommand cCurrent = GetCurrentCommand(oCreature);
 	int32 nCurrentType = GetCommandType(cCurrent);
 
 #ifdef DEBUG
 	if (nCurrentType == COMMAND_TYPE_INVALID)
-		Log_Trace(LOG_CHANNEL_COMMANDS, "WR_AddCommand()", "*** No command is executing currently", oActor);
+		Log_Trace(LOG_CHANNEL_COMMANDS, "WR_AddCommand()", "*** No command is executing currently", oCreature);
 	else
-		Log_Trace(LOG_CHANNEL_COMMANDS, "WR_AddCommand()", "*** Current executing command is: " + IntToString(nCurrentType), oActor);
+		Log_Trace(LOG_CHANNEL_COMMANDS, "WR_AddCommand()", "*** Current executing command is: " + IntToString(nCurrentType), oCreature);
 #endif // DEBUG
 
-	int32 nSize = GetCommandQueueSize(oActor);
+	int32 nSize = GetCommandQueueSize(oCreature);
 	if (nSize == 0)
 	{
 #ifdef DEBUG
-		Log_Trace(LOG_CHANNEL_COMMANDS, "WR_AddCommand()", "*** Command queue is currently empty", oActor);
+		Log_Trace(LOG_CHANNEL_COMMANDS, "WR_AddCommand()", "*** Command queue is currently empty", oCreature);
 #endif // DEBUG
 	}
 	else
 	{
 #ifdef DEBUG
-		Log_Trace(LOG_CHANNEL_COMMANDS, "WR_AddCommand()", "*** Command queue size is: " + IntToString(nSize), oActor);
+		Log_Trace(LOG_CHANNEL_COMMANDS, "WR_AddCommand()", "*** Command queue size is: " + IntToString(nSize), oCreature);
 #endif // DEBUG
 
 		int32 i;
-		FCommand cCurrent;
+		//FCommand cCurrent;
 		int32 nType;
 		for (i = 0; i < nSize; i++)
 		{
-			cCurrent = GetCommandByIndex(oActor, i);
+			cCurrent = GetCommandByIndex(oCreature, i);
 			nType = GetCommandType(cCurrent);
 #ifdef DEBUG
-			Log_Trace(LOG_CHANNEL_COMMANDS, "WR_AddCommand()", "*** COMMAND[" + IntToString(i) + "]= " + IntToString(nType), oActor);
+			Log_Trace(LOG_CHANNEL_COMMANDS, "WR_AddCommand()", "*** COMMAND[" + IntToString(i) + "]= " + IntToString(nType), oCreature);
 #endif // DEBUG
 		}
 	}
@@ -103,22 +110,22 @@ void WR_AddCommand(AActor* oActor, FCommand cCommand, int32 bAddToFront, int32 b
 
 	if (GetCommandType(cCommand) == COMMAND_TYPE_ATTACK)
 	{
-		Log_Trace_Combat("wrappers_h.h", "AddCommand(Attack) called from WR_AddCommand() + on " + GetTag(oActor));
+		Log_Trace_Combat("wrappers_h.h", "AddCommand(Attack) called from WR_AddCommand() + on " + GetTag(oCreature));
 	}
 #endif // DEBUG
 
-	if (fTimeout > 0.0 && !IsFollower(oActor)) // followers can't have command timeout
-		cCommand = SetCommandFloat(cCommand, fTimeout, 5);
+	if (fTimeout > 0.0 && !IsFollower(oCreature)) // followers can't have command timeout
+		cCommand = SetCommandFloat(cCommand, fTimeout);
 
-	AddCommand(oActor, cCommand, bAddToFront, bStatic, nOverrideAddBehavior);
+	AddCommand(oCreature, cCommand, bAddToFront, bStatic, nOverrideAddBehavior);
 
 #ifdef DEBUG
-	nCurrentType = GetCommandType(GetCurrentCommand(oActor));
+	nCurrentType = GetCommandType(GetCurrentCommand(oCreature));
 
 	if (nCurrentType == COMMAND_TYPE_INVALID)
-		Log_Trace(LOG_CHANNEL_COMMANDS, "WR_AddCommand()", "*** VERIFY: No command is executing currently", oActor);
+		Log_Trace(LOG_CHANNEL_COMMANDS, "WR_AddCommand()", "*** VERIFY: No command is executing currently", oCreature);
 	else
-		Log_Trace(LOG_CHANNEL_COMMANDS, "WR_AddCommand()", "*** VERIFY: executing command is: " + IntToString(nCurrentType), oActor);
+		Log_Trace(LOG_CHANNEL_COMMANDS, "WR_AddCommand()", "*** VERIFY: executing command is: " + IntToString(nCurrentType), oCreature);
 #endif // DEBUG
 
 
@@ -193,10 +200,77 @@ int32 WR_TriggerPerception(AActor* oPerceiver, AActor* oPerceivedCreature)
 
 void WR_SetGameMode(int32 nGameMode)
 {
+	FGameEvent evModeChange = Event(EVENT_TYPE_SET_GAME_MODE);
+	evModeChange = SetEventInteger(evModeChange, nGameMode);
+
+	int32 nNewGameMode = GetEventInteger(evModeChange, 0);
+	int32 nOldGameMode = GetEventInteger(evModeChange, 1);
+
+	if (nNewGameMode == nOldGameMode) 
+		return;
+
 	Log_Trace(LOG_CHANNEL_SYSTEMS_WRAPPERS, "wrappers_h.WR_SetGameMode", "nGameMode: " + IntToString(nGameMode));
 
-	FGameEvent evModeChange = Event(EVENT_TYPE_SET_GAME_MODE);
-	evModeChange = SetEventInteger(evModeChange, 0, nGameMode);
-
 	SignalEvent(GetModule(), evModeChange);
+}
+
+int32 WR_GetPlotFlag(int64 nPlotHash, int32 nFlag)
+{
+#ifdef DEBUG
+	//int32 nPlotName = GetPlotEntryName(nPlotName);
+	FString sPlotName = GetPlotResRef(nPlotHash);
+	//if ((sPlotName) == "") sPlotName = nPlotName;
+	if (sPlotName == "")
+	{
+		LogError("WR_GetPlotFlag: didn't find plot name from hash " + IntToString(nPlotHash));
+	}
+#endif // DEBUG
+	
+	int32 nCurrent = GetPartyPlotFlag(nPlotHash, nFlag);
+
+#ifdef DEBUG
+	FString sFlagName = GetPlotFlagName(nPlotHash, nFlag);
+
+	if (sFlagName == "")
+	{
+		LogError("WR_GetPlotFlag: didn't find plot flag name from hash " + IntToString(nPlotHash));
+	}
+#endif // DEBUG
+
+#ifdef DEBUG	
+	LogTrace(LOG_CHANNEL_PLOT, "GetPlot [" + sPlotName + "] ["
+		+ sFlagName + "] = [" + IntToString(nCurrent) + "]");
+	//Log_Trace_Plot("wrappers_h.WR_GetPartyPlotFlag", sPlotName, nFlag, nCurrent);
+#endif // DEBUG
+
+	return nCurrent;
+}
+
+void WR_SetPlotFlag(int64 nPlotHash, int32 nFlag, int32 nValue)
+{
+#ifdef DEBUG
+	//int32 nPlotName = GetPlotEntryName(nPlotName);
+	FString sPlotName = GetPlotResRef(nPlotHash);
+	//if ((sPlotName) == "") sPlotName = nPlotName;
+	if (sPlotName == "")
+	{
+		LogError("WR_SetPlotFlag: didn't find plot name from hash " + IntToString(nPlotHash));
+	}
+#endif // DEBUG
+
+#ifdef DEBUG
+	FString sFlagName = GetPlotFlagName(nPlotHash, nFlag);
+
+	if (sFlagName == "")
+	{
+		LogError("WR_SetPlotFlag: didn't find plot flag name from hash " + IntToString(nPlotHash));
+	}
+#endif // DEBUG
+
+#ifdef DEBUG
+	LogTrace(LOG_CHANNEL_PLOT, "SetPlot [" + sPlotName + "] ["
+		+ sFlagName + "] -> [" + IntToString(nValue) + "]");
+#endif // DEBUG
+
+	SetPlotFlag(nPlotHash, nFlag, nValue);
 }

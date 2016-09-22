@@ -1,6 +1,6 @@
 #include "DA2UE4.h"
 #include "ai_threat_h.h"
-#include "var_constants_h.h"
+//#include "var_constants_h.h"
 #include "log_h.h"
 #include "core_h.h"
 #include "wrappers_h.h"
@@ -32,12 +32,14 @@ void AI_Threat_UpdateEnemyDisappeared(AActor* oCreature, AActor* oEnemy)
 #endif
 }
 
-void AI_Threat_Display(AActor* oCreature, FString sMes)
+void AI_Threat_Display(AActor* aCreature, FString sMes)
 {
+	ADA2UE4Creature* oCreature = Cast<ADA2UE4Creature>(aCreature);
+
 	int32 i;
 	AActor* oCurrent;
 	Log_Trace(LOG_CHANNEL_THREAT_DATA, "THREAT DUMP", "START: " + sMes);
-	AActor* oTarget = GetLocalObject(oCreature, AI_THREAT_TARGET);
+	AActor* oTarget = GetAttackTarget(oCreature);
 
 	Log_Trace(LOG_CHANNEL_THREAT_DATA, "THREAT", "CURRENT TARGET: " + GetTag(oTarget));
 	int32 nSize = GetThreatTableSize(oCreature);
@@ -51,11 +53,13 @@ void AI_Threat_Display(AActor* oCreature, FString sMes)
 	Log_Trace(LOG_CHANNEL_THREAT_DATA, "THREAT", "END");
 }
 
-AActor* AI_Threat_GetThreatTarget(AActor* oCreature, int32 bUpdateThreatTarget)
+AActor* AI_Threat_GetThreatTarget(AActor* aCreature, int32 bUpdateThreatTarget)
 {
+	ADA2UE4Creature* oCreature = Cast<ADA2UE4Creature>(aCreature);
+
 	if (bUpdateThreatTarget)
 		AI_Threat_UpdateCreatureThreat(oCreature, nullptr, 0.0);
-	AActor* oTarget = GetLocalObject(oCreature, AI_THREAT_TARGET);
+	AActor* oTarget = GetAttackTarget(oCreature);
 	if (IsObjectValid(oTarget) &&
 		(IsDead(oTarget) || IsDying(oTarget) || !IsPerceiving(oCreature, oTarget)))
 	{
@@ -71,8 +75,9 @@ AActor* AI_Threat_GetThreatTarget(AActor* oCreature, int32 bUpdateThreatTarget)
 	return oTarget;
 }
 
-void AI_Threat_UpdateCreatureThreat(AActor* oCreature, AActor* oEnemy, float fThreatChange)
+void AI_Threat_UpdateCreatureThreat(AActor* aCreature, AActor* oEnemy, float fThreatChange)
 {
+	ADA2UE4Creature* oCreature = Cast<ADA2UE4Creature>(aCreature);
 #ifdef DEBUG
 	AI_Threat_Display(oCreature, "BEFORE UPDATING THREAT");
 #endif
@@ -124,7 +129,7 @@ void AI_Threat_UpdateCreatureThreat(AActor* oCreature, AActor* oEnemy, float fTh
 	AActor* oCurrentTarget = AI_Threat_GetThreatTarget(oCreature, FALSE_); // current threat target
 	int32 nNewMaxTimer;
 	int32 nCurrentTime = GetTime();
-	int32 nCurrentMaxTimer = GetLocalInt(oCreature, AI_THREAT_SWITCH_TIMER_MIN);
+	int32 nCurrentMaxTimer = oCreature->AI_THREAT_SWITCH_TIMER_MIN;
 
 #ifdef DEBUG
 	Log_Trace_Threat(oCreature, "AI_Threat_UpdateCreatureThreat", "Most Hated: " + GetTag(oMostHated) + ", Current Target: " + GetTag(oCurrentTarget));
@@ -134,7 +139,7 @@ void AI_Threat_UpdateCreatureThreat(AActor* oCreature, AActor* oEnemy, float fTh
 	if (!IsObjectValid(oCurrentTarget)) // setting target for the first time
 	{
 		AI_Threat_SetThreatTarget(oCreature, oMostHated);
-		SetLocalInt(oCreature, AI_THREAT_TARGET_SWITCH_COUNTER, GetTime());
+		oCreature->AI_THREAT_TARGET_SWITCH_COUNTER = GetTime();
 	}
 	else if (oMostHated != oCurrentTarget) // if they are different - try to update threat target to be most hated
 	{
@@ -155,7 +160,7 @@ void AI_Threat_UpdateCreatureThreat(AActor* oCreature, AActor* oEnemy, float fTh
 				Log_Trace_Threat(oCreature, "AI_Threat_UpdateCreatureThreat", "Clear to switch threat target");
 #endif
 				// init timer
-				SetLocalInt(oCreature, AI_THREAT_TARGET_SWITCH_COUNTER, nCurrentTime);
+				oCreature->AI_THREAT_TARGET_SWITCH_COUNTER = nCurrentTime;
 				// Update target to be the most hated target
 				AI_Threat_SetThreatTarget(oCreature, oMostHated);
 
@@ -166,7 +171,7 @@ void AI_Threat_UpdateCreatureThreat(AActor* oCreature, AActor* oEnemy, float fTh
 				Log_Trace_Threat(oCreature, "AI_Threat_UpdateCreatureThreat", "New threat timer value: " + IntToString(nNewMaxTimer));
 #endif
 
-				SetLocalInt(oCreature, AI_THREAT_SWITCH_TIMER_MIN, nNewMaxTimer);
+				oCreature->AI_THREAT_SWITCH_TIMER_MIN = nNewMaxTimer;
 			}
 			else
 			{
@@ -189,11 +194,12 @@ void AI_Threat_UpdateCreatureThreat(AActor* oCreature, AActor* oEnemy, float fTh
 #endif
 }
 
-float AI_Threat_GetHatedThreat(AActor* oCreature, AActor* oThreatTarget, float fThreat)
+float AI_Threat_GetHatedThreat(AActor* aCreature, AActor* oThreatTarget, float fThreat)
 {
-	int32 nHatedRace = GetLocalInt(oCreature, AI_THREAT_HATED_RACE);
-	int32 nHatedClass = GetLocalInt(oCreature, AI_THREAT_HATED_CLASS);
-	int32 nHatedGender = GetLocalInt(oCreature, AI_THREAT_HATED_GENDER);
+	ADA2UE4Creature* oCreature = Cast<ADA2UE4Creature>(aCreature);
+	int32 nHatedRace = oCreature->AI_THREAT_HATED_RACE;
+	int32 nHatedClass = oCreature->AI_THREAT_HATED_CLASS;
+	int32 nHatedGender = oCreature->AI_THREAT_HATED_GENDER;
 
 
 	if (nHatedRace == GetCreatureRacialType(oThreatTarget))
@@ -208,13 +214,14 @@ float AI_Threat_GetHatedThreat(AActor* oCreature, AActor* oThreatTarget, float f
 	return fThreat;
 }
 
-void AI_Threat_SetThreatTarget(AActor* oCreature, AActor* oTarget)
+void AI_Threat_SetThreatTarget(AActor* aCreature, AActor* oTarget)
 {
+	ADA2UE4Creature* oCreature = Cast<ADA2UE4Creature>(aCreature);
 #ifdef DEBUG
 	Log_Trace_Threat(oCreature, "AI_Threat_SetThreatTarget", "New threat target: " + GetTag(oTarget));
 	AI_Threat_Display(oCreature, "Before setting threat target");
 #endif
-	SetLocalObject(oCreature, AI_THREAT_TARGET, oTarget);
+	SetAttackTarget(oCreature, oTarget);//DHK
 #ifdef DEBUG
 	AI_Threat_Display(oCreature, "After setting threat target");
 #endif
@@ -258,13 +265,15 @@ int32 AI_Threat_KeepWoundedTarget(AActor* oTarget)
 	return FALSE_;
 }
 
-int32 AI_Threat_ClearToSwitchTarget(AActor* oCreature)
+int32 AI_Threat_ClearToSwitchTarget(AActor* aCreature)
 {
-	int32 nSwitchTime = GetLocalInt(oCreature, AI_THREAT_TARGET_SWITCH_COUNTER); // the time stamp when the target switched last time
+	ADA2UE4Creature* oCreature = Cast<ADA2UE4Creature>(aCreature);
+
+	int32 nSwitchTime = oCreature->AI_THREAT_TARGET_SWITCH_COUNTER; // the time stamp when the target switched last time
 	int32 nCurrentTime = GetTime();
 	int32 nCurrentMaxTimer;
 	if (IsUsingMeleeWeapon(oCreature))
-		nCurrentMaxTimer = GetLocalInt(oCreature, AI_THREAT_SWITCH_TIMER_MIN);
+		nCurrentMaxTimer = oCreature->AI_THREAT_SWITCH_TIMER_MIN;
 	else // using ranged attack -> can switch much faster
 		nCurrentMaxTimer = 0;
 
@@ -276,8 +285,11 @@ int32 AI_Threat_ClearToSwitchTarget(AActor* oCreature)
 	return(nCurrentTime - nSwitchTime >= nCurrentMaxTimer);
 }
 
-void AI_Threat_UpdateEnemyAppeared(AActor* oCreature, AActor* oEnemy)
+void AI_Threat_UpdateEnemyAppeared(AActor* aCreature, AActor* aEnemy)
 {
+	ADA2UE4Creature* oCreature = Cast<ADA2UE4Creature>(aCreature);
+	ADA2UE4Creature* oEnemy = Cast<ADA2UE4Creature>(aEnemy);
+
 	//int32 nMaxRand = FloatToInt(AI_THREAT_VALUE_ENEMY_PERCEIVED);
 	//int32 nRand = Random(nMaxRand) + 1; // randomized so not the first perceived is always attacked
 	//float fThreatChange = IntToFloat(nRand);
@@ -304,7 +316,7 @@ void AI_Threat_UpdateEnemyAppeared(AActor* oCreature, AActor* oEnemy)
 	}
 	float fThreatChange = AI_THREAT_VALUE_ENEMY_PERCEIVED + fThreatExtra;
 
-	float fMoreExtra = GetLocalFloat(oEnemy, AI_THREAT_GENERATE_EXTRA_THREAT);
+	float fMoreExtra = oEnemy->AI_THREAT_GENERATE_EXTRA_THREAT;
 
 	fThreatChange += fMoreExtra;
 
@@ -341,8 +353,10 @@ void AI_Threat_UpdateEnemyAppeared(AActor* oCreature, AActor* oEnemy)
 	AI_Threat_UpdateCreatureThreat(oCreature, oEnemy, fThreatChange);
 }
 
-void AI_Threat_UpdateCantAttackTarget(AActor* oCreature, AActor* oEnemy)
+void AI_Threat_UpdateCantAttackTarget(AActor* aCreature, AActor* oEnemy)
 {
+	ADA2UE4Creature* oCreature = Cast<ADA2UE4Creature>(aCreature);
+
 	if (!IsObjectHostile(oCreature, oEnemy))
 		return; // doing nothing if both objects are not hostile towards each other
 #ifdef DEBUG
@@ -353,6 +367,6 @@ void AI_Threat_UpdateCantAttackTarget(AActor* oCreature, AActor* oEnemy)
 	float fThreatChange = (-1) * GetThreatValueByObjectID(oCreature, oEnemy) * AI_THREAT_CANT_ATTACK_TARGET_REDUCTION;
 
 	// clear the switch timer (can't attack current anyways)
-	SetLocalInt(oCreature, AI_THREAT_TARGET_SWITCH_COUNTER, 0);
+	oCreature->AI_THREAT_TARGET_SWITCH_COUNTER = 0;
 	AI_Threat_UpdateCreatureThreat(oCreature, oEnemy, fThreatChange);
 }

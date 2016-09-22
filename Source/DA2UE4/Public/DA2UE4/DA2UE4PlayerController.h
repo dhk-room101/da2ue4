@@ -1,51 +1,67 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
+// Copyright 1998-2016 Epic Games, Inc. All Rights Reserved.
 #pragma once
-
-#include "ldf.h"
 #include "GameFramework/PlayerController.h"
 #include "DA2UE4PlayerController.generated.h"
 
-//forward declaration
-class ADA2UE4Creature;
-class UWidget;
+class UFloatyText;
+class UImage;
 
-/**
- *
- */
 UCLASS()
-class DA2UE4_API ADA2UE4PlayerController : public APlayerController
+class ADA2UE4PlayerController : public APlayerController
 {
 	GENERATED_BODY()
-	
-	ADA2UE4PlayerController(const class FObjectInitializer& ObjectInitializer);
-
-	virtual void BeginPlay() override;
-
-	virtual void Tick(float DeltaTime) override;
-
-	ADA2UE4Creature* GetControlledPlayer() const;
 
 public:
-	
+	ADA2UE4PlayerController();
+
+	UPROPERTY()
+	FTimerHandle SoundCueTimerHandle;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
-		TSubclassOf<class UUserWidgetFloaty> wGameUI;
+		TSubclassOf<class UUserWidgetMain> wGameUI;
 
-	//UUserWidgetFloaty* GameUI;
-	TArray<UUserWidgetFloaty*> floaties;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
+		TSubclassOf<class UUserWidgetConversation> wConversationUI;
 
-	void CreateWidgetFloaty(AActor* oCreature, FString sMessage, int32 nStyle = FLOATY_MESSAGE, int32 nColor = 16777215, float fDuration = 1.f);
+	UPROPERTY(VisibleAnywhere, Category = "Audio")
+		class UAudioComponent* ConversationAudioComp;
+	
+	UPROPERTY(VisibleAnywhere, Category = "Audio")
+		TAssetPtr<USoundCue> ConversationCuePtr;
 
+	void PlaySoundCue(int32 nSoundID, FString textLine, FString owner);
+	USoundCue* GetSoundCue(FString sSoundCue);
+	void PlayNextLine();
+	void EndConversation();
+	void HandleCursorUpdate(FString sName, int32 bInit = 0 /*FALSE_*/);
+
+	UPROPERTY()
+		UUserWidgetMain* GameUI = nullptr;
+	UPROPERTY()
+		TArray<UFloatyText*> floaties;
+
+	UPROPERTY()
+		UUserWidgetConversation* ConversationUI = nullptr;
+	
+	void CreateWidgetFloaty(AActor* oCreature, FString sMessage, int32 nStyle = 0 /*FLOATY_MESSAGE*/, int32 nColor = 16777215, float fDuration = 1.f);
+
+	void SetConversationUILocation();
+
+	TMap<FString, UTexture2D*> moodTextures;
+	TMap<FString, UTexture2D*> cursorTextures;
+	
+	UPROPERTY() 
+		UImage* gameCursor = nullptr;
+	
 protected:
-	//DHK
-	void TestStates();
 
 	/** True if the controlled character should navigate to the mouse cursor. */
 	uint32 bMoveToMouseCursor : 1;
 
+	virtual void BeginPlay() override;
+
 	// Begin PlayerController interface
 	virtual void PlayerTick(float DeltaTime) override;
-
 	virtual void SetupInputComponent() override;
 	// End PlayerController interface
 
@@ -54,11 +70,31 @@ protected:
 
 	/** Navigate player to the current touch location. */
 	void MoveToTouchLocation(const ETouchIndex::Type FingerIndex, const FVector Location);
-
+	
 	/** Navigate player to the given world location. */
 	void SetNewMoveDestination(const FVector DestLocation);
 
 	/** Input handlers for SetDestination action. */
 	void OnSetDestinationPressed();
 	void OnSetDestinationReleased();
+
+	//DHK
+	void HandlePlayerEvents();
+	void HandlePlayerCommands();
+	void HandleFloatiesTick();
+	void HandleCursorTick();
+	
+	bool bConvAudioFinished = false;
+	void CheckIsNextLine();
+	bool IsAudioFinished();
+
+	UFUNCTION() //.AddDynamic
+	void OnConvAudioFinished();
+
+	void LoadConversationMoodTextures();
+	void LoadCursorTextures();
+
+	void TestStates();
 };
+
+

@@ -1,9 +1,22 @@
 #include "DA2UE4.h"
 #include "DA2UE4Library.h"
-#include "DA2UE4Module.h"
+#include "DA2UE4GameInstance.h"
+#include "DA2UE4Creature.h"
+#include "DA2UE4Item.h"
+#include "DA2UE4PlayerController.h"
+#include "UserWidgetConversation.h"
+
 #include "core_h.h"
 #include "log_h.h"
 #include "ai_constants_h.h"
+#include "effect_constants_h.h"
+#include "m2da_data_h.h"
+#include "core_difficulty_h.h"
+#include "STypes.h"
+#include "wrappers_h.h"
+
+#include "conversation_h.h"
+#include "plot_h.h"
 
 void _LogDamage(FString msg, AActor* oTarget)
 {
@@ -214,9 +227,11 @@ float RandFF(float fRange, float fStatic, int32 bDeterministic)
 	}
 }
 
-void SetCreatureFlag(AActor* oCreature, int32 nFlag, int32 bSet)
+void SetCreatureFlag(AActor* aCreature, int32 nFlag, int32 bSet)
 {
-	int32 nVal = GetLocalInt(oCreature, CREATURE_RULES_FLAG0);
+	ADA2UE4Creature* oCreature = Cast<ADA2UE4Creature>(aCreature);
+
+	int32 nVal = oCreature->CREATURE_RULES_FLAG0;
 
 	int32 nOld = nVal;
 
@@ -232,12 +247,14 @@ void SetCreatureFlag(AActor* oCreature, int32 nFlag, int32 bSet)
 	Log_Trace(LOG_CHANNEL_SYSTEMS, "core_h.SetCreatureFlag", "Flag: " + IntToHexString(nFlag) + " Was: " + IntToHexString(nOld) + " Is: " + IntToHexString(nVal), oCreature);
 #endif // DEBUG
 
-	SetLocalInt(oCreature, CREATURE_RULES_FLAG0, nVal);
+	oCreature->CREATURE_RULES_FLAG0 = nVal;
 }
 
-int32 GetCreatureFlag(AActor * oCreature, int32 nFlag)
+int32 GetCreatureFlag(AActor* aCreature, int32 nFlag)
 {
-	int32 nVal = GetLocalInt(oCreature, CREATURE_RULES_FLAG0);
+	ADA2UE4Creature* oCreature = Cast<ADA2UE4Creature>(aCreature);
+
+	int32 nVal = oCreature->CREATURE_RULES_FLAG0;
 
 	Log_Trace(LOG_CHANNEL_SYSTEMS, "core_h.GetCreatureFlag", "Flag: " + IntToHexString(nFlag) + " Value: " + IntToHexString(nVal) + " Result: " + IntToString(((nVal  & nFlag) == nFlag)), oCreature);
 
@@ -338,14 +355,16 @@ void ApplyEffectOnObject(int32 nDurationType, FEffect eEffect, AActor* oTarget, 
 #endif
 }
 
-int32 GetForcedCombatResult(AActor* oCreature)
+int32 GetForcedCombatResult(AActor* aCreature)
 {
+	ADA2UE4Creature* oCreature = Cast<ADA2UE4Creature>(aCreature);
+
 	// bitmask as follows:
 	// 0 1 = miss
 	// 1 0 = critical
 	// 1 1 = deathblow
 
-	int32 nVal = GetLocalInt(oCreature, CREATURE_RULES_FLAG0);
+	int32 nVal = oCreature->CREATURE_RULES_FLAG0;
 	int32 nMask = (CREATURE_RULES_FLAG_FORCE_COMBAT_0 | CREATURE_RULES_FLAG_FORCE_COMBAT_1);
 	int32 nResult = (nVal & nMask);
 
@@ -395,9 +414,11 @@ float GetCreatureDefense(AActor* oCreature)
 	return fRet;
 }
 
-float Combat_Damage_GetMageStaffDamage(AActor* oAttacker, AActor* oTarget, AActor* oWeapon, int32 bDeterministic)
+float Combat_Damage_GetMageStaffDamage(AActor* oAttacker, AActor* oTarget, AActor* aWeapon, int32 bDeterministic)
 {
-	int32 nProjectileIndex = GetLocalInt(oWeapon, PROJECTILE_OVERRIDE);
+	ADA2UE4Item* oWeapon = Cast<ADA2UE4Item>(aWeapon);
+
+	int32 nProjectileIndex = oWeapon->PROJECTILE_OVERRIDE;
 	float fDamageBonus = 1.0 + GetM2DAFloat(TABLE_PROJECTILES, "DamageBonus", nProjectileIndex);
 
 	float fArcaneFocus = 1.0;
@@ -719,3 +740,61 @@ int32 IsArmorHeavyOrMassive(AActor* oArmor)
 
 }
 
+void BeginConversation(AActor* oTarget, int32 rConversationFile)
+{
+	ResetLayout();
+	GetCurrentPlayerController()->SetConversationUILocation();
+	GetCurrentPlayerController()->ConversationUI->SetVisibility(ESlateVisibility::Visible);
+	GetCurrentPlayerController()->DefaultMouseCursor = EMouseCursor::Hand;
+	GetCurrentPlayerController()->ConversationUI->CONVERSATION_DEFAULT_SPEAKER = oTarget;
+	
+	//(Cast<ADA2UE4Creature>(GetCurrentPlayerController()->GetPawn()))->CursorToWorld->SetVisibility(false);
+	
+	GetModule()->CONVERSATION = rConversationFile;
+	WR_SetGameMode(static_cast<uint8>(EGameMode::GM_CONVERSATION));
+	
+	ParseConversation(rConversationFile);
+	StartConversation();
+}
+
+void SetCombatStateParty(int32 bCombatState)
+{
+	TArray<AActor*> arrParty = GetPartyList(GetHero());
+	int32 nMemberCount = arrParty.Num();
+
+	AActor* oSubject;
+	int32 i;
+	for (i = 0; i < nMemberCount; i++)
+	{
+		oSubject = arrParty[i];
+#ifdef DEBUG
+		Log_Trace(LOG_CHANNEL_COMBAT, "core_h.SetCombatStateParty", "Setting Combat State " + IntToString(bCombatState), arrParty[i]);
+#endif
+		if (GetCombatState(oSubject) != bCombatState)
+		{
+			SetCombatState(oSubject, bCombatState);
+		}
+	}
+}
+
+void Safe_Destroy_Object(AActor* aActor, int32 nDelayMs)
+{
+	int32 bDestroy = TRUE_;
+
+	if (IsPartyMember(aActor) || IsPlot(aActor) || IsImmortal(aActor))
+	{
+#ifdef DEBUG
+		LogWarning("Destroy Object Call rejected by Safe_Destroy_Object on " + GetTag(aActor) + ". This is serious, please contact georg.");
+#endif
+		bDestroy = FALSE_;
+	}
+
+#ifdef DEBUG
+	Log_Trace(LOG_CHANNEL_SYSTEMS, "core_h.SafeDestroyObject", "Destroy:" + GetTag(aActor) + " Result: " + IntToString(bDestroy));
+#endif
+
+	if (bDestroy)
+	{
+		DestroyObject(aActor, nDelayMs);
+	}
+}

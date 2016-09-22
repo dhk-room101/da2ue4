@@ -80,7 +80,7 @@ void UT_SetShoutsFlag(AActor* oActor, int32 bEnable);
 * @returns TRUE_ on success, FALSE_ on error
 * @author Yaron
 */
-void UT_Talk(AActor* oInitiator, AActor* oTarget, FString rConversation = "", int32 nPartyResurrection = TRUE_);
+void UT_Talk(AActor* oTarget, int32 nConversation, int32 nPartyResurrection = TRUE_);
 
 /** @brief Returns the nearest creature
 *

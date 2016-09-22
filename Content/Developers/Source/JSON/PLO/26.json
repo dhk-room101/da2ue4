@@ -1,0 +1,391 @@
+{
+  "Resource": {
+    "-Requested": "1",
+    "-URI": "gen00pt_skills.plo|++|moduleid=1|++|resrefid=26",
+    "-ResType": "plo",
+    "-State": "0",
+    "-Type": "3",
+    "-OwnerIsCore": "1",
+    "-IsCore": "1",
+    "-ResRefName": "gen00pt_skills",
+    "-Folder": "\\_Global\\Generic\\",
+    "-ResRefID": "26",
+    "-OwnerModuleID": "1",
+    "-ModuleID": "1",
+    "Agent": {
+      "ResRefName": "gen00pt_skills",
+      "LocalCopy": "False",
+      "NameStringID": "109",
+      "NameRequiresReTranslation": "False",
+      "GUID": "{3A38C6E9-E77B-4B9E-A9C3-41B8B6E28A85}",
+      "ScriptURI": "16",
+      "Priority": "1",
+      "EntryType": "1",
+      "AllowPausing": "False",
+      "StatusList": {
+        "Agent": [
+          {
+            "Flag": "283",
+            "Name": "GEN_HERBALISM_LOW",
+            "Final": "False",
+            "Repeatable": "False",
+            "JournalTextStringID": "38835",
+            "JournalTextRequiresReTranslation": "False",
+            "RewardID": "0",
+            "DefaultValue": "0"
+          },
+          {
+            "Flag": "284",
+            "Name": "GEN_HERBALISM_MED",
+            "Final": "False",
+            "Repeatable": "False",
+            "JournalTextStringID": "38836",
+            "JournalTextRequiresReTranslation": "False",
+            "RewardID": "0",
+            "DefaultValue": "0"
+          },
+          {
+            "Flag": "285",
+            "Name": "GEN_HERBALISM_HIGH",
+            "Final": "False",
+            "Repeatable": "False",
+            "JournalTextStringID": "38837",
+            "JournalTextRequiresReTranslation": "False",
+            "RewardID": "0",
+            "DefaultValue": "0"
+          },
+          {
+            "Flag": "286",
+            "Name": "GEN_HERBALISM_VERY_HIGH",
+            "Final": "False",
+            "Repeatable": "False",
+            "JournalTextStringID": "38838",
+            "JournalTextRequiresReTranslation": "False",
+            "RewardID": "0",
+            "DefaultValue": "0"
+          },
+          {
+            "Flag": "287",
+            "Name": "GEN_PERSUADE_LOW",
+            "Final": "False",
+            "Repeatable": "False",
+            "JournalTextStringID": "38839",
+            "JournalTextRequiresReTranslation": "False",
+            "RewardID": "0",
+            "DefaultValue": "0"
+          },
+          {
+            "Flag": "288",
+            "Name": "GEN_PERSUADE_MED",
+            "Final": "False",
+            "Repeatable": "False",
+            "JournalTextStringID": "38840",
+            "JournalTextRequiresReTranslation": "False",
+            "RewardID": "0",
+            "DefaultValue": "0"
+          },
+          {
+            "Flag": "289",
+            "Name": "GEN_PERSUADE_HIGH",
+            "Final": "False",
+            "Repeatable": "False",
+            "JournalTextStringID": "38841",
+            "JournalTextRequiresReTranslation": "False",
+            "RewardID": "0",
+            "DefaultValue": "0"
+          },
+          {
+            "Flag": "290",
+            "Name": "GEN_PERSUADE_VERY_HIGH",
+            "Final": "False",
+            "Repeatable": "False",
+            "JournalTextStringID": "38842",
+            "JournalTextRequiresReTranslation": "False",
+            "RewardID": "0",
+            "DefaultValue": "0"
+          },
+          {
+            "Flag": "291",
+            "Name": "GEN_POISON_LOW",
+            "Final": "False",
+            "Repeatable": "False",
+            "JournalTextStringID": "38843",
+            "JournalTextRequiresReTranslation": "False",
+            "RewardID": "0",
+            "DefaultValue": "0"
+          },
+          {
+            "Flag": "292",
+            "Name": "GEN_POISON_MED",
+            "Final": "False",
+            "Repeatable": "False",
+            "JournalTextStringID": "38844",
+            "JournalTextRequiresReTranslation": "False",
+            "RewardID": "0",
+            "DefaultValue": "0"
+          },
+          {
+            "Flag": "293",
+            "Name": "GEN_POISON_HIGH",
+            "Final": "False",
+            "Repeatable": "False",
+            "JournalTextStringID": "38845",
+            "JournalTextRequiresReTranslation": "False",
+            "RewardID": "0",
+            "DefaultValue": "0"
+          },
+          {
+            "Flag": "294",
+            "Name": "GEN_POISON_VERY_HIGH",
+            "Final": "False",
+            "Repeatable": "False",
+            "JournalTextStringID": "38846",
+            "JournalTextRequiresReTranslation": "False",
+            "RewardID": "0",
+            "DefaultValue": "0"
+          },
+          {
+            "Flag": "295",
+            "Name": "GEN_TRAPS_LOW",
+            "Final": "False",
+            "Repeatable": "False",
+            "JournalTextStringID": "38847",
+            "JournalTextRequiresReTranslation": "False",
+            "RewardID": "0",
+            "DefaultValue": "0"
+          },
+          {
+            "Flag": "296",
+            "Name": "GEN_TRAPS_MED",
+            "Final": "False",
+            "Repeatable": "False",
+            "JournalTextStringID": "38848",
+            "JournalTextRequiresReTranslation": "False",
+            "RewardID": "0",
+            "DefaultValue": "0"
+          },
+          {
+            "Flag": "297",
+            "Name": "GEN_TRAPS_HIGH",
+            "Final": "False",
+            "Repeatable": "False",
+            "JournalTextStringID": "38849",
+            "JournalTextRequiresReTranslation": "False",
+            "RewardID": "0",
+            "DefaultValue": "0"
+          },
+          {
+            "Flag": "298",
+            "Name": "GEN_TRAPS_VERY_HIGH",
+            "Final": "False",
+            "Repeatable": "False",
+            "JournalTextStringID": "38850",
+            "JournalTextRequiresReTranslation": "False",
+            "RewardID": "0",
+            "DefaultValue": "0"
+          },
+          {
+            "Flag": "299",
+            "Name": "GEN_STEALING_LOW",
+            "Final": "False",
+            "Repeatable": "False",
+            "JournalTextStringID": "38874",
+            "JournalTextRequiresReTranslation": "False",
+            "RewardID": "0",
+            "DefaultValue": "0"
+          },
+          {
+            "Flag": "300",
+            "Name": "GEN_STEALING_MED",
+            "Final": "False",
+            "Repeatable": "False",
+            "JournalTextStringID": "38875",
+            "JournalTextRequiresReTranslation": "False",
+            "RewardID": "0",
+            "DefaultValue": "0"
+          },
+          {
+            "Flag": "301",
+            "Name": "GEN_STEALING_HIGH",
+            "Final": "False",
+            "Repeatable": "False",
+            "JournalTextStringID": "38876",
+            "JournalTextRequiresReTranslation": "False",
+            "RewardID": "0",
+            "DefaultValue": "0"
+          },
+          {
+            "Flag": "302",
+            "Name": "GEN_STEALING_VERY_HIGH",
+            "Final": "False",
+            "Repeatable": "False",
+            "JournalTextStringID": "38877",
+            "JournalTextRequiresReTranslation": "False",
+            "RewardID": "0",
+            "DefaultValue": "0"
+          },
+          {
+            "Flag": "303",
+            "Name": "GEN_STEALTH_LOW",
+            "Final": "False",
+            "Repeatable": "False",
+            "JournalTextStringID": "38878",
+            "JournalTextRequiresReTranslation": "False",
+            "RewardID": "0",
+            "DefaultValue": "0"
+          },
+          {
+            "Flag": "304",
+            "Name": "GEN_STEALTH_MED",
+            "Final": "False",
+            "Repeatable": "False",
+            "JournalTextStringID": "38879",
+            "JournalTextRequiresReTranslation": "False",
+            "RewardID": "0",
+            "DefaultValue": "0"
+          },
+          {
+            "Flag": "305",
+            "Name": "GEN_STEALTH_HIGH",
+            "Final": "False",
+            "Repeatable": "False",
+            "JournalTextStringID": "38880",
+            "JournalTextRequiresReTranslation": "False",
+            "RewardID": "0",
+            "DefaultValue": "0"
+          },
+          {
+            "Flag": "306",
+            "Name": "GEN_STEALTH_VERY_HIGH",
+            "Final": "False",
+            "Repeatable": "False",
+            "JournalTextStringID": "38881",
+            "JournalTextRequiresReTranslation": "False",
+            "RewardID": "0",
+            "DefaultValue": "0"
+          },
+          {
+            "Flag": "307",
+            "Name": "GEN_SURVIVAL_LOW",
+            "Final": "False",
+            "Repeatable": "False",
+            "JournalTextStringID": "38882",
+            "JournalTextRequiresReTranslation": "False",
+            "RewardID": "0",
+            "DefaultValue": "0"
+          },
+          {
+            "Flag": "308",
+            "Name": "GEN_SURVIVAL_MED",
+            "Final": "False",
+            "Repeatable": "False",
+            "JournalTextStringID": "38883",
+            "JournalTextRequiresReTranslation": "False",
+            "RewardID": "0",
+            "DefaultValue": "0"
+          },
+          {
+            "Flag": "309",
+            "Name": "GEN_SURVIVAL_HIGH",
+            "Final": "False",
+            "Repeatable": "False",
+            "JournalTextStringID": "38884",
+            "JournalTextRequiresReTranslation": "False",
+            "RewardID": "0",
+            "DefaultValue": "0"
+          },
+          {
+            "Flag": "310",
+            "Name": "GEN_SURVIVAL_VERY_HIGH",
+            "Final": "False",
+            "Repeatable": "False",
+            "JournalTextStringID": "38885",
+            "JournalTextRequiresReTranslation": "False",
+            "RewardID": "0",
+            "DefaultValue": "0"
+          },
+          {
+            "Flag": "311",
+            "Name": "GEN_LOCKPICKING_LOW",
+            "Final": "False",
+            "Repeatable": "False",
+            "JournalTextStringID": "38886",
+            "JournalTextRequiresReTranslation": "False",
+            "RewardID": "0",
+            "DefaultValue": "0"
+          },
+          {
+            "Flag": "312",
+            "Name": "GEN_LOCKPICKING_MED",
+            "Final": "False",
+            "Repeatable": "False",
+            "JournalTextStringID": "38887",
+            "JournalTextRequiresReTranslation": "False",
+            "RewardID": "0",
+            "DefaultValue": "0"
+          },
+          {
+            "Flag": "313",
+            "Name": "GEN_LOCKPICKING_HIGH",
+            "Final": "False",
+            "Repeatable": "False",
+            "JournalTextStringID": "38888",
+            "JournalTextRequiresReTranslation": "False",
+            "RewardID": "0",
+            "DefaultValue": "0"
+          },
+          {
+            "Flag": "314",
+            "Name": "GEN_LOCKPICKING_VERY_HIGH",
+            "Final": "False",
+            "Repeatable": "False",
+            "JournalTextStringID": "38889",
+            "JournalTextRequiresReTranslation": "False",
+            "RewardID": "0",
+            "DefaultValue": "0"
+          },
+          {
+            "Flag": "315",
+            "Name": "GEN_INTIMIDATE_LOW",
+            "Final": "False",
+            "Repeatable": "False",
+            "JournalTextStringID": "38890",
+            "JournalTextRequiresReTranslation": "False",
+            "RewardID": "0",
+            "DefaultValue": "0"
+          },
+          {
+            "Flag": "316",
+            "Name": "GEN_INTIMIDATE_MED",
+            "Final": "False",
+            "Repeatable": "False",
+            "JournalTextStringID": "38891",
+            "JournalTextRequiresReTranslation": "False",
+            "RewardID": "0",
+            "DefaultValue": "0"
+          },
+          {
+            "Flag": "317",
+            "Name": "GEN_INTIMIDATE_HIGH",
+            "Final": "False",
+            "Repeatable": "False",
+            "JournalTextStringID": "38892",
+            "JournalTextRequiresReTranslation": "False",
+            "RewardID": "0",
+            "DefaultValue": "0"
+          },
+          {
+            "Flag": "318",
+            "Name": "GEN_INTIMIDATE_VERY_HIGH",
+            "Final": "False",
+            "Repeatable": "False",
+            "JournalTextStringID": "38893",
+            "JournalTextRequiresReTranslation": "False",
+            "RewardID": "0",
+            "DefaultValue": "0"
+          }
+        ]
+      }
+    }
+  }
+}

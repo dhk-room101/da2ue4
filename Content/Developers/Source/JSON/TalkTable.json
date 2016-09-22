@@ -1,31 +1,31 @@
 {"TalkTable": [
       {
-        "tlkID": "376669",
-        "tlkString": "Debug: Impact (Attack)"
+        "ID": "376669",
+        "String": "Debug: Impact (Attack)"
       },
       {
-        "tlkID": "397775",
-        "tlkString": "+"
+        "ID": "397775",
+        "String": "+"
       },
       {
-        "tlkID": "396007",
-        "tlkString": "area load hint 1"
+        "ID": "396007",
+        "String": "area load hint 1"
       },
       {
-        "tlkID": "396008",
-        "tlkString": "area load hint 2"
+        "ID": "396008",
+        "String": "area load hint 2"
       },
       {
-        "tlkID": "396009",
-        "tlkString": "area load hint 3"
+        "ID": "396009",
+        "String": "area load hint 3"
       },
       {
-        "tlkID": "396010",
-        "tlkString": "area load hint 4"
+        "ID": "396010",
+        "String": "area load hint 4"
       },
       {
-        "tlkID": "396011",
-        "tlkString": "area load hint 5"
+        "ID": "396011",
+        "String": "area load hint 5"
       }
     ]
 }

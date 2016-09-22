@@ -1,16 +1,23 @@
 #include "DA2UE4.h"
 #include "DA2UE4Creature.h"
+#include "DA2UE4GameInstance.h"
 #include "ai_main_h.h"
+#include "ai_constants_h.h"
+#include "ai_conditions_h.h"
+#include "ai_behaviors_h.h"
 #include "ldf.h"
+#include "m2da_data_h.h"
 #include "sys_stealth_h.h"
 #include "commands_h.h"
 #include "effect_ai_modifier_h.h"
 #include "ui_h.h"
 #include "effects_h.h"
 #include "utility_h.h"
+#include "STypes.h"
 
-void AI_DetermineCombatRound(AActor* OBJECT_SELF, AActor* oLastTarget, int32 nLastCommand, int32 nLastCommandStatus, int32 nLastSubCommand)
+ECombatResult AI_DetermineCombatRound(AActor* aActor, AActor* oLastTarget, int32 nLastCommand, int32 nLastCommandStatus, int32 nLastSubCommand)
 {
+	ADA2UE4Creature* OBJECT_SELF = Cast<ADA2UE4Creature>(aActor);
 #ifdef DEBUG
 	Log_Trace_AI(OBJECT_SELF, "AI_DetermineCombatRound", "***** START ***** , last command status: " + IntToString(nLastCommandStatus));
 #endif
@@ -23,11 +30,11 @@ void AI_DetermineCombatRound(AActor* OBJECT_SELF, AActor* oLastTarget, int32 nLa
 #ifdef DEBUG
 		Log_Trace_AI(OBJECT_SELF, "AI_DetermineCombatRound", "NON COMBATANT CREATURE - running away");
 #endif
-		return;
+		return ECombatResult::CREATURE_TYPE_NON_COMBATANT;
 	}
 
 	// make stealthed creature get out of stealth if alone and not at the start of combat
-	if (!IsFollower(OBJECT_SELF) && IsStealthy(OBJECT_SELF) && GetGameMode() == GM_COMBAT)
+	if (!IsFollower(OBJECT_SELF) && IsStealthy(OBJECT_SELF) && GetGameMode() == EGameMode::GM_COMBAT)
 	{
 		TArray<AActor*> arAllies = _AI_GetAllies(OBJECT_SELF, -1, -1);
 		int32 nSize = arAllies.Num();
@@ -66,7 +73,7 @@ void AI_DetermineCombatRound(AActor* OBJECT_SELF, AActor* oLastTarget, int32 nLa
 		}
 	}
 
-	if (GetGameMode() != GM_COMBAT && GetGameMode() != GM_EXPLORE)
+	if (GetGameMode() != EGameMode::GM_COMBAT && GetGameMode() != EGameMode::GM_EXPLORE)
 	{
 #ifdef DEBUG
 		Log_Trace_AI(OBJECT_SELF, "AI_DetermineCombatRound", "Not combat or explore game mode - WAITING");
@@ -76,7 +83,7 @@ void AI_DetermineCombatRound(AActor* OBJECT_SELF, AActor* oLastTarget, int32 nLa
 			FCommand cWait = _AI_DoNothing(OBJECT_SELF, -1, nLastCommandStatus, FALSE_, FALSE_);
 			WR_AddCommand(OBJECT_SELF, cWait);
 		}
-		return;
+		return ECombatResult::NOT_COMBAT_OR_EXPLORE_GAMEMODE;
 	}
 
 	SetObjectInteractive(OBJECT_SELF, TRUE_);
@@ -90,7 +97,7 @@ void AI_DetermineCombatRound(AActor* OBJECT_SELF, AActor* oLastTarget, int32 nLa
 #ifdef DEBUG
 		Log_Trace_AI(OBJECT_SELF, "AI_DetermineCombatRound", "Do nothing - creature running command already: " + Log_GetCommandNameById(nCurrentType), LOG_SEVERITY_WARNING);
 #endif
-		return;
+		return ECombatResult::CREATURE_COMMAND_IN_PROGRESS;
 	}
 
 	// -------------------------------------------------------------------------
@@ -107,9 +114,9 @@ void AI_DetermineCombatRound(AActor* OBJECT_SELF, AActor* oLastTarget, int32 nLa
 			LogWarning("IMPORTANT! follower has ability use by AI disabled! This should never happen without debug scripts! - please contact YARON");
 #endif // DEBUG
 		}
-		return;
+		return ECombatResult::CREATURE_RULES_FLAG_AI_OFF_ENABLED;
 	}
-	else if (!IsFollower(OBJECT_SELF) && GetLocalInt(OBJECT_SELF, AI_LIGHT_ACTIVE) == TRUE_)
+	else if (!IsFollower(OBJECT_SELF) && OBJECT_SELF->AI_LIGHT_ACTIVE == TRUE_)
 	{
 		//AActor* [] oNearestFollowers = GetNearestObjectByGroup(OBJECT_SELF, GROUP_PC, OBJECT_TYPE_CREATURE, 1, TRUE_, TRUE_);
 		//AActor* oNearestFollower = oNearestFollowers[0];
@@ -117,7 +124,7 @@ void AI_DetermineCombatRound(AActor* OBJECT_SELF, AActor* oLastTarget, int32 nLa
 
 		//if(!IsObjectValid(oNearestFollower) || fDistance > LIGHT_AI_MIN_DISTANCE * SCALE_MULTIPLIER)
 		AI_DetermineCombatRound_Light(OBJECT_SELF, oLastTarget, nLastCommand, nLastCommandStatus, nLastSubCommand);
-		return;
+		return ECombatResult::AI_LIGHT_ACTIVE;
 
 	}
 
@@ -134,7 +141,7 @@ void AI_DetermineCombatRound(AActor* OBJECT_SELF, AActor* oLastTarget, int32 nLa
 			nCheckChance = AI_FOLLOWER_AVOID_AOE_CHANCE;
 	}
 
-	if (nCheckChance > 0 && GetLocalInt(OBJECT_SELF, AI_FLAG_STATIONARY) != AI_STATIONARY_STATE_HARD)
+	if (nCheckChance > 0 && OBJECT_SELF->AI_FLAG_STATIONARY != AI_STATIONARY_STATE_HARD)
 	{
 		TArray<int32> AbilityAOEs = GetAbilitiesDueToAOEs(OBJECT_SELF);
 		int32 nArraySize = AbilityAOEs.Num();
@@ -177,7 +184,7 @@ void AI_DetermineCombatRound(AActor* OBJECT_SELF, AActor* oLastTarget, int32 nLa
 							FCommand cMove = CommandMoveAwayFromObject(OBJECT_SELF, AI_AOE_FLEE_DISTANCE * SCALE_MULTIPLIER, TRUE_);
 							WR_AddCommand(OBJECT_SELF, cMove, FALSE_, FALSE_, -1, AI_COMMAND_TIMER);
 							_AI_SetMoveTimer(OBJECT_SELF);
-							return;
+							return ECombatResult::AI_AOE_FLEE;
 						}
 						else
 							break; // exit loop
@@ -198,7 +205,7 @@ void AI_DetermineCombatRound(AActor* OBJECT_SELF, AActor* oLastTarget, int32 nLa
 		Log_Trace_AI(OBJECT_SELF, "AI_DetermineCombatRound", "FOLLOWER AI DISABLED - will run partial AI instead");
 #endif
 		AI_DetermineCombatRound_Partial(OBJECT_SELF, oLastTarget, nLastCommand, nLastCommandStatus, nLastSubCommand);
-		return;
+		return ECombatResult::AI_PARTIAL_ACTIVE;
 	}
 
 	// We assume that whoever called AI_DetermineCombatRound has validated that the creature is valid for combat
@@ -207,7 +214,7 @@ void AI_DetermineCombatRound(AActor* OBJECT_SELF, AActor* oLastTarget, int32 nLa
 #ifdef DEBUG
 		Log_Trace_AI(OBJECT_SELF, "AI_DetermineCombatRound", "I have the IGNORE flag set - doing nothing", LOG_SEVERITY_WARNING);
 #endif
-		return;
+		return ECombatResult::AI_MODIFIER_IGNORE;
 	}
 
 	if (IsFollower(OBJECT_SELF) && !IsControlled(OBJECT_SELF)) // check hidden tactics based on behavior
@@ -224,7 +231,7 @@ void AI_DetermineCombatRound(AActor* OBJECT_SELF, AActor* oLastTarget, int32 nLa
 #endif
 				FCommand cSwitch = _AI_SwitchWeaponSet(OBJECT_SELF, AI_WEAPON_SET_RANGED);
 				WR_AddCommand(OBJECT_SELF, cSwitch);
-				return;
+				return ECombatResult::AI_WEAPON_SET_RANGED;
 			}
 		}
 		else if (AI_BehaviorCheck_PreferMelee(OBJECT_SELF) && _AI_GetWeaponSetEquipped(OBJECT_SELF) != AI_WEAPON_SET_MELEE
@@ -235,7 +242,7 @@ void AI_DetermineCombatRound(AActor* OBJECT_SELF, AActor* oLastTarget, int32 nLa
 #endif
 			FCommand cSwitch = _AI_SwitchWeaponSet(OBJECT_SELF, AI_WEAPON_SET_MELEE);
 			WR_AddCommand(OBJECT_SELF, cSwitch);
-			return;
+			return ECombatResult::AI_WEAPON_SET_MELEE;
 		}
 		else if (AI_BehaviorCheck_AvoidNearbyEnemies(OBJECT_SELF))
 		{
@@ -290,7 +297,7 @@ void AI_DetermineCombatRound(AActor* OBJECT_SELF, AActor* oLastTarget, int32 nLa
 #endif
 						FCommand cMove = CommandMoveToActor(oCurrent, TRUE_, AI_MOVE_AWAY_DISTANCE_SHORT * SCALE_MULTIPLIER, TRUE_);
 						WR_AddCommand(OBJECT_SELF, cMove, FALSE_, FALSE_, -1, AI_COMMAND_TIMER);
-						return;
+						return ECombatResult::AI_MOVE_AWAY_DISTANCE_MELEE;
 					}
 				}
 			}
@@ -298,7 +305,7 @@ void AI_DetermineCombatRound(AActor* OBJECT_SELF, AActor* oLastTarget, int32 nLa
 	}
 
 	// Check if the creature should bring his team to help
-	int32 nTeamHelpStatus = GetLocalInt(OBJECT_SELF, AI_HELP_TEAM_STATUS);
+	int32 nTeamHelpStatus = OBJECT_SELF->AI_HELP_TEAM_STATUS;
 #ifdef DEBUG
 	Log_Trace_AI(OBJECT_SELF, "AI_DetermineCombatRound", "Team Help Status: " + IntToString(nTeamHelpStatus), LOG_SEVERITY_WARNING);
 #endif
@@ -307,7 +314,7 @@ void AI_DetermineCombatRound(AActor* OBJECT_SELF, AActor* oLastTarget, int32 nLa
 #ifdef DEBUG
 		Log_Trace_AI(OBJECT_SELF, "AI_DetermineCombatRound", "Calling team for help", LOG_SEVERITY_WARNING);
 #endif
-		SetLocalInt(OBJECT_SELF, AI_HELP_TEAM_STATUS, AI_HELP_TEAM_STATUS_CALLED_FOR_HELP);
+		OBJECT_SELF->AI_HELP_TEAM_STATUS = AI_HELP_TEAM_STATUS_CALLED_FOR_HELP;
 		FCommand cMove = CommandMoveToLocation(GetLocation(OBJECT_SELF));
 		int32 nTeamID = GetTeamId(OBJECT_SELF);
 		if (nTeamID > 0)
@@ -315,18 +322,18 @@ void AI_DetermineCombatRound(AActor* OBJECT_SELF, AActor* oLastTarget, int32 nLa
 			TArray<ADA2UE4Creature*> arTeam = GetTeam(nTeamID);
 			int32 nSize = arTeam.Num();
 			int32 i;
-			AActor* oCurrent;
+			ADA2UE4Creature* oCurrent;
 			//unused 			float fHelpDistance;
 			for (i = 0; i < nSize; i++)
 			{
 				oCurrent = arTeam[i];
 				// Sending only if the creature is not in combat yet and not helping yet
-				if (GetCombatState(oCurrent) == FALSE_ &&  GetLocalInt(oCurrent, AI_HELP_TEAM_STATUS) == AI_HELP_TEAM_STATUS_ACTIVE)
+				if (GetCombatState(oCurrent) == FALSE_ &&  oCurrent->AI_HELP_TEAM_STATUS == AI_HELP_TEAM_STATUS_ACTIVE)
 				{
 #ifdef DEBUG
 					Log_Trace_AI(OBJECT_SELF, "AI_DetermineCombatRound", "Bring creature to help: " + GetTag(oCurrent));
 #endif
-					SetLocalInt(oCurrent, AI_HELP_TEAM_STATUS, AI_HELP_TEAM_STATUS_HELPING);
+					oCurrent->AI_HELP_TEAM_STATUS = AI_HELP_TEAM_STATUS_HELPING;
 					WR_ClearAllCommands(oCurrent);
 					WR_AddCommand(oCurrent, cMove, FALSE_, FALSE_, -1, 0.0); // No timeout so they won't stop too soon
 				}
@@ -342,7 +349,7 @@ void AI_DetermineCombatRound(AActor* OBJECT_SELF, AActor* oLastTarget, int32 nLa
 #ifdef DEBUG
 			Log_Trace_AI(OBJECT_SELF, "AI_DetermineCombatRound", "Follower not in combat state - aborting AI", LOG_SEVERITY_WARNING);
 #endif
-			return;
+			return ECombatResult::FOLLOWER_NOT_COMBAT_STATE;
 		}
 		AI_DetermineCombatRound_Partial(OBJECT_SELF, oLastTarget, nLastCommand, nLastCommandStatus, nLastSubCommand);
 	}
@@ -350,13 +357,13 @@ void AI_DetermineCombatRound(AActor* OBJECT_SELF, AActor* oLastTarget, int32 nLa
 	else
 	{
 		//TODO AI Ballista if needed
-		/*if (GetLocalInt(OBJECT_SELF, AI_BALLISTA_SHOOTER_STATUS) > 0)
+		/*if (OBJECT_SELF->AI_BALLISTA_SHOOTER_STATUS > 0)
 		{
 		if (AI_Ballista_HandleAI() == TRUE_)
 		return;
 		}*/
 
-		if (!IsFollower(OBJECT_SELF) && GetLocalInt(OBJECT_SELF, AI_FLAG_STATIONARY) == AI_STATIONARY_STATE_VERY_SOFT)
+		if (!IsFollower(OBJECT_SELF) && OBJECT_SELF->AI_FLAG_STATIONARY == AI_STATIONARY_STATE_VERY_SOFT)
 		{
 			// clear state if there is an enemy nearby
 			TArray<AActor*> arEnemies = _AI_GetEnemies(OBJECT_SELF, -1, -1);
@@ -368,7 +375,7 @@ void AI_DetermineCombatRound(AActor* OBJECT_SELF, AActor* oLastTarget, int32 nLa
 #ifdef DEBUG
 					Log_Trace_AI(OBJECT_SELF, "AI_DetermineCombatRound", "Found nearby enemy - clearing stationary flag");
 #endif
-					SetLocalInt(OBJECT_SELF, AI_FLAG_STATIONARY, AI_STATIONARY_STATE_DISABLED);
+					OBJECT_SELF->AI_FLAG_STATIONARY = AI_STATIONARY_STATE_DISABLED;
 				}
 			}
 		}
@@ -387,11 +394,11 @@ void AI_DetermineCombatRound(AActor* OBJECT_SELF, AActor* oLastTarget, int32 nLa
 #ifdef DEBUG
 			Log_Trace_AI(OBJECT_SELF, "AI_DetermineCombatRound", "Too many tactics: " + IntToString(nTacticsNum));
 #endif
-			return;
+			return ECombatResult::TOO_MANY_TACTICS;
 		}
 		int32 i = 1;
-		int32 nLastTactic = GetLocalInt(OBJECT_SELF, AI_LAST_TACTIC);
-		int32 nTablesDisabled = GetLocalInt(GetModule(), AI_DISABLE_TABLES);
+		int32 nLastTactic = OBJECT_SELF->AI_LAST_TACTIC;
+		int32 nTablesDisabled = GetModule()->AI_DISABLE_TABLES;
 #ifdef DEBUG
 		Log_Trace_AI(OBJECT_SELF, "AI_DetermineCombatRound", "tactics num: " + IntToString(nTacticsNum));
 		Log_Trace_AI(OBJECT_SELF, "AI_DetermineCombatRound", "Last Tactic ID: " + IntToString(nLastTactic));
@@ -408,7 +415,7 @@ void AI_DetermineCombatRound(AActor* OBJECT_SELF, AActor* oLastTarget, int32 nLa
 #endif
 				FCommand cWait = _AI_DoNothing(OBJECT_SELF, nLastTactic, nLastCommandStatus, TRUE_);
 				WR_AddCommand(OBJECT_SELF, cWait);
-				return;
+				return ECombatResult::LAST_TACTIC_FAILED;
 			}
 			else
 			{
@@ -437,7 +444,7 @@ void AI_DetermineCombatRound(AActor* OBJECT_SELF, AActor* oLastTarget, int32 nLa
 				// if -1 => jump to default action
 				// if greater then 1 => jump to specific tactic
 				if (nExecuteRet == TRUE_)
-					return;
+					return ECombatResult::TACTIC_EXECUTED;
 				else if (nExecuteRet == -1)
 					break;
 				else if (nExecuteRet > 1 && nExecuteRet > i)
@@ -450,7 +457,7 @@ void AI_DetermineCombatRound(AActor* OBJECT_SELF, AActor* oLastTarget, int32 nLa
 #ifdef DEBUG
 			Log_Trace_AI(OBJECT_SELF, "AI_DetermineCombatRound", "Object inactive - exiting");
 #endif
-			return;
+			return ECombatResult::OBJECT_SELF_INACTIVE;
 		}
 
 		// Continue from this point only if in combat state
@@ -461,13 +468,19 @@ void AI_DetermineCombatRound(AActor* OBJECT_SELF, AActor* oLastTarget, int32 nLa
 #endif
 			// IMPORTANT: can't put here any wait or move commands as they will conflict with the engine follow
 			// commands, especially if the user selected the GUI option to disable party following.
-			return;
+			return ECombatResult::NOT_IN_COMBAT;
 		}
+#ifdef DEBUG
+		LogWarning("AI_DetermineCombatRound: AI_ExecuteDefaultAction");
 
-		AI_ExecuteDefaultAction(OBJECT_SELF, oLastTarget, nLastCommand, nLastCommandStatus, nLastSubCommand);
+#endif // DEBUG
+
+		return ECombatResult::DEFAULT_ACTION;
+		//AI_ExecuteDefaultAction(OBJECT_SELF, oLastTarget, nLastCommand, nLastCommandStatus, nLastSubCommand);
 
 
 	}  // END else (non-controlled follower OR enemy)
+	return ECombatResult::UNKNOWN_COMBAT_RESULT;
 }
 
 FCommand _AI_DoNothing(AActor* OBJECT_SELF, int32 nLastTacticID, int32 nLastCommandStatus, int32 nAllowTaunts, int32 bQuick, AActor* oTarget, int32 nClearThreat)
@@ -592,9 +605,10 @@ void AI_DetermineCombatRound_Light(AActor* OBJECT_SELF, AActor* oLastTarget, int
 	}
 }
 
-int32 _AI_CheckMoveTimer(AActor* OBJECT_SELF)
+int32 _AI_CheckMoveTimer(AActor* aActor)
 {
-	int32 nMoveStart = GetLocalInt(OBJECT_SELF, AI_MOVE_TIMER);
+	ADA2UE4Creature* OBJECT_SELF = Cast<ADA2UE4Creature>(aActor);
+	int32 nMoveStart = OBJECT_SELF->AI_MOVE_TIMER;
 	int32 nCurrentTime = GetTime();
 #ifdef DEBUG
 	Log_Trace_AI(OBJECT_SELF, "_AI_CheckMoveTimer", "current time: " + IntToString(nCurrentTime) + ", move start: " + IntToString(nMoveStart));
@@ -610,9 +624,10 @@ int32 _AI_CheckMoveTimer(AActor* OBJECT_SELF)
 	return TRUE_;
 }
 
-void _AI_SetMoveTimer(AActor* OBJECT_SELF)
+void _AI_SetMoveTimer(AActor* aActor)
 {
-	SetLocalInt(OBJECT_SELF, AI_MOVE_TIMER, GetTime());
+	ADA2UE4Creature* OBJECT_SELF = Cast<ADA2UE4Creature>(aActor);
+	OBJECT_SELF->AI_MOVE_TIMER = GetTime();
 	Log_Trace_AI(OBJECT_SELF, "_AI_CheckMoveTimer", "Set move timer to: " + IntToString(GetTime()));
 }
 
@@ -763,7 +778,7 @@ void AI_SetPartyAllowedToAttack(AActor* OBJECT_SELF, int32 nStatus)
 #ifdef DEBUG
 	Log_Trace_AI(OBJECT_SELF, "AI_SetPartyAllowedToAttack", "Setting party allowed-to-attack status to: " + IntToString(nStatus));
 #endif
-	SetLocalInt(GetModule(), AI_PARTY_CLEAR_TO_ATTACK, nStatus);
+	GetModule()->AI_PARTY_CLEAR_TO_ATTACK = nStatus;
 	// giving a wait command if the follower is doing nothing (to enable combat commands again)
 	TArray<AActor*> arParty = GetPartyList();
 	int32 nSize = arParty.Num();
@@ -914,7 +929,7 @@ int32 _AI_GetPackageTable(AActor* OBJECT_SELF)
 
 int32 _AI_UseGUITables(AActor* OBJECT_SELF)
 {
-	int32 nUseGUI = GetLocalInt(GetModule(), AI_USE_GUI_TABLES_FOR_FOLLOWERS);
+	int32 nUseGUI = GetModule()->AI_USE_GUI_TABLES_FOR_FOLLOWERS;
 	if (!nUseGUI)
 		return FALSE_;
 
@@ -930,8 +945,9 @@ int32 _AI_GetTacticsNum(int32 nPackageTable)
 	return GetM2DARows(nPackageTable);
 }
 
-int32 _AI_ExecuteTactic(AActor* OBJECT_SELF, int32 nPackageTable, int32 nTacticID, int32 nLastCommandStatus, int32 nUseGUITables)
+int32 _AI_ExecuteTactic(AActor* aActor, int32 nPackageTable, int32 nTacticID, int32 nLastCommandStatus, int32 nUseGUITables)
 {
+	ADA2UE4Creature* OBJECT_SELF = Cast<ADA2UE4Creature>(aActor);
 #ifdef DEBUG
 	Log_Trace_AI(OBJECT_SELF, "_AI_ExecuteTactic", "START [Package Table: " + IntToString(nPackageTable) + "], TacticID: [" + IntToString(nTacticID) + "]");
 #endif // DEBUG
@@ -1000,7 +1016,7 @@ int32 _AI_ExecuteTactic(AActor* OBJECT_SELF, int32 nPackageTable, int32 nTacticI
 	int32 nTacticCondition;
 	int32 nTacticCommand;
 	int32 nTacticSubCommand;
-	int32 nLastTacticID = GetLocalInt(OBJECT_SELF, AI_LAST_TACTIC);
+	int32 nLastTacticID = OBJECT_SELF->AI_LAST_TACTIC;
 	FString sTacticItemTag = GetTacticCommandItemTag(OBJECT_SELF, nTacticID);
 
 	if (nUseGUITables != 0)
@@ -1304,7 +1320,7 @@ int32 _AI_ExecuteTactic(AActor* OBJECT_SELF, int32 nPackageTable, int32 nTacticI
 	// Check if the command is valid on the target and execute the command
 	FCommand cTacticCommand;
 	int32 nAbilityTargetType;
-	int32 nStationary = GetLocalInt(OBJECT_SELF, AI_FLAG_STATIONARY);
+	int32 nStationary = OBJECT_SELF->AI_FLAG_STATIONARY;
 	if (IsFollower(OBJECT_SELF)) nStationary = FALSE_;
 
 	//Log_Trace_AI(OBJECT_SELF, "_AI_ExecuteTactic", "Creature stationary state: " + IntToString(nStationary));
@@ -1452,14 +1468,14 @@ int32 _AI_ExecuteTactic(AActor* OBJECT_SELF, int32 nPackageTable, int32 nTacticI
 		{
 			oTurnTo = AI_Threat_GetThreatTarget(OBJECT_SELF);
 			cTacticCommand = _AI_GetFlyCommand(OBJECT_SELF, oTurnTo);
-			SetLocalInt(OBJECT_SELF, AI_LAST_TACTIC, AI_TACTIC_ID_MOVE); // the last tactic being used
+			OBJECT_SELF->AI_LAST_TACTIC = AI_TACTIC_ID_MOVE; // the last tactic being used
 			break;
 		}
 		case AI_FLY_TURN_NEAREST_AI_WP:
 		{
 			oTurnTo = UT_GetNearestObjectByTag(OBJECT_SELF, AI_WP_MOVE);
 			cTacticCommand = _AI_GetFlyCommand(OBJECT_SELF, oTurnTo);
-			SetLocalInt(OBJECT_SELF, AI_LAST_TACTIC, AI_TACTIC_ID_MOVE); // the last tactic being used
+			OBJECT_SELF->AI_LAST_TACTIC = AI_TACTIC_ID_MOVE; // the last tactic being used
 			break;
 		}
 		case AI_FLY_TURN_NEAREST_ALLY:
@@ -1467,7 +1483,7 @@ int32 _AI_ExecuteTactic(AActor* OBJECT_SELF, int32 nPackageTable, int32 nTacticI
 			TArray<AActor*> arAllies = _AI_GetAllies(OBJECT_SELF, AI_COMMAND_MOVE, nTacticSubCommand);
 			oTurnTo = arAllies[0];
 			cTacticCommand = _AI_GetFlyCommand(OBJECT_SELF, oTurnTo);
-			SetLocalInt(OBJECT_SELF, AI_LAST_TACTIC, AI_TACTIC_ID_MOVE); // the last tactic being used
+			OBJECT_SELF->AI_LAST_TACTIC = AI_TACTIC_ID_MOVE; // the last tactic being used
 			break;
 		}
 		case AI_FLY_TURN_NEAREST_ENEMY:
@@ -1475,14 +1491,14 @@ int32 _AI_ExecuteTactic(AActor* OBJECT_SELF, int32 nPackageTable, int32 nTacticI
 			TArray<AActor*> arEnemies = _AI_GetEnemies(OBJECT_SELF, AI_COMMAND_MOVE, nTacticSubCommand);
 			oTurnTo = arEnemies[0];
 			cTacticCommand = _AI_GetFlyCommand(OBJECT_SELF, oTurnTo);
-			SetLocalInt(OBJECT_SELF, AI_LAST_TACTIC, AI_TACTIC_ID_MOVE); // the last tactic being used
+			OBJECT_SELF->AI_LAST_TACTIC = AI_TACTIC_ID_MOVE; // the last tactic being used
 			break;
 		}
 		case AI_FLY_APPROACH_MOST_HATED:
 		{
 			oTurnTo = AI_Threat_GetThreatTarget(OBJECT_SELF);
 			cTacticCommand = _AI_GetFlyCommand(OBJECT_SELF, oTurnTo, TRUE_);
-			SetLocalInt(OBJECT_SELF, AI_LAST_TACTIC, AI_TACTIC_ID_MOVE); // the last tactic being used
+			OBJECT_SELF->AI_LAST_TACTIC = AI_TACTIC_ID_MOVE; // the last tactic being used
 			break;
 		}
 		case AI_FLY_APPROACH_NEAREST_ENEMY:
@@ -1490,7 +1506,7 @@ int32 _AI_ExecuteTactic(AActor* OBJECT_SELF, int32 nPackageTable, int32 nTacticI
 			TArray<AActor*> arEnemies = _AI_GetEnemies(OBJECT_SELF, AI_COMMAND_MOVE, nTacticSubCommand);
 			oTurnTo = arEnemies[0];
 			cTacticCommand = _AI_GetFlyCommand(OBJECT_SELF, oTurnTo, TRUE_);
-			SetLocalInt(OBJECT_SELF, AI_LAST_TACTIC, AI_TACTIC_ID_MOVE); // the last tactic being used
+			OBJECT_SELF->AI_LAST_TACTIC = AI_TACTIC_ID_MOVE; // the last tactic being used
 			break;
 		}
 		case AI_FLY_APPROACH_AI_WP_NEAREST_TO_MOST_HATED:
@@ -1498,7 +1514,7 @@ int32 _AI_ExecuteTactic(AActor* OBJECT_SELF, int32 nPackageTable, int32 nTacticI
 			AActor* oEnemy = AI_Threat_GetThreatTarget(OBJECT_SELF);
 			oTurnTo = UT_GetNearestObjectByTag(oEnemy, AI_WP_MOVE);
 			cTacticCommand = _AI_GetFlyCommand(OBJECT_SELF, oTurnTo, TRUE_);
-			SetLocalInt(OBJECT_SELF, AI_LAST_TACTIC, AI_TACTIC_ID_MOVE); // the last tactic being used
+			OBJECT_SELF->AI_LAST_TACTIC = AI_TACTIC_ID_MOVE; // the last tactic being used
 			break;
 		}
 		case AI_FLY_APPROACH_AI_WP_NEAREST_TO_NEAREST_ENEMY:
@@ -1507,7 +1523,7 @@ int32 _AI_ExecuteTactic(AActor* OBJECT_SELF, int32 nPackageTable, int32 nTacticI
 			AActor* oEnemy = arEnemies[0];
 			oTurnTo = UT_GetNearestObjectByTag(oEnemy, AI_WP_MOVE);
 			cTacticCommand = _AI_GetFlyCommand(OBJECT_SELF, oTurnTo, TRUE_);
-			SetLocalInt(OBJECT_SELF, AI_LAST_TACTIC, AI_TACTIC_ID_MOVE); // the last tactic being used
+			OBJECT_SELF->AI_LAST_TACTIC = AI_TACTIC_ID_MOVE; // the last tactic being used
 			break;
 		}
 		}
@@ -1562,14 +1578,14 @@ int32 _AI_ExecuteTactic(AActor* OBJECT_SELF, int32 nPackageTable, int32 nTacticI
 		{
 			oMoveTo = AI_Threat_GetThreatTarget(OBJECT_SELF);
 			cTacticCommand = CommandMoveToActor(oMoveTo, TRUE_, 0.0, TRUE_);
-			SetLocalInt(OBJECT_SELF, AI_LAST_TACTIC, AI_TACTIC_ID_MOVE); // the last tactic being used
+			OBJECT_SELF->AI_LAST_TACTIC = AI_TACTIC_ID_MOVE; // the last tactic being used
 			break;
 		}
 		case AI_MOVE_NEAREST_AI_WP:
 		{
 			oMoveTo = UT_GetNearestObjectByTag(OBJECT_SELF, AI_WP_MOVE);
 			cTacticCommand = CommandMoveToActor(oMoveTo, TRUE_, 0.0, TRUE_);
-			SetLocalInt(OBJECT_SELF, AI_LAST_TACTIC, AI_TACTIC_ID_MOVE); // the last tactic being used
+			OBJECT_SELF->AI_LAST_TACTIC = AI_TACTIC_ID_MOVE; // the last tactic being used
 			break;
 		}
 		case AI_MOVE_NEAREST_ALLY:
@@ -1577,7 +1593,7 @@ int32 _AI_ExecuteTactic(AActor* OBJECT_SELF, int32 nPackageTable, int32 nTacticI
 			TArray<AActor*> arAllies = _AI_GetAllies(OBJECT_SELF, AI_COMMAND_MOVE, nTacticSubCommand);
 			oMoveTo = arAllies[0];
 			cTacticCommand = CommandMoveToActor(oMoveTo, TRUE_, 0.0, TRUE_);
-			SetLocalInt(OBJECT_SELF, AI_LAST_TACTIC, AI_TACTIC_ID_MOVE); // the last tactic being used
+			OBJECT_SELF->AI_LAST_TACTIC = AI_TACTIC_ID_MOVE; // the last tactic being used
 			break;
 		}
 		case AI_MOVE_NEAREST_ENEMY:
@@ -1585,7 +1601,7 @@ int32 _AI_ExecuteTactic(AActor* OBJECT_SELF, int32 nPackageTable, int32 nTacticI
 			TArray<AActor*> arEnemies = _AI_GetEnemies(OBJECT_SELF, AI_COMMAND_MOVE, nTacticSubCommand);
 			oMoveTo = arEnemies[0];
 			cTacticCommand = CommandMoveToActor(oMoveTo, TRUE_, 0.0, TRUE_);
-			SetLocalInt(OBJECT_SELF, AI_LAST_TACTIC, AI_TACTIC_ID_MOVE); // the last tactic being used
+			OBJECT_SELF->AI_LAST_TACTIC = AI_TACTIC_ID_MOVE; // the last tactic being used
 			break;
 		}
 		case AI_MOVE_RANDOM_AI_WP:
@@ -1596,7 +1612,7 @@ int32 _AI_ExecuteTactic(AActor* OBJECT_SELF, int32 nPackageTable, int32 nTacticI
 			if (!IsObjectValid(oMoveTo)) // in case there are not enough AI waypoints
 				oMoveTo = arWPs[0];
 			cTacticCommand = CommandMoveToActor(oMoveTo, TRUE_, 0.0, TRUE_);
-			SetLocalInt(OBJECT_SELF, AI_LAST_TACTIC, AI_TACTIC_ID_MOVE); // the last tactic being used
+			OBJECT_SELF->AI_LAST_TACTIC = AI_TACTIC_ID_MOVE; // the last tactic being used
 			break;
 		}
 		case AI_MOVE_AWAY_FROM_ENEMY_MEDIUM:
@@ -1612,7 +1628,7 @@ int32 _AI_ExecuteTactic(AActor* OBJECT_SELF, int32 nPackageTable, int32 nTacticI
 				return FALSE_;
 			}
 			cTacticCommand = CommandMoveAwayFromObject(oMoveTo, AI_MOVE_AWAY_DISTANCE_MEDIUM * SCALE_MULTIPLIER, TRUE_);
-			SetLocalInt(OBJECT_SELF, AI_LAST_TACTIC, AI_TACTIC_ID_MOVE); // the last tactic being used
+			OBJECT_SELF->AI_LAST_TACTIC = AI_TACTIC_ID_MOVE; // the last tactic being used
 			break;
 		}
 		case AI_MOVE_AWAY_FROM_ENEMY_SHORT:
@@ -1628,7 +1644,7 @@ int32 _AI_ExecuteTactic(AActor* OBJECT_SELF, int32 nPackageTable, int32 nTacticI
 				return FALSE_;
 			}
 			cTacticCommand = CommandMoveAwayFromObject(oMoveTo, AI_MOVE_AWAY_DISTANCE_SHORT * SCALE_MULTIPLIER, TRUE_);
-			SetLocalInt(OBJECT_SELF, AI_LAST_TACTIC, AI_TACTIC_ID_MOVE); // the last tactic being used
+			OBJECT_SELF->AI_LAST_TACTIC = AI_TACTIC_ID_MOVE; // the last tactic being used
 			break;
 		}
 		case AI_MOVE_AWAY_FROM_ENEMY_RANDOM:
@@ -1646,7 +1662,7 @@ int32 _AI_ExecuteTactic(AActor* OBJECT_SELF, int32 nPackageTable, int32 nTacticI
 				return FALSE_;
 			}
 			cTacticCommand = CommandMoveAwayFromObject(oMoveTo, fDistanceToMoveAway, TRUE_);
-			SetLocalInt(OBJECT_SELF, AI_LAST_TACTIC, AI_TACTIC_ID_MOVE); // the last tactic being used
+			OBJECT_SELF->AI_LAST_TACTIC = AI_TACTIC_ID_MOVE; // the last tactic being used
 			break;
 		}
 		case AI_MOVE_AWAY_FROM_ENEMY_COWARD:
@@ -1702,34 +1718,34 @@ int32 _AI_ExecuteTactic(AActor* OBJECT_SELF, int32 nPackageTable, int32 nTacticI
 		//TODO AI_COMMAND_USE_PLACEABLE ai_main_h.cpp
 		// Target should be valid now
 		// At this moment the user should register an action on the placeable
-		if (nStationary > 0)
+		/*if (nStationary > 0)
 		{
-			float fDistance = GetDistanceBetween(OBJECT_SELF, oTarget);
-			if (fDistance > AI_STATIONARY_RANGE * SCALE_MULTIPLIER)
-			{
-#ifdef DEBUG
-				Log_Trace_AI(OBJECT_SELF, "_AI_ExecuteTactic", "Creature stationary - placeable too far away to execute command");
-#endif
-				return FALSE_;
-			}
+		float fDistance = GetDistanceBetween(OBJECT_SELF, oTarget);
+		if (fDistance > AI_STATIONARY_RANGE * SCALE_MULTIPLIER)
+		{
+		#ifdef DEBUG
+		Log_Trace_AI(OBJECT_SELF, "_AI_ExecuteTactic", "Creature stationary - placeable too far away to execute command");
+		#endif
+		return FALSE_;
+		}
 		}
 
-		int32 nCount = GetLocalInt(oTarget, PLC_FLIP_COVER_USE_COUNT);
+		int32 nCount = oTarget->PLC_FLIP_COVER_USE_COUNT;
 		nCount++;
-		SetLocalInt(oTarget, PLC_FLIP_COVER_USE_COUNT, nCount);
+		oTarget->PLC_FLIP_COVER_USE_COUNT=nCount;
 
 		// Check that I'm not already using a flip cover
-		AActor* oPlaceable = GetLocalObject(OBJECT_SELF, AI_PLACEABLE_BEING_USED);
+		AActor* oPlaceable = OBJECT_SELF->AI_PLACEABLE_BEING_USED;
 		if (IsObjectValid(oPlaceable) && !IsDead(oPlaceable))
 		{
-#ifdef DEBUG
-			Log_Trace_AI(OBJECT_SELF, "_AI_ExecuteTactic", "I'm already using a placeable!", LOG_SEVERITY_WARNING);
-#endif
-			return FALSE_;
+		#ifdef DEBUG
+		Log_Trace_AI(OBJECT_SELF, "_AI_ExecuteTactic", "I'm already using a placeable!", LOG_SEVERITY_WARNING);
+		#endif
+		return FALSE_;
 		}
-		SetLocalObject(OBJECT_SELF, AI_PLACEABLE_BEING_USED, oTarget);
+		OBJECT_SELF->AI_PLACEABLE_BEING_USED=oTarget);
 
-		cTacticCommand = CommandUseObject(oTarget, PLACEABLE_ACTION_USE);
+		cTacticCommand = CommandUseObject(oTarget, PLACEABLE_ACTION_USE);*/
 		break;
 	}
 	case AI_COMMAND_ATTACK:
@@ -1766,7 +1782,7 @@ int32 _AI_ExecuteTactic(AActor* OBJECT_SELF, int32 nPackageTable, int32 nTacticI
 		int32 bQuick = FALSE_;
 		if (nTacticSubCommand == 1) // this is a wait with cooldown (used for rogues for example)
 		{
-			int32 nMoveStart = GetLocalInt(OBJECT_SELF, AI_WAIT_TIMER);
+			int32 nMoveStart = OBJECT_SELF->AI_WAIT_TIMER;
 			int32 nCurrentTime = GetTime();
 #ifdef DEBUG
 			Log_Trace_AI(OBJECT_SELF, "_AI_ExecuteTactic", "Wait time dif: " + IntToString(nCurrentTime - nMoveStart));
@@ -1778,7 +1794,7 @@ int32 _AI_ExecuteTactic(AActor* OBJECT_SELF, int32 nPackageTable, int32 nTacticI
 #endif
 				return FALSE_;
 			}
-			SetLocalInt(OBJECT_SELF, AI_WAIT_TIMER, nCurrentTime);
+			OBJECT_SELF->AI_WAIT_TIMER = nCurrentTime;
 			bQuick = TRUE_;
 		}
 		cTacticCommand = _AI_DoNothing(OBJECT_SELF, nLastTacticID, nLastCommandStatus, FALSE_, TRUE_);
@@ -1919,10 +1935,20 @@ int32 _AI_ExecuteTactic(AActor* OBJECT_SELF, int32 nPackageTable, int32 nTacticI
 		}
 
 		if (Ability_CheckUseConditions(OBJECT_SELF, oTarget, nTacticSubCommand) == FALSE_)
+		{
+#ifdef DEBUG
+			Log_Trace_AI(OBJECT_SELF, "_AI_ExecuteTactic", "Ability_CheckUseConditions is FALSE for " + IntToString(nTacticSubCommand), LOG_SEVERITY_CRITICAL);
+#endif
 			return FALSE_; // failed tactic
+		}
 
 		if (_AI_CanUseAbility(OBJECT_SELF, nTacticSubCommand, oTarget) == FALSE_)
+		{
+#ifdef DEBUG
+			Log_Trace_AI(OBJECT_SELF, "_AI_ExecuteTactic", "_AI_CanUseAbility is FALSE for " + IntToString(nTacticSubCommand), LOG_SEVERITY_CRITICAL);
+#endif
 			return FALSE_; // can't use specific ability
+		}
 
 		FVector vTarget;
 
@@ -1974,7 +2000,7 @@ int32 _AI_ExecuteTactic(AActor* OBJECT_SELF, int32 nPackageTable, int32 nTacticI
 	}
 
 	// Flagging last tactic used
-	SetLocalInt(OBJECT_SELF, AI_LAST_TACTIC, nTacticID);
+	OBJECT_SELF->AI_LAST_TACTIC = nTacticID;
 	float fTimer = AI_COMMAND_TIMER;
 	if (oTarget == OBJECT_SELF)
 		fTimer = 0.0;
@@ -2354,8 +2380,10 @@ FCommand _AI_GetPotionUseCommand(AActor* OBJECT_SELF, AActor* oItem)
 	return cRet;
 }
 
-int32 _AI_CanUseAbility(AActor* OBJECT_SELF, int32 nAbility, AActor* oTarget)
+int32 _AI_CanUseAbility(AActor* aActor, int32 nAbility, AActor* oTarget)
 {
+	ADA2UE4Creature* OBJECT_SELF = Cast<ADA2UE4Creature>(aActor);
+
 	int32 nRet = TRUE_;
 	float fDistance;
 
@@ -2569,7 +2597,7 @@ int32 _AI_CanUseAbility(AActor* OBJECT_SELF, int32 nAbility, AActor* oTarget)
 	}
 
 	// Stationary non-follower check
-	if (!IsFollower(OBJECT_SELF) && GetLocalInt(OBJECT_SELF, AI_FLAG_STATIONARY) > 0 && oTarget != OBJECT_SELF)
+	if (!IsFollower(OBJECT_SELF) && OBJECT_SELF->AI_FLAG_STATIONARY > 0 && oTarget != OBJECT_SELF)
 	{
 		fDistance = GetDistanceBetween(OBJECT_SELF, oTarget);
 		int32 nAbilityRangeID = GetM2DAInt(TABLE_ABILITIES_TALENTS, "range", nAbility);
@@ -2608,8 +2636,10 @@ int32 _AI_CanUseAbility(AActor* OBJECT_SELF, int32 nAbility, AActor* oTarget)
 	return nRet;
 }
 
-FCommand _AI_GetFlyCommand(AActor* OBJECT_SELF, AActor* oTurnTo, int32 bMoveTo)
+FCommand _AI_GetFlyCommand(AActor* aActor, AActor* oTurnTo, int32 bMoveTo)
 {
+	ADA2UE4Creature* OBJECT_SELF = Cast<ADA2UE4Creature>(aActor);
+
 	float fAngle = GetAngleBetweenObjects(OBJECT_SELF, oTurnTo);
 	float fMyFacing = GetFacing(OBJECT_SELF);
 	float fEnemyFacing = GetFacing(oTurnTo);
@@ -2647,15 +2677,15 @@ FCommand _AI_GetFlyCommand(AActor* OBJECT_SELF, AActor* oTurnTo, int32 bMoveTo)
 	if (bMoveTo)
 	{
 		if (fDistance > AI_FLY_MAX_DISTANCE &&
-			GetLocalInt(OBJECT_SELF, CREATURE_COUNTER_3) == 0) // CREATURE_COUNTER_3 used to enable/disable stomp. 1 is for disabled
+			OBJECT_SELF->CREATURE_COUNTER_3 == 0) // CREATURE_COUNTER_3 used to enable/disable stomp. 1 is for disabled
 		{
 			WR_ClearAllCommands(OBJECT_SELF, TRUE_);
 			WR_SetObjectActive(OBJECT_SELF, FALSE_);
 			FGameEvent eFlyDown = Event(EVENT_TYPE_SET_OBJECT_ACTIVE);
 			float fFacing = GetFacing(oTurnTo);
-			eFlyDown = SetEventFloat(eFlyDown, 0, fFacing);
-			eFlyDown = SetEventVector(eFlyDown, 0, GetLocation(oTurnTo));
-			eFlyDown = SetEventInteger(eFlyDown, 3, TRUE_); // tells it to call an AI function
+			eFlyDown = SetEventFloat(eFlyDown, fFacing);
+			eFlyDown = SetEventVector(eFlyDown, GetLocation(oTurnTo));
+			eFlyDown = SetEventInteger(eFlyDown, TRUE_); // tells it to call an AI function
 			DelayEvent(2.5f, OBJECT_SELF, eFlyDown);
 
 			// putting wait command as a flag to abort AI
@@ -2679,8 +2709,9 @@ FCommand _AI_GetFlyCommand(AActor* OBJECT_SELF, AActor* oTurnTo, int32 bMoveTo)
 	return cFly;
 }
 
-FCommand _AI_ExecuteAttack(AActor* OBJECT_SELF, AActor* oTarget, int32 nLastCommandStatus)
+FCommand _AI_ExecuteAttack(AActor* aActor, AActor* oTarget, int32 nLastCommandStatus)
 {
+	ADA2UE4Creature* OBJECT_SELF = Cast<ADA2UE4Creature>(aActor);
 	// This can include a weapon switch condition as well:
 	// If current creature equips a ranged weapon and the target is within melee range -> switch to melee
 	// If current creature equips a melee weapon and the target is not within melee range AND
@@ -2690,7 +2721,7 @@ FCommand _AI_ExecuteAttack(AActor* OBJECT_SELF, AActor* oTarget, int32 nLastComm
 
 	FCommand cTacticCommand;
 	int32 nTacticID = 0; // used to store the tactic that was executed, if it there is no tactic ID from a table
-	int32 nLastTacticID = GetLocalInt(OBJECT_SELF, AI_LAST_TACTIC); // the last tactic being used
+	int32 nLastTacticID = OBJECT_SELF->AI_LAST_TACTIC; // the last tactic being used
 #ifdef DEBUG
 	Log_Trace_AI(OBJECT_SELF, "_AI_ExecuteAttack", "*** START ***, Target: " + GetTag(oTarget) + ", Last Command Status: "
 		+ IntToString(nLastCommandStatus) + ", last tactic id: " + IntToString(nLastTacticID));
@@ -2769,12 +2800,12 @@ FCommand _AI_ExecuteAttack(AActor* OBJECT_SELF, AActor* oTarget, int32 nLastComm
 				Log_Trace_AI(OBJECT_SELF, "_AI_ExecuteAttack", "Handling attack timeout");
 #endif
 				if (!IsFollower(OBJECT_SELF) &&
-					GetLocalInt(OBJECT_SELF, CREATURE_HAS_TIMER_ATTACK) == 1) // first failure -> try to attack again
+					OBJECT_SELF->CREATURE_HAS_TIMER_ATTACK == 1) // first failure -> try to attack again
 				{
 #ifdef DEBUG
 					Log_Trace_AI(OBJECT_SELF, "_AI_ExecuteAttack", "First timer failure - try to attack again");
 #endif
-					SetLocalInt(OBJECT_SELF, CREATURE_HAS_TIMER_ATTACK, 2);
+					OBJECT_SELF->CREATURE_HAS_TIMER_ATTACK = 2;
 					cTacticCommand = CommandAttack(oTarget);
 					nTacticID = AI_TACTIC_ID_ATTACK;
 
@@ -2978,7 +3009,7 @@ FCommand _AI_ExecuteAttack(AActor* OBJECT_SELF, AActor* oTarget, int32 nLastComm
 	}
 
 	// Last check - making sure selected attack matches stationary flag
-	if (!IsFollower(OBJECT_SELF) && GetLocalInt(OBJECT_SELF, AI_FLAG_STATIONARY) > 0 && GetCommandType(cTacticCommand) == COMMAND_TYPE_ATTACK)
+	if (!IsFollower(OBJECT_SELF) && OBJECT_SELF->AI_FLAG_STATIONARY > 0 && GetCommandType(cTacticCommand) == COMMAND_TYPE_ATTACK)
 	{
 #ifdef DEBUG
 		Log_Trace_AI(OBJECT_SELF, "_AI_ExecuteAttack", "Creature stationary - checking if he can execute selected attack");
@@ -3032,7 +3063,7 @@ FCommand _AI_ExecuteAttack(AActor* OBJECT_SELF, AActor* oTarget, int32 nLastComm
 #ifdef DEBUG
 	Log_Trace_AI(OBJECT_SELF, "_AI_ExecuteAttack", "Setting last tactic ID to: " + IntToString(nTacticID));
 #endif
-	SetLocalInt(OBJECT_SELF, AI_LAST_TACTIC, nTacticID);
+	OBJECT_SELF->AI_LAST_TACTIC = nTacticID;
 	return cTacticCommand;
 }
 
@@ -3049,19 +3080,48 @@ void _AI_ApplyTimerDifficultyEffects(AActor* OBJECT_SELF, AActor* oTarget)
 	}
 }
 
-void _AI_SetFlag(AActor* OBJECT_SELF, FName sFlag, int32 nValue)
+void _AI_SetFlag(AActor* OBJECT_SELF, int32 nFlag, int32 nValue)
 {
+	ADA2UE4Creature* oCreature = Cast<ADA2UE4Creature>(OBJECT_SELF);
+
 #ifdef DEBUG
-	Log_Trace_AI(OBJECT_SELF, "_AI_SetFlag", "flag: " + sFlag.ToString() + ", value= " + IntToString(nValue));
+	Log_Trace_AI(OBJECT_SELF, "_AI_SetFlag", "flag: " + IntToString(nFlag) + ", value= " + IntToString(nValue));
 #endif
-	SetLocalInt(OBJECT_SELF, sFlag, nValue);
+	switch (nFlag)
+	{
+	case AI_FLAG_PREFERS_RANGED:
+		oCreature->AI_FLAG_PREFERS_RANGED = nValue;
+		break;
+	case AI_WAIT_TIMER:
+		oCreature->AI_WAIT_TIMER = nValue;
+		break;
+	default:
+		LogError("_AI_SetFlag: unknown flag!");
+		break;
+	}
 }
 
-int32 _AI_GetFlag(AActor* OBJECT_SELF, FName sFlag)
+int32 _AI_GetFlag(AActor* OBJECT_SELF, int32 nFlag)
 {
-	int32 nValue = GetLocalInt(OBJECT_SELF, sFlag);
+	ADA2UE4Creature* oCreature = Cast<ADA2UE4Creature>(OBJECT_SELF);
+
+	int32 nValue = 0;// = GetLocalInt(OBJECT_SELF, sFlag);
+
+	switch (nFlag)
+	{
+	case AI_FLAG_PREFERS_RANGED:
+		nValue = oCreature->AI_FLAG_PREFERS_RANGED;
+		break;
+	case AI_WAIT_TIMER:
+		nValue = oCreature->AI_WAIT_TIMER;
+		break;
+	default:
+		LogError("_AI_GetFlag: unknown flag!");
+		break;
+	}
+
 #ifdef DEBUG
-	Log_Trace_AI(OBJECT_SELF, "_AI_GetFlag", "flag: " + sFlag.ToString() + ", value= " + IntToString(nValue));
+	Log_Trace_AI(OBJECT_SELF, "_AI_GetFlag", "flag: " + IntToString(nFlag) + ", value= " + IntToString(nValue));
 #endif // DEBUG
 	return nValue;
 }
@@ -3104,7 +3164,7 @@ FCommand _AI_MoveToControlled(AActor* OBJECT_SELF, int32 nLastCommandStatus)
 
 int32 AI_GetPartyAllowedToAttack(AActor* OBJECT_SELF)
 {
-	int32 nAllowed = GetLocalInt(GetModule(), AI_PARTY_CLEAR_TO_ATTACK);
+	int32 nAllowed = GetModule()->AI_PARTY_CLEAR_TO_ATTACK;
 #ifdef DEBUG
 	Log_Trace_AI(OBJECT_SELF, "AI_GetPartyAllowedToAttack", "Party allowed-to-attack status: " + IntToString(nAllowed));
 #endif
@@ -3226,7 +3286,7 @@ void AI_ExecuteDefaultAction(AActor* OBJECT_SELF, AActor* oLastTarget, int32 nLa
 		Log_Trace_AI(OBJECT_SELF, "AI_ExecuteDefaultAction", "Follower: behavior allows picking new target - attacking nearest visible");
 #endif
 		oNewTarget = _AI_Condition_GetNearestVisibleCreature(OBJECT_SELF, AI_TARGET_TYPE_ENEMY, 1, -1, -1, -1);
-		if (!IsObjectValid(oNewTarget) && GetGameMode() == GM_COMBAT)
+		if (!IsObjectValid(oNewTarget) && GetGameMode() == EGameMode::GM_COMBAT)
 		{
 #ifdef DEBUG
 			Log_Trace_AI(OBJECT_SELF, "AI_ExecuteDefaultAction", "Follower: could not find valid target (room connection error OR enemy too far away) - trying to move to leader");
@@ -3268,7 +3328,7 @@ void AI_HandleCowardFollower(AActor* OBJECT_SELF, AActor* oAppear)
 	Log_Trace_AI(OBJECT_SELF, "AI_HandleCowardFollower", "START, appear: " + GetTag(oAppear));
 #endif
 
-	if (GetGameMode() != GM_COMBAT)
+	if (GetGameMode() != EGameMode::GM_COMBAT)
 		return;
 
 	if (IsObjectValid(oAppear) && GetGroupHostility(GROUP_PC, GetGroupId(oAppear) == TRUE_)) // perceived a creature that hates the player

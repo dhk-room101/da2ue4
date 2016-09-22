@@ -20,13 +20,13 @@ void SendEventHandleCustomAI(AActor* oTarget, AActor* oLastTarget, int32 nLastCo
 #endif
 
 	FGameEvent evHandleCustomAI = Event(EVENT_TYPE_HANDLE_CUSTOM_AI);
-	evHandleCustomAI = SetEventObject(evHandleCustomAI, 0, oLastTarget);
-	evHandleCustomAI = SetEventInteger(evHandleCustomAI, 1, nLastCommand);
-	evHandleCustomAI = SetEventInteger(evHandleCustomAI, 2, nLastCommandStatus);
-	evHandleCustomAI = SetEventInteger(evHandleCustomAI, 3, nLastSubCommand);
-	evHandleCustomAI = SetEventInteger(evHandleCustomAI, 4, nAITargetType);
-	evHandleCustomAI = SetEventInteger(evHandleCustomAI, 5, nAIParameter);
-	evHandleCustomAI = SetEventInteger(evHandleCustomAI, 6, nTacticID);
+	evHandleCustomAI = SetEventObject(evHandleCustomAI, oLastTarget);
+	evHandleCustomAI = SetEventInteger(evHandleCustomAI, nLastCommand);
+	evHandleCustomAI = SetEventInteger(evHandleCustomAI, nLastCommandStatus);
+	evHandleCustomAI = SetEventInteger(evHandleCustomAI, nLastSubCommand);
+	evHandleCustomAI = SetEventInteger(evHandleCustomAI, nAITargetType);
+	evHandleCustomAI = SetEventInteger(evHandleCustomAI, nAIParameter);
+	evHandleCustomAI = SetEventInteger(evHandleCustomAI, nTacticID);
 
 	SignalEvent(oTarget, evHandleCustomAI);
 }
@@ -88,4 +88,17 @@ int32 Events_ValidateCommandPending(AActor* oCommandOwner, AActor* oTarget, int3
 			return FALSE_;
 		}
 	return TRUE_;
+}
+
+FGameEvent EventSpellScriptDeactivate(AActor* oCaster, int32 nAbility, int32 nAbilityType)
+{
+	FGameEvent ev = Event(EVENT_TYPE_SPELLSCRIPT_DEACTIVATE);
+
+	ev = SetEventObject(ev, oCaster);
+
+	ev = SetEventInteger(ev, nAbility);
+	ev = SetEventInteger(ev, nAbilityType);
+
+	return ev;
+
 }

@@ -1,4 +1,9 @@
 #include "DA2UE4.h"
+#include "DA2UE4GameInstance.h"
+#include "DA2UE4Creature.h"
+#include "STypes.h"
+#include "log_h.h"
+#include "ldf.h"
 #include "m2da_data_h.h"
 #include "sys_soundset_h.h"
 
@@ -7,17 +12,17 @@ void SSPlaySituationalSound(AActor* oCreature, int32 nSituation, AActor* oTarget
 
 	if (IsObjectValid(oCreature) && (!IsDead(oCreature) || nSituation == SOUND_SITUATION_DYING) && GetObjectActive(oCreature) && GetObjectType(oCreature) == OBJECT_TYPE_CREATURE)
 	{
-		int32 nMode = GetGameMode();
+		EGameMode nMode = GetGameMode();
 		int32 nSound = 0;
 
 		// -------------------------------------------------------------------------
 		// Only play sound in combat or explore mode so cinematics don't get unintentional VO.
 		// -------------------------------------------------------------------------
-		if (nMode == GM_COMBAT)
+		if (nMode == EGameMode::GM_COMBAT)
 		{
 			nSound = _GetSituationalCombatSound(oCreature, nSituation, oTarget, nCommandType);
 		}
-		else if (nMode == GM_EXPLORE)
+		else if (nMode == EGameMode::GM_EXPLORE)
 		{
 			nSound = _GetSituationalExploreSound(oCreature, nSituation, oTarget, nCommandType);
 		}
@@ -64,7 +69,7 @@ void SSPlaySituationalSound(AActor* oCreature, int32 nSituation, AActor* oTarget
 						case COMMAND_TYPE_DRIVE:
 						case COMMAND_TYPE_MOVE_TO_LOCATION:
 						case COMMAND_TYPE_MOVE_TO_OBJECT:
-							if (nMode == GM_EXPLORE)
+							if (nMode == EGameMode::GM_EXPLORE)
 								fProb = 0.0f;
 						}
 
@@ -168,6 +173,8 @@ int32 _GetSituationalCombatSound(AActor* oCreature, int32 nSituation, AActor* oT
 
 int32 _GetSituationalExploreSound(AActor* oCreature, int32 nSituation, AActor* oTarget, int32 nCommandType)
 {
+	//ADA2UE4Creature* oCreature = Cast<ADA2UE4Creature>(aCreature);
+
 	int32 nSound = 0;
 
 	switch (nSituation)
@@ -223,11 +230,11 @@ int32 _GetSituationalExploreSound(AActor* oCreature, int32 nSituation, AActor* o
 			nSound = SS_EXPLORE_SELECT_HATE;
 			int32 nApproval = GetFollowerApproval(oCreature);
 
-			if (nApproval >= GetLocalInt(oCreature, APP_RANGE_VALUE_NEUTRAL)) //DHK GetModule()
+			if (nApproval >= GetModule()->APP_RANGE_VALUE_NEUTRAL) //DHK GetModule()
 				nSound = SS_EXPLORE_SELECT_NEUTRAL;
-			if (nApproval >= GetLocalInt(oCreature, APP_RANGE_VALUE_WARM))
+			if (nApproval >= GetModule()->APP_RANGE_VALUE_WARM)
 				nSound = SS_EXPLORE_SELECT_FRIENDLY;
-			if (nApproval >= GetLocalInt(oCreature, APP_RANGE_VALUE_FRIENDLY))
+			if (nApproval >= GetModule()->APP_RANGE_VALUE_FRIENDLY)
 				nSound = SS_EXPLORE_SELECT_LOVE;
 		}
 		break;
@@ -249,19 +256,28 @@ int32 _GetSituationalExploreSound(AActor* oCreature, int32 nSituation, AActor* o
 	return nSound;
 }
 
-int32 SSGetSoundSetFlag(AActor* oCreature, int32 nSSEntry)
+int32 SSGetSoundSetFlag(AActor* aCreature, int32 nSSEntry)
 {
+	ADA2UE4Creature* oCreature = Cast<ADA2UE4Creature>(aCreature);
+
 	// -------------------------------------------------------------------------
 	// We got more than 32 SS entries, so we need find out in which variable
 	// this particular ssentry is stored. We do this by dividing the entry
 	// by 32 and appending the result to the base flag variable name.
 	// -------------------------------------------------------------------------
 	int32 nVar = nSSEntry / 32;
-	FString sVar = SOUND_SET_FLAGS + IntToString(nVar);
+	FString sVar = "SOUND_SET_FLAGS_" + IntToString(nVar);
 
 	int32 nFlag = (0x00000001 << (nSSEntry % 32));
 
-	int32 nVal = GetLocalInt(oCreature, FName(*sVar));
+	int32 nVal = 0;
+	if (sVar == "SOUND_SET_FLAGS_0")
+		nVal = oCreature->SOUND_SET_FLAGS_0;
+	else if (sVar == "SOUND_SET_FLAGS_1")
+		nVal = oCreature->SOUND_SET_FLAGS_1;
+	else if (sVar == "SOUND_SET_FLAGS_2")
+		nVal = oCreature->SOUND_SET_FLAGS_2;
+	else LogError("SSGetSoundSetFlag!!");
 
 #ifdef DEBUG
 	Log_Trace(LOG_CHANNEL_SOUNDSETS, "sys_soundsets_h.GetFlag." + sVar, "Flag: " + IntToString(nSSEntry) + "(" + IntToHexString(nFlag) + ")" + " Value: " + IntToHexString(nVal) + " Result: " + IntToString(((nVal  & nFlag) == nFlag)), oCreature);
@@ -270,8 +286,9 @@ int32 SSGetSoundSetFlag(AActor* oCreature, int32 nSSEntry)
 	return ((nVal  & nFlag) == nFlag);
 }
 
-void SSSetSoundSetFlag(AActor* oCreature, int32 nSSEntry, int32 bSet)
+void SSSetSoundSetFlag(AActor* aCreature, int32 nSSEntry, int32 bSet)
 {
+	ADA2UE4Creature* oCreature = Cast<ADA2UE4Creature>(aCreature);
 
 	// -------------------------------------------------------------------------
 	// We got more than 32 SS entries, so we need find out in which variable
@@ -279,11 +296,26 @@ void SSSetSoundSetFlag(AActor* oCreature, int32 nSSEntry, int32 bSet)
 	// by 32 and appending the result to the base flag variable name.
 	// -------------------------------------------------------------------------
 	int32 nVar = nSSEntry / 32;
-	FString sVar = SOUND_SET_FLAGS + IntToString(nVar);
+	FString sVar = "SOUND_SET_FLAGS_" + IntToString(nVar);
 
 	int32 nFlag = (0x00000001 << (nSSEntry % 32));
 
-	int32 nVal = GetLocalInt(oCreature, FName(*sVar));
+	int32 nVal = 0;
+	if (sVar == "SOUND_SET_FLAGS_0")
+		nVal = oCreature->SOUND_SET_FLAGS_0;
+	else if (sVar == "SOUND_SET_FLAGS_1")
+		nVal = oCreature->SOUND_SET_FLAGS_1;
+	else if (sVar == "SOUND_SET_FLAGS_2")
+		nVal = oCreature->SOUND_SET_FLAGS_2;
+	else
+	{
+#ifdef DEBUG
+		LogError("SSGetSoundSetFlag!!");
+
+#endif // DEBUG
+
+	}
+
 	int32 nOld = nVal;
 
 	if (bSet)
@@ -299,5 +331,42 @@ void SSSetSoundSetFlag(AActor* oCreature, int32 nSSEntry, int32 bSet)
 	Log_Trace(LOG_CHANNEL_SOUNDSETS, "sys_soundset_h.SetFlag." + sVar + "." + IntToString(bSet), "Flag: " + IntToString(nSSEntry) + "(" + IntToHexString(nFlag) + ")" + " Was: " + IntToHexString(nOld) + " Is: " + IntToHexString(nVal), oCreature);
 #endif // DEBUG
 
-	SetLocalInt(oCreature, FName(*sVar), nVal);
+
+	if (sVar == "SOUND_SET_FLAGS_0")
+		oCreature->SOUND_SET_FLAGS_0 = nVal;
+	else if (sVar == "SOUND_SET_FLAGS_1")
+		oCreature->SOUND_SET_FLAGS_1 = nVal;
+	else if (sVar == "SOUND_SET_FLAGS_2")
+		oCreature->SOUND_SET_FLAGS_2 = nVal;
+	else
+	{
+#ifdef DEBUG
+		LogError("SSSetSoundSetFlag!!");
+
+#endif // DEBUG
+
+	}
+
+}
+
+void SSPartyResetSoundsetRestrictions()
+{
+	TArray<AActor*> aParty = GetPartyList();
+	int32 nSize = aParty.Num();
+	int32 i;
+
+	for (i = 0; i < nSize; i++)
+	{
+		SSResetSoundsetRestrictions(aParty[i]);
+	}
+
+}
+
+void SSResetSoundsetRestrictions(AActor* aActor)
+{
+	SSSetSoundSetFlag(aActor, SS_COMBAT_NEAR_DEATH, FALSE_);
+	SSSetSoundSetFlag(aActor, SS_COMBAT_HEAL_ME, FALSE_);
+	SSSetSoundSetFlag(aActor, SS_EXPLORE_HEAL_ME, FALSE_);
+	SSSetSoundSetFlag(aActor, SS_MANA_LOW, FALSE_);
+	SSSetSoundSetFlag(aActor, SS_COMBAT_STAMINA_LOW, FALSE_);
 }

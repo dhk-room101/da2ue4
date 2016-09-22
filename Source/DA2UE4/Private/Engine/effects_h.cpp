@@ -12,6 +12,6 @@ FEffect EffectModifyMovementSpeed(float fPotency, int32 bHostile)
 	{
 		eSlow = Effect(EFFECT_TYPE_MOVEMENT_RATE);
 	}
-	eSlow = SetEffectFloat(eSlow, EFFECT_FLOAT_POTENCY, fPotency);
+	eSlow = SetEffectFloat(eSlow, /*EFFECT_FLOAT_POTENCY, */fPotency);
 	return eSlow;
 }

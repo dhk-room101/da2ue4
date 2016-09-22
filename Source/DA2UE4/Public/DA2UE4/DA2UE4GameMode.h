@@ -3,7 +3,7 @@
 #include "GameFramework/GameMode.h"
 #include "DA2UE4GameMode.generated.h"
 
-UCLASS()
+UCLASS(minimalapi)
 class ADA2UE4GameMode : public AGameMode
 {
 	GENERATED_BODY()

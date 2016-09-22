@@ -1,0 +1,129 @@
+{
+  "Resource": {
+    "-Requested": "1",
+    "-URI": "demo000pl_main.plo|++|moduleid=3|++|resrefid=21651",
+    "-ResType": "plo",
+    "-State": "0",
+    "-Type": "3",
+    "-OwnerIsCore": "0",
+    "-IsCore": "0",
+    "-ResRefName": "demo000pl_main",
+    "-Folder": "\\Demo\\",
+    "-ResRefID": "21651",
+    "-OwnerModuleID": "3",
+    "-ModuleID": "3",
+    "Agent": {
+      "ResRefName": "demo000pl_main",
+      "LocalCopy": "False",
+      "Name": "Once in a Blue Moon",
+      "NameStringID": "404847",
+      "NameRequiresReTranslation": "False",
+      "GUID": "{B36E049A-4C95-FFFB-A688-3E9EA4E91FF6}",
+      "ScriptURI": "21665",
+      "Priority": "1",
+      "EntryType": "1",
+      "AllowPausing": "False",
+      "StatusList": {
+        "Agent": [
+          {
+            "Flag": "0",
+            "Name": "DEMO_INTRO_COMPLETE",
+            "Final": "False",
+            "Repeatable": "False",
+            "JournalTextStringID": "404846",
+            "JournalTextRequiresReTranslation": "False",
+            "RewardID": "0",
+            "DefaultValue": "0"
+          },
+          {
+            "Flag": "1",
+            "Name": "DEMO_TALKED_TO_BARKEEP",
+            "Final": "False",
+            "Repeatable": "False",
+            "JournalTextStringID": "405146",
+            "JournalTextRequiresReTranslation": "False",
+            "RewardID": "0",
+            "DefaultValue": "0"
+          },
+          {
+            "Flag": "2",
+            "Name": "DEMO_SWORD_RECOVERED",
+            "Final": "False",
+            "Repeatable": "False",
+            "JournalTextStringID": "405789",
+            "JournalTextRequiresReTranslation": "False",
+            "RewardID": "0",
+            "DefaultValue": "0"
+          },
+          {
+            "Flag": "3",
+            "Name": "DEMO_BANDIT_HOSTILE",
+            "Final": "False",
+            "Repeatable": "False",
+            "JournalTextStringID": "405148",
+            "JournalTextRequiresReTranslation": "False",
+            "RewardID": "0",
+            "DefaultValue": "0"
+          },
+          {
+            "Flag": "4",
+            "Name": "DEMO_BACK_ROOM_OPENED",
+            "Final": "False",
+            "Repeatable": "False",
+            "JournalText": "You've managed to penetrate the ultimate defense of the Blue Moon Inn's kitchen; by throwing the lever in the back of the main hall the small barrel blocking the door has been vanquished.",
+            "JournalTextStringID": "405149",
+            "JournalTextRequiresReTranslation": "False",
+            "RewardID": "0",
+            "Comment": "This plot flag has journal text that is set after a previous plot flag (DEMO_QUEST_ACCEPTED) has already set an entry in the journal. When this flag is set its journal text will replace the previous flag's text as that entry in the journal.",
+            "DefaultValue": "0"
+          },
+          {
+            "Flag": "5",
+            "Name": "DEMO_SWORD_RETURNED",
+            "Final": "True",
+            "Repeatable": "False",
+            "JournalText": "The former innkeeper for the Blue Moon Inn asked you to retrieve his sword for him. You succeeded.",
+            "JournalTextStringID": "405150",
+            "JournalTextRequiresReTranslation": "False",
+            "RewardID": "0",
+            "Comment": "This plot flag is marked as \"final\". When it's set to true the journal entry for this quest will be moved to the completed quests tab of the player's journal.",
+            "DefaultValue": "0"
+          },
+          {
+            "Flag": "6",
+            "Name": "DEMO_QUEST_ACCEPTED",
+            "Final": "False",
+            "Repeatable": "False",
+            "JournalText": "You have agreed to retrieve the adventuring sword of the former innkeeper of the Blue Moon Inn. The sword is in a chest in the kitchen, the door to which is blocked by a barrel that can only be removed by a lever in the back of the inn's main room.",
+            "JournalTextStringID": "405177",
+            "JournalTextRequiresReTranslation": "False",
+            "RewardID": "0",
+            "Comment": "This plot flag has journal text. When the flag gets set to \"true\", a journal entry will be automatically created using the plot's \"Name\" property as a header.",
+            "DefaultValue": "0"
+          },
+          {
+            "Flag": "7",
+            "Name": "DEMO_BARKEEP_JOINED_PARTY",
+            "Final": "False",
+            "Repeatable": "False",
+            "JournalTextStringID": "405794",
+            "JournalTextRequiresReTranslation": "False",
+            "RewardID": "0",
+            "DefaultValue": "0"
+          },
+          {
+            "Flag": "256",
+            "Name": "DEMO_DECLINED_QUEST",
+            "Final": "False",
+            "Repeatable": "False",
+            "JournalTextStringID": "405871",
+            "JournalTextRequiresReTranslation": "False",
+            "RewardID": "0",
+            "Comment": "This is a \"defined\" plot flag. Its status can't be set like main flags can; it can only be defined by a condition set in the plot's associated event script file.",
+            "DefaultValue": "0"
+          }
+        ]
+      }
+    }
+  }
+}

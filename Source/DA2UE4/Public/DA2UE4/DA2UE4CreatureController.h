@@ -2,10 +2,11 @@
 
 #pragma once
 
+#include "STypes.h"
+
 #include "AIController.h"
 #include "DA2UE4CreatureController.generated.h"
 
-class ADA2UE4TargetPoint;
 
 /**
  * 
@@ -21,8 +22,23 @@ class DA2UE4_API ADA2UE4CreatureController : public AAIController
 	virtual void Possess(class APawn* InPawn) override;
 	virtual void UnPossess() override;
 
-	void SpawnCreature(APawn* InPawn);
+	bool SetupBehaviorTree();
+	void StartBehaviorTree(APawn* InPawn);
+
+	UPROPERTY()
+		UBehaviorTree* BehaviorTree = nullptr;
+	UPROPERTY()
+		UBehaviorTreeComponent* BehaviorComp = nullptr;
+	UPROPERTY()
+		UBlackboardComponent* BlackboardComp = nullptr;
 
 public:
-	void TriggerEventPerceptionAppear(APawn* NewPawn, int32 bPerceived, int32 bHostile, int32 bAbility, int32 bHostilityChanged);
+
+	void SetActionTarget(APawn* Pawn);
+	AActor* GetActionTarget();
+	ECombatResult CombatTactics(AActor* aActor);
+
+	/** Returns BehaviorComp subobject **/
+	FORCEINLINE UBehaviorTreeComponent* GetBehaviorComp() const { return BehaviorComp; }
+	FORCEINLINE UBlackboardComponent* GetBlackboardComp() const { return BlackboardComp; }
 };

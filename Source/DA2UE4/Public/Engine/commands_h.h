@@ -155,7 +155,7 @@ FCommand CommandSwitchWeaponSet(int32 nWeaponSet = INVALID_WEAPON_SET);
 * @remarks Only creatures can move, non-creature objects that have a move command assigned to them will fail the command when attempting to process it.
 * @author Noel, Jose
 */
-FCommand CommandMoveToActor(AActor* oTarget, int bRunToLocation = TRUE_, float fMinRange = 0.0f, int bUseOriginalPosition = FALSE_, float fMaxRange = 0.0f);
+FCommand CommandMoveToActor(AActor* oTarget, int32 bRunToLocation = TRUE_, float fMinRange = 0.0f, int32 bUseOriginalPosition = FALSE_, float fMaxRange = 0.0f);
 
 /** @brief This function is a move to location FCommand constructor. The AActor* executing the command will use both the position and orientation of the location.
 *

@@ -46,9 +46,6 @@ void Log_Events(FString sOrigin, FGameEvent ev, FString sMessage, int32 nLogChan
 #endif
 }
 
-// -----------------------------------------------------------------------------
-// Get a human readable FString for an event
-// -----------------------------------------------------------------------------
 FString Log_GetEventNameById(int32 nEventType)
 {
 

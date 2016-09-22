@@ -8,7 +8,7 @@ void ResurrectPartyMembers(int32 bHealFull)
 {
 
 	FEffect eRez = EffectResurrection(TRUE_, bHealFull);
-	eRez = SetEffectCreator(eRez, GetModule());
+	eRez = SetEffectCreator(eRez, GetHero());//GetModule());
 
 	TArray<AActor*> partyMembers = GetPartyList();
 	int32 nMembers = partyMembers.Num();
@@ -26,8 +26,8 @@ void ResurrectPartyMembers(int32 bHealFull)
 FEffect EffectResurrection(int32 bApplyInjury, int32 bHealFull)
 {
 	FEffect eEffect = Effect(EFFECT_TYPE_RESURRECTION);
-	eEffect = SetEffectInteger(eEffect, 0, bApplyInjury);
-	eEffect = SetEffectInteger(eEffect, 1, bHealFull);
+	eEffect = SetEffectInteger(eEffect, bApplyInjury);
+	eEffect = SetEffectInteger(eEffect, bHealFull);
 	return eEffect;
 }
 
@@ -71,7 +71,7 @@ void HandlePlayerResurrect(AActor* oCreature, int32 bApplyInjury)
 	// SetCreatureGoreLevel(oCreature, 0.0);
 
 	FGameEvent evRezz = Event(EVENT_TYPE_RESURRECTION);
-	evRezz = SetEventInteger(evRezz, 0, bApplyInjury);
+	evRezz = SetEventInteger(evRezz, bApplyInjury);
 
 	// -------------------------------------------------------------------------
 	// Resurrection comes with a free, 25% heal

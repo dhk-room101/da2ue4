@@ -1,0 +1,1028 @@
+{"ANIM_conversation": [
+		{
+			"Type": "2",
+			"AnimationList": "2A Misc 1",
+			"Name" : "mh_po_2arm_1"
+		},
+		{
+			"Type": "2",
+			"AnimationList": "2A Misc 2",
+			"Name" : "mh_po_2arm_2"
+		},
+		{
+			"Type": "2",
+			"AnimationList": "2A Misc 3",
+			"Name" : "mh_po_2arm_3"
+		},
+		{
+			"Type": "2",
+			"AnimationList": "2A Misc 4",
+			"Name" : "mh_po_2arm_4"
+		},
+		{
+			"Type": "2",
+			"AnimationList": "2A Misc 5",
+			"Name" : "mh_po_2arm_5"
+		},
+		{
+			"Type": "2",
+			"AnimationList": "2A Misc 6",
+			"Name" : "mh_po_2arm_6"
+		},
+		{
+			"Type": "2",
+			"AnimationList": "2A Misc 7",
+			"Name" : "mh_po_2arm_7"
+		},
+		{
+			"Type": "2",
+			"AnimationList": "2Arm_beseech",
+			"Name" : "mh_po_2arm_18"
+		},
+		{
+			"Type": "2",
+			"AnimationList": "2Arm_clench_fists",
+			"Name" : "mh_po_2arm_17"
+		},
+		{
+			"Type": "2",
+			"AnimationList": "2Arm_emphasis1",
+			"Name" : "mh_po_2arm_15"
+		},
+		{
+			"Type": "2",
+			"AnimationList": "2Arm_emphasis2",
+			"Name" : "mh_po_2arm_16"
+		},
+		{
+			"Type": "2",
+			"AnimationList": "2Arm_gesture_1",
+			"Name" : "mh_po_2arm_01"
+		},
+		{
+			"Type": "2",
+			"AnimationList": "2Arm_gesture_12",
+			"Name" : "mh_po_2arm_12"
+		},
+		{
+			"Type": "2",
+			"AnimationList": "2Arm_gesture_14",
+			"Name" : "mh_po_2arm_14"
+		},
+		{
+			"Type": "2",
+			"AnimationList": "2Arm_gesture_2",
+			"Name" : "mh_po_2arm_02"
+		},
+		{
+			"Type": "2",
+			"AnimationList": "2Arm_gesture_21",
+			"Name" : "mh_po_2arm_21"
+		},
+		{
+			"Type": "2",
+			"AnimationList": "2Arm_gesture_3",
+			"Name" : "mh_po_2arm_03"
+		},
+		{
+			"Type": "2",
+			"AnimationList": "2Arm_gesture_4",
+			"Name" : "mh_po_2arm_04"
+		},
+		{
+			"Type": "2",
+			"AnimationList": "2Arm_gesture_5",
+			"Name" : "mh_po_2arm_05"
+		},
+		{
+			"Type": "2",
+			"AnimationList": "2Arm_gesture_6",
+			"Name" : "mh_po_2arm_06"
+		},
+		{
+			"Type": "2",
+			"AnimationList": "2Arm_gesture_7",
+			"Name" : "mh_po_2arm_07"
+		},
+		{
+			"Type": "2",
+			"AnimationList": "2Arm_gesture_8",
+			"Name" : "mh_po_2arm_08"
+		},
+		{
+			"Type": "2",
+			"AnimationList": "2Arm_negate",
+			"Name" : "mh_po_2arm_11"
+		},
+		{
+			"Type": "2",
+			"AnimationList": "2Arm_stop",
+			"Name" : "mh_po_2arm_13"
+		},
+		{
+			"Type": "2",
+			"AnimationList": "2P_Exchange_give",
+			"Name" : "mh_2p_exchange_a"
+		},
+		{
+			"Type": "2",
+			"AnimationList": "2P_Exchange_receive",
+			"Name" : "mh_2p_exchange_b"
+		},
+		{
+			"Type": "2",
+			"AnimationList": "2P_Help_up",
+			"Name" : "mh_2p_help_up_a"
+		},
+		{
+			"Type": "2",
+			"AnimationList": "2P_Helped_up",
+			"Name" : "mh_2p_help_up_b"
+		},
+		{
+			"Type": "2",
+			"AnimationList": "2P_Shove",
+			"Name" : "mh_2p_shove_a"
+		},
+		{
+			"Type": "2",
+			"AnimationList": "2P_Shoved",
+			"Name" : "mh_2p_shove_b "
+		},
+		{
+			"Type": "",
+			"AnimationList": "Backhand_right",
+			"Name" : "mh_cb_bhand_slap_H"
+		},
+		{
+			"Type": "",
+			"AnimationList": "Backhanded_right",
+			"Name" : "mh_cb_bhand_slapped_H"
+		},
+		{
+			"Type": "",
+			"AnimationList": "body back and look off",
+			"Name" : "mh_po_body_07"
+		},
+		{
+			"Type": "",
+			"AnimationList": "body back confused",
+			"Name" : "mh_po_body_12"
+		},
+		{
+			"Type": "",
+			"AnimationList": "body back headshake no",
+			"Name" : "mh_po_body_11"
+		},
+		{
+			"Type": "",
+			"AnimationList": "body humble forward",
+			"Name" : "mh_po_body_09"
+		},
+		{
+			"Type": "",
+			"AnimationList": "body jolt back",
+			"Name" : "mh_po_body_10"
+		},
+		{
+			"Type": "",
+			"AnimationList": "body jolt forward",
+			"Name" : "mh_po_body_06"
+		},
+		{
+			"Type": "",
+			"AnimationList": "body laugh long",
+			"Name" : "mh_po_body_03"
+		},
+		{
+			"Type": "",
+			"AnimationList": "body laugh med",
+			"Name" : "mh_po_body_02"
+		},
+		{
+			"Type": "",
+			"AnimationList": "body laugh short",
+			"Name" : "mh_po_body_01"
+		},
+		{
+			"Type": "",
+			"AnimationList": "body surprised back",
+			"Name" : "mh_po_body_08"
+		},
+		{
+			"Type": "",
+			"AnimationList": "body turn left",
+			"Name" : "mh_po_body_05"
+		},
+		{
+			"Type": "",
+			"AnimationList": "body turn right",
+			"Name" : "mh_po_body_04"
+		},
+		{
+			"Type": "",
+			"AnimationList": "Bow Large",
+			"Name" : "mh_am_bow_lg"
+		},
+		{
+			"Type": "",
+			"AnimationList": "Bow Medium",
+			"Name" : "mh_am_bow_sm"
+		},
+		{
+			"Type": "",
+			"AnimationList": "Bow Small",
+			"Name" : "mh_dg_tk_down"
+		},
+		{
+			"Type": "",
+			"AnimationList": "dismiss_small",
+			"Name" : "mh_po_2arm_10"
+		},
+		{
+			"Type": "2",
+			"AnimationList": "Excited_two_hand",
+			"Name" : "mh_dg_hnds_excited"
+		},
+		{
+			"Type": "2",
+			"AnimationList": "gesture_01",
+			"Name" : "mh_po_armscross_1"
+		},
+		{
+			"Type": "2",
+			"AnimationList": "gesture_02",
+			"Name" : "mh_po_armscross_2"
+		},
+		{
+			"Type": "2",
+			"AnimationList": "gesture_03",
+			"Name" : "mh_po_armscross_3"
+		},
+		{
+			"Type": "2",
+			"AnimationList": "gesture_04",
+			"Name" : "mh_po_armscross_4"
+		},
+		{
+			"Type": "2",
+			"AnimationList": "gesture_05",
+			"Name" : "mh_po_armscross_5"
+		},
+		{
+			"Type": "",
+			"AnimationList": "Greeting Salute 01",
+			"Name" : "mh_dg_hnd_salute_01"
+		},
+		{
+			"Type": "",
+			"AnimationList": "Greeting Salute 02",
+			"Name" : "mh_dg_hnd_salute_02"
+		},
+		{
+			"Type": "5",
+			"AnimationList": "Head Gesture Left",
+			"Name" : "mh_dg_tk_head_l"
+		},
+		{
+			"Type": "5",
+			"AnimationList": "Head Gesture Right",
+			"Name" : "mh_dg_tk_head_r"
+		},
+		{
+			"Type": "5",
+			"AnimationList": "Head Look Down",
+			"Name" : "mh_dg_tk_down"
+		},
+		{
+			"Type": "5",
+			"AnimationList": "Head Look Up",
+			"Name" : "mh_dg_tk_up"
+		},
+		{
+			"Type": "5",
+			"AnimationList": "Head Shake",
+			"Name" : "mh_po_head_03"
+		},
+		{
+			"Type": "5",
+			"AnimationList": "Head Yes Nod",
+			"Name" : "mh_dg_tk_nod"
+		},
+		{
+			"Type": "5",
+			"AnimationList": "head_gesture_01",
+			"Name" : "mh_po_head_01"
+		},
+		{
+			"Type": "5",
+			"AnimationList": "head_gesture_02",
+			"Name" : "mh_po_head_02"
+		},
+		{
+			"Type": "5",
+			"AnimationList": "head_gesture_03",
+			"Name" : "mh_po_head_03"
+		},
+		{
+			"Type": "5",
+			"AnimationList": "head_gesture_04",
+			"Name" : "mh_po_head_04"
+		},
+		{
+			"Type": "5",
+			"AnimationList": "head_gesture_05",
+			"Name" : "mh_po_head_05"
+		},
+		{
+			"Type": "5",
+			"AnimationList": "head_gesture_06",
+			"Name" : "mh_po_head_06"
+		},
+		{
+			"Type": "5",
+			"AnimationList": "head_gesture_07",
+			"Name" : "mh_po_head_07"
+		},
+		{
+			"Type": "5",
+			"AnimationList": "head_gesture_11",
+			"Name" : "mh_po_head_11"
+		},
+		{
+			"Type": "5",
+			"AnimationList": "head_gesture_12",
+			"Name" : "mh_po_head_12"
+		},
+		{
+			"Type": "5",
+			"AnimationList": "Head_glance_left",
+			"Name" : "mh_po_head_08"
+		},
+		{
+			"Type": "5",
+			"AnimationList": "Head_glance_right",
+			"Name" : "mh_po_head_09"
+		},
+		{
+			"Type": "5",
+			"AnimationList": "headlook left",
+			"Name" : "mh_dg_tk_lk_l"
+		},
+		{
+			"Type": "5",
+			"AnimationList": "headlook right",
+			"Name" : "mh_dg_tk_lk_r"
+		},
+		{
+			"Type": "4",
+			"AnimationList": "LA Misc 1",
+			"Name" : "mh_po_l_arm_1"
+		},
+		{
+			"Type": "4",
+			"AnimationList": "LA Misc 2",
+			"Name" : "mh_po_l_arm_2"
+		},
+		{
+			"Type": "4",
+			"AnimationList": "LA Misc 3",
+			"Name" : "mh_po_l_arm_3"
+		},
+		{
+			"Type": "4",
+			"AnimationList": "LA Misc 4",
+			"Name" : "mh_po_l_arm_4"
+		},
+		{
+			"Type": "4",
+			"AnimationList": "LA Misc 5",
+			"Name" : "mh_po_l_arm_20"
+		},
+		{
+			"Type": "4",
+			"AnimationList": "LArm_gesture_1",
+			"Name" : "mh_po_l_arm_01"
+		},
+		{
+			"Type": "4",
+			"AnimationList": "LArm_gesture_2",
+			"Name" : "mh_po_l_arm_02"
+		},
+		{
+			"Type": "4",
+			"AnimationList": "LArm_gesture_3",
+			"Name" : "mh_po_l_arm_03"
+		},
+		{
+			"Type": "4",
+			"AnimationList": "LArm_gesture_4",
+			"Name" : "mh_po_l_arm_04"
+		},
+		{
+			"Type": "4",
+			"AnimationList": "LArm_gesture_5",
+			"Name" : "mh_po_l_arm_05"
+		},
+		{
+			"Type": "4",
+			"AnimationList": "LArm_gesture_6",
+			"Name" : "mh_po_l_arm_06"
+		},
+		{
+			"Type": "4",
+			"AnimationList": "LArm_gesture_7",
+			"Name" : "mh_po_l_arm_07"
+		},
+		{
+			"Type": "4",
+			"AnimationList": "LArm_gesture_8",
+			"Name" : "mh_po_l_arm_08"
+		},
+		{
+			"Type": "4",
+			"AnimationList": "LArm_gesture_9",
+			"Name" : "mh_po_l_arm_09"
+		},
+		{
+			"Type": "4",
+			"AnimationList": "Left Hand Beckon",
+			"Name" : "mh_dg_tk_beckon"
+		},
+		{
+			"Type": "4",
+			"AnimationList": "Left Hand Point Forward",
+			"Name" : "mh_dg_tk_point_f_v2"
+		},
+		{
+			"Type": "4",
+			"AnimationList": "Left Hand Point Forward 02",
+			"Name" : "mh_dg_tk_pointing"
+		},
+		{
+			"Type": "4",
+			"AnimationList": "Left Hand Point Left",
+			"Name" : "mh_dg_tk_point_l"
+		},
+		{
+			"Type": "4",
+			"AnimationList": "Left Hand Point Right",
+			"Name" : "mh_dg_tk_point_r_v2"
+		},
+		{
+			"Type": "4",
+			"AnimationList": "Left Hand to Head",
+			"Name" : "mh_dg_hdache"
+		},
+		{
+			"Type": "",
+			"AnimationList": "idle 2",
+			"Name" : "mh_po_pose_f"
+		},
+		{
+			"Type": "",
+			"AnimationList": "idle",
+			"Name" : "mh_po_pose_a"
+		},
+		{
+			"Type": "",
+			"AnimationList": "idle 1",
+			"Name" : "mh_pause"
+		},
+		{
+			"Type": "3",
+			"AnimationList": "RA Misc 1",
+			"Name" : "mh_po_r_arm_1"
+		},
+		{
+			"Type": "3",
+			"AnimationList": "RA Misc 2",
+			"Name" : "mh_po_r_arm_2"
+		},
+		{
+			"Type": "3",
+			"AnimationList": "RA Misc 3",
+			"Name" : "mh_po_r_arm_3"
+		},
+		{
+			"Type": "3",
+			"AnimationList": "RArm_dismiss",
+			"Name" : "mh_po_r_arm_11"
+		},
+		{
+			"Type": "3",
+			"AnimationList": "RArm_gesture_1",
+			"Name" : "mh_po_r_arm_01"
+		},
+		{
+			"Type": "3",
+			"AnimationList": "RArm_gesture_10",
+			"Name" : "mh_po_r_arm_10"
+		},
+		{
+			"Type": "3",
+			"AnimationList": "RArm_gesture_12",
+			"Name" : "mh_po_r_arm_12"
+		},
+		{
+			"Type": "3",
+			"AnimationList": "RArm_gesture_13",
+			"Name" : "mh_po_r_arm_13"
+		},
+		{
+			"Type": "3",
+			"AnimationList": "RArm_gesture_2",
+			"Name" : "mh_po_r_arm_02"
+		},
+		{
+			"Type": "3",
+			"AnimationList": "RArm_gesture_3",
+			"Name" : "mh_po_r_arm_03"
+		},
+		{
+			"Type": "3",
+			"AnimationList": "RArm_gesture_4",
+			"Name" : "mh_po_r_arm_04"
+		},
+		{
+			"Type": "3",
+			"AnimationList": "RArm_gesture_5",
+			"Name" : "mh_po_r_arm_05"
+		},
+		{
+			"Type": "3",
+			"AnimationList": "RArm_gesture_6",
+			"Name" : "mh_po_r_arm_06"
+		},
+		{
+			"Type": "3",
+			"AnimationList": "RArm_gesture_7",
+			"Name" : "mh_po_r_arm_07"
+		},
+		{
+			"Type": "3",
+			"AnimationList": "RArm_gesture_8",
+			"Name" : "mh_po_r_arm_08"
+		},
+		{
+			"Type": "3",
+			"AnimationList": "RArm_gesture_9",
+			"Name" : "mh_po_r_arm_09"
+		},
+		{
+			"Type": "3",
+			"AnimationList": "Righ Hand Inspect Nails",
+			"Name" : "mh_am_inspect_nails"
+		},
+		{
+			"Type": "3",
+			"AnimationList": "Right Hand Beckon",
+			"Name" : "mh_dg_hnd_beckon"
+		},
+		{
+			"Type": "3",
+			"AnimationList": "Right Hand Chop Fast",
+			"Name" : "mh_dg_hnd_chop_v1"
+		},
+		{
+			"Type": "3",
+			"AnimationList": "Right Hand Chop Slow",
+			"Name" : "mh_dg_hnd_chop_v2"
+		},
+		{
+			"Type": "3",
+			"AnimationList": "Right Hand Gesture Across",
+			"Name" : "mh_dg_hnd_other"
+		},
+		{
+			"Type": "3",
+			"AnimationList": "Right Hand Gesture Left",
+			"Name" : "mh_dg_hnd_l"
+		},
+		{
+			"Type": "3",
+			"AnimationList": "Right Hand Gesture Right",
+			"Name" : "mh_dg_hnd_r"
+		},
+		{
+			"Type": "3",
+			"AnimationList": "Right Hand Gesture Self",
+			"Name" : "mh_po_r_arm_15"
+		},
+		{
+			"Type": "3",
+			"AnimationList": "Right Hand Point Behind",
+			"Name" : "mh_dg_tk_pt_b"
+		},
+		{
+			"Type": "3",
+			"AnimationList": "Right Hand Point Forward",
+			"Name" : "mh_dg_tk_point_f"
+		},
+		{
+			"Type": "3",
+			"AnimationList": "Right Hand Point Left",
+			"Name" : "mh_dg_tk_point_l_v2"
+		},
+		{
+			"Type": "3",
+			"AnimationList": "Right Hand Point Right",
+			"Name" : "mh_dg_tk_point_r"
+		},
+		{
+			"Type": "3",
+			"AnimationList": "Right Hand Psych Up",
+			"Name" : "mh_dg_tk_psy_slf"
+		},
+		{
+			"Type": "3",
+			"AnimationList": "Right Hand Quick Point",
+			"Name" : "mh_dg_tk_qk_pt"
+		},
+		{
+			"Type": "3",
+			"AnimationList": "Right Hand Stop",
+			"Name" : "mh_dg_hnd_stop_v2"
+		},
+		{
+			"Type": "3",
+			"AnimationList": "Right Hand Swing Flat",
+			"Name" : "mh_dg_hnd_flat"
+		},
+		{
+			"Type": "",
+			"AnimationList": "Run_Enter",
+			"Name" : "mh_dg_f_r_5p_en"
+		},
+		{
+			"Type": "",
+			"AnimationList": "Run_Enter_2",
+			"Name" : "mh_dg_f_r_5p_en_v2"
+		},
+		{
+			"Type": "",
+			"AnimationList": "Shrug Big",
+			"Name" : "mh_dg_tk_shrug_v2"
+		},
+		{
+			"Type": "",
+			"AnimationList": "Shrug Small",
+			"Name" : "mh_dg_tk_shrug_v1"
+		},
+		{
+			"Type": "",
+			"AnimationList": "shrug_small_2",
+			"Name" : "mh_po_2arm_09"
+		},
+		{
+			"Type": "",
+			"AnimationList": "Slap_right",
+			"Name" : "mh_cb_slap_R_H"
+		},
+		{
+			"Type": "",
+			"AnimationList": "Slapped_right",
+			"Name" : "mh_cb_slapped_R_H"
+		},
+		{
+			"Type": "",
+			"AnimationList": "Step_Back",
+			"Name" : "mh_dg_b_1p"
+		},
+		{
+			"Type": "",
+			"AnimationList": "Step_Backwards",
+			"Name" : "mh_dg_b_1p"
+		},
+		{
+			"Type": "",
+			"AnimationList": "Step_Forward",
+			"Name" : "mh_dg_f_1p"
+		},
+		{
+			"Type": "",
+			"AnimationList": "Striking_back",
+			"Name" : "mh_cb_struck_bk"
+		},
+		{
+			"Type": "",
+			"AnimationList": "Striking_front",
+			"Name" : "mh_cb_struck_f"
+		},
+		{
+			"Type": "",
+			"AnimationList": "Struck_front",
+			"Name" : "mh_cb_strucked_f"
+		},
+		{
+			"Type": "",
+			"AnimationList": "Stuck_back",
+			"Name" : "mh_cb_strucked_bk"
+		},
+		{
+			"Type": "",
+			"AnimationList": "Turn_180_Left",
+			"Name" : "mh_dg_tn_180_l"
+		},
+		{
+			"Type": "",
+			"AnimationList": "Turn_180_Left_2",
+			"Name" : "mh_dg_tn_180_l_ng"
+		},
+		{
+			"Type": "",
+			"AnimationList": "Turn_180_Right",
+			"Name" : "mh_dg_tn_180_r"
+		},
+		{
+			"Type": "",
+			"AnimationList": "Turn_180_Right_2",
+			"Name" : "mh_dg_tn_180_r_ng"
+		},
+		{
+			"Type": "",
+			"AnimationList": "Turn180_Left_Run",
+			"Name" : "mh_dg_tn_180_l_rn_5p"
+		},
+		{
+			"Type": "",
+			"AnimationList": "Turn180_Left_Walk",
+			"Name" : "mh_dg_tn_180_l_5p"
+		},
+		{
+			"Type": "",
+			"AnimationList": "Turn180_Right_Run",
+			"Name" : "mh_dg_tn_180_r_rn_5p"
+		},
+		{
+			"Type": "",
+			"AnimationList": "Turn180_Right_Walk",
+			"Name" : "mh_dg_tn_180_r_5p"
+		},
+		{
+			"Type": "",
+			"AnimationList": "Turn45_Left",
+			"Name" : "mh_dg_turn_l_45"
+		},
+		{
+			"Type": "",
+			"AnimationList": "Turn45_Left_Walk",
+			"Name" : "mh_dg_tn_45_l_5p"
+		},
+		{
+			"Type": "",
+			"AnimationList": "Turn45_Right",
+			"Name" : "mh_dg_turn_r_45"
+		},
+		{
+			"Type": "",
+			"AnimationList": "Turn45_Right_Walk",
+			"Name" : "mh_dg_tn_45_r_5p"
+		},
+		{
+			"Type": "",
+			"AnimationList": "Turn90_Left",
+			"Name" : "mh_dg_tn_90_l"
+		},
+		{
+			"Type": "",
+			"AnimationList": "Turn90_Left_Run",
+			"Name" : "mh_dg_tn_90_l_rn_5p"
+		},
+		{
+			"Type": "",
+			"AnimationList": "Turn90_Left_Walk",
+			"Name" : "mh_dg_tn_90_l_5p"
+		},
+		{
+			"Type": "",
+			"AnimationList": "Turn90_Right",
+			"Name" : "mh_dg_tn_90_r"
+		},
+		{
+			"Type": "",
+			"AnimationList": "Turn90_Right_Run",
+			"Name" : "mh_dg_tn_90_r_rn_5p"
+		},
+		{
+			"Type": "",
+			"AnimationList": "Turn90_Right_Walk",
+			"Name" : "mh_dg_tn_90_r_5p"
+		},
+		{
+			"Type": "1",
+			"AnimationList": "Twitch 1",
+			"Name" : "mh_po_tw_a1"
+		},
+		{
+			"Type": "1",
+			"AnimationList": "Twitch 2",
+			"Name" : "mh_po_tw_a2 "
+		},
+		{
+			"Type": "1",
+			"AnimationList": "Twitch 3",
+			"Name" : "mh_po_tw_a3"
+		},
+		{
+			"Type": "1",
+			"AnimationList": "Twitch 4",
+			"Name" : "mh_po_tw_a4 "
+		},
+		{
+			"Type": "1",
+			"AnimationList": "Twitch 5",
+			"Name" : "mh_po_tw_a5 "
+		},
+		{
+			"Type": "1",
+			"AnimationList": "Twitch 6",
+			"Name" : "mh_po_tw_a6 "
+		},
+		{
+			"Type": "2",
+			"AnimationList": "Two Hand Fidget",
+			"Name" : "mh_dg_hnd_wringing"
+		},
+		{
+			"Type": "2",
+			"AnimationList": "Two Hand Pound Fist",
+			"Name" : "mh_dg_tk_pndfst"
+		},
+		{
+			"Type": "2",
+			"AnimationList": "Two Hand Psych Up",
+			"Name" : "mh_dg_tk_psy_oth"
+		},
+		{
+			"Type": "2",
+			"AnimationList": "Two Hand Raised",
+			"Name" : "mh_dg_hnd_chop_v3"
+		},
+		{
+			"Type": "2",
+			"AnimationList": "Two Hand Stop",
+			"Name" : "mh_dg_hnd_stop"
+		},
+		{
+			"Type": "2",
+			"AnimationList": "Two_Hand_Look_Back",
+			"Name" : "mh_dg_tk_re_v2"
+		},
+		{
+			"Type": "2",
+			"AnimationList": "Two_Hand_Subservient",
+			"Name" : "mh_dg_tk_subservient"
+		},
+		{
+			"Type": "",
+			"AnimationList": "Walk_Backwards",
+			"Name" : "mh_dg_b_5p"
+		},
+		{
+			"Type": "",
+			"AnimationList": "Walk_Enter",
+			"Name" : "mh_dg_f_5p_ng "
+		},
+		{
+			"Type": "",
+			"AnimationList": "Walk_enter_left20",
+			"Name" : "mh_dg_tn_20_r_5p"
+		},
+		{
+			"Type": "",
+			"AnimationList": "Walk_enter_left45",
+			"Name" : "mh_dg_5p_tn_l_45"
+		},
+		{
+			"Type": "",
+			"AnimationList": "Walk_enter_left90",
+			"Name" : "mh_dg_5p_tn_l_90"
+		},
+		{
+			"Type": "",
+			"AnimationList": "Walk_enter_right20",
+			"Name" : "mh_dg_tn_20_l_5p"
+		},
+		{
+			"Type": "",
+			"AnimationList": "Walk_enter_right45",
+			"Name" : "mh_dg_5p_tn_r_45"
+		},
+		{
+			"Type": "",
+			"AnimationList": "Walk_enter_right90",
+			"Name" : "mh_dg_5p_tn_r_90"
+		},
+		{
+			"Type": "",
+			"AnimationList": "Walk_Forward_Exit",
+			"Name" : "mh_dg_f_5p"
+		},
+		{
+			"Type": "",
+			"AnimationList": "Wander_back_enter",
+			"Name" : "mh_dg_wandernrth_ex"
+		},
+		{
+			"Type": "",
+			"AnimationList": "Wander_back_exit",
+			"Name" : "mh_dg_wander_s_en"
+		},
+		{
+			"Type": "",
+			"AnimationList": "Wander_forward_enter",
+			"Name" : "mh_dg_wander_s_ex"
+		},
+		{
+			"Type": "",
+			"AnimationList": "Wander_forward_exit",
+			"Name" : "mh_dg_wandernrth_en"
+		},
+		{
+			"Type": "",
+			"AnimationList": "Wander_left_enter",
+			"Name" : "mh_dg_wandereast_ex"
+		},
+		{
+			"Type": "",
+			"AnimationList": "Wander_left_exit",
+			"Name" : "mh_dg_wanderwest_en"
+		},
+		{
+			"Type": "",
+			"AnimationList": "Wander_right_enter",
+			"Name" : "mh_dg_wanderwest_ex"
+		},
+		{
+			"Type": "",
+			"AnimationList": "Wander_right_exit",
+			"Name" : "mh_dg_wandereast_en"
+		},
+		{
+			"Type": "",
+			"AnimationList": "WanderBack",
+			"Name" : "mh_dg_wandersouth"
+		},
+		{
+			"Type": "",
+			"AnimationList": "WanderForward",
+			"Name" : "mh_dg_wandernorth"
+		},
+		{
+			"Type": "",
+			"AnimationList": "WanderLeft",
+			"Name" : "mh_dg_wanderwest"
+		},
+		{
+			"Type": "",
+			"AnimationList": "WanderRight",
+			"Name" : "mh_dg_wandereast"
+		},
+		{
+			"Type": "1",
+			"AnimationList": "WeightShift_1",
+			"Name" : "mh_po_tw_X1"
+		},
+		{
+			"Type": "1",
+			"AnimationList": "WeightShift_2",
+			"Name" : "mh_po_tw_X2"
+		},
+		{
+			"Type": "1",
+			"AnimationList": "WeightShift_3",
+			"Name" : "mh_po_tw_X3"
+		},
+		{
+			"Type": "1",
+			"AnimationList": "WeightShift_4",
+			"Name" : "mh_po_tw_X4"
+		},
+		{
+			"Type": "1",
+			"AnimationList": "WeightShift_5",
+			"Name" : "mh_po_tw_X5"
+		},
+		{
+			"Type": "1",
+			"AnimationList": "WeightShift_6",
+			"Name" : "mh_po_tw_X6"
+		},
+		{
+			"Type": "1",
+			"AnimationList": "WeightShift_7",
+			"Name" : "mh_po_tw_X7"
+		},
+		{
+			"Type": "1",
+			"AnimationList": "WeightShift_8",
+			"Name" : "mh_po_tw_X8"
+		},
+		{
+			"Type": "1",
+			"AnimationList": "WeightShift_9",
+			"Name" : "mh_po_tw_X9"
+		}
+	]
+}

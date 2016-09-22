@@ -1,5 +1,6 @@
 #pragma once
 
+class Engine;
 class ADA2UE4Creature;
 
 // -----------------------------------------------------------------------------
@@ -11,8 +12,6 @@ Stealth System Implementation
 // -----------------------------------------------------------------------------
 // owner: Georg Zoeller
 // -----------------------------------------------------------------------------
-#include "core_h.h"
-#include "effect_upkeep_h.h"
 
 // -----------------------------------------------------------------------------
 // @brief  Forces a target to become drop out of stealth mode

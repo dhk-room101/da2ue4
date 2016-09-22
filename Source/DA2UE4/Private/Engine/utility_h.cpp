@@ -1,9 +1,10 @@
 #include "DA2UE4.h"
-#include "DA2UE4Module.h"
+#include "DA2UE4GameInstance.h"
 #include "DA2UE4Creature.h"
 #include "utility_h.h"
 #include "effect_resurrection_h.h"
 #include "rules_h.h"
+#include "core_h.h"
 
 void UT_TeamGoesHostile(int32 nTeamID, int32 bHostile)
 {
@@ -56,8 +57,10 @@ TArray<ADA2UE4Creature*> UT_GetTeam(int32 nTeamID, int32 nMembersType)
 	return arNewList;
 }
 
-void UT_CombatStart(AActor* oAttacker, AActor* oTarget, int32 bTargetSelectionOverride, int32 nOverridePermanent)
+void UT_CombatStart(AActor* aAttacker, AActor* oTarget, int32 bTargetSelectionOverride, int32 nOverridePermanent)
 {
+	ADA2UE4Creature* oAttacker = Cast<ADA2UE4Creature>(aAttacker);
+
 	int32 nAttackGroup = GetGroupId(oAttacker);
 	int32 nTargetGroup = GetGroupId(oTarget);
 	int32 bHostilityChanged = FALSE_;
@@ -80,9 +83,9 @@ void UT_CombatStart(AActor* oAttacker, AActor* oTarget, int32 bTargetSelectionOv
 	}
 
 	// If creature was lying on the ground then need to remove fake-death effect
-	if (GetLocalInt(oAttacker, CREATURE_SPAWN_DEAD) == 2)
+	if (oAttacker->CREATURE_SPAWN_DEAD == 2)
 	{
-		SetLocalInt(oAttacker, CREATURE_SPAWN_DEAD, 0);
+		oAttacker->CREATURE_SPAWN_DEAD = 0;
 		RemoveEffectsByParameters(oAttacker, EFFECT_TYPE_SIMULATE_DEATH);
 	}
 
@@ -128,11 +131,11 @@ void UT_CombatStart(AActor* oAttacker, AActor* oTarget, int32 bTargetSelectionOv
 		Log_Trace(LOG_CHANNEL_SYSTEMS, "UT_CombatStart",
 			"Forcing attacker to attack target");
 #endif
-		SetLocalObject(oAttacker, AI_TARGET_OVERRIDE, oTarget);
+		oAttacker->AI_TARGET_OVERRIDE = FName(*oTarget->GetName());
 		if (nOverridePermanent)
-			SetLocalInt(oAttacker, AI_TARGET_OVERRIDE_DUR_COUNT, -1); // -1 flags permanent override
+			oAttacker->AI_TARGET_OVERRIDE_DUR_COUNT = -1; // -1 flags permanent override
 		else
-			SetLocalInt(oAttacker, AI_TARGET_OVERRIDE_DUR_COUNT, 0);
+			oAttacker->AI_TARGET_OVERRIDE_DUR_COUNT = 0;
 	}
 
 	// Hostility Change Failed
@@ -158,57 +161,57 @@ void UT_CombatStart(AActor* oAttacker, AActor* oTarget, int32 bTargetSelectionOv
 	}
 }
 
-int32 UT_GetShoutsFlag(AActor* oActor)
+int32 UT_GetShoutsFlag(AActor* aCreature)
 {
-	return GetLocalInt(oActor, SHOUTS_ACTIVE);
+	ADA2UE4Creature* oCreature = Cast<ADA2UE4Creature>(aCreature);
+
+	return oCreature->SHOUTS_ACTIVE;
 }
 
 void UT_SetShoutsFlag(AActor* oActor, int32 bEnable = TRUE_)
 {
-	SetLocalInt(oActor, SHOUTS_ACTIVE, bEnable);
+	ADA2UE4Creature* oCreature = Cast<ADA2UE4Creature>(oActor);
+	oCreature->SHOUTS_ACTIVE = bEnable;
 }
 
-void UT_Talk(AActor* oSpeaker, AActor* oListener, FString rConversation, int32 nPartyResurrection)
+void UT_Talk(AActor* oTarget, int32 nConversation, int32 nPartyResurrection)
 {
+	Log_Trace(LOG_CHANNEL_SYSTEMS, "utility_h.UT_Talk", "speaker: " + GetTag(oTarget) + ", listener: " + GetTag(GetHero()) + ", conversation: " + IntToString(nConversation));
 
-	FString sDialogResRef = rConversation;
-
-	Log_Trace(LOG_CHANNEL_SYSTEMS, "utility_h.UT_Talk", "speaker: " + GetTag(oSpeaker) + ", listener: " + GetTag(oListener) + ", conversation: " + sDialogResRef);
-
-	if (GetGameMode() == GM_DEAD)
+	if (GetGameMode() == EGameMode::GM_DEAD)
 	{
 		Log_Trace(LOG_CHANNEL_SYSTEMS, "utility_h.UT_Talk", "PARTY IS DEAD - CANT TRIGGER DIALOG!", nullptr, LOG_SEVERITY_CRITICAL);
 		return;
 	}
 
-	int32 n = GetLocalInt(GetModule(), DISABLE_FOLLOWER_DIALOG);
-	Log_Trace(LOG_CHANNEL_SYSTEMS, "utility_h.UT_Talk", "disable follower dialog=  " + IntToString(n), nullptr, LOG_SEVERITY_CRITICAL);
+	int32 n = GetModule()->DISABLE_FOLLOWER_DIALOG;
+	Log_Trace(LOG_CHANNEL_SYSTEMS, "utility_h.UT_Talk", "disable follower dialog = " + IntToString(n), nullptr, LOG_SEVERITY_CRITICAL);
 
-	if (GetFollowerState(oSpeaker) != FOLLOWER_STATE_INVALID && GetLocalInt(GetModule(), DISABLE_FOLLOWER_DIALOG) == 1 && GetHero() != GetPartyLeader())
+	if (GetFollowerState(oTarget) != FOLLOWER_STATE_INVALID && GetModule()->DISABLE_FOLLOWER_DIALOG == 1 && GetHero() != GetPartyLeader())
 	{
 		Log_Trace(LOG_CHANNEL_SYSTEMS, "utility_h.UT_Talk", "Party leader is not hero when clicking on follower - running soundset instead", nullptr, LOG_SEVERITY_CRITICAL);
-		PlaySoundSet(oSpeaker, SS_YES);
+		PlaySoundSet(oTarget, SS_YES);
 		return;
 	}
 
 	if (nPartyResurrection)
 		ResurrectPartyMembers(FALSE_);
 
-	ClearAmbientDialogs(oSpeaker); // this makes sure an already running ambient dialog triggers its plot flag action
+	ClearAmbientDialogs(oTarget); // this makes sure an already running ambient dialog triggers its plot flag action
 
-	if (IsFollower(oListener))
-		oListener = GetPartyLeader(); //DHK not needed, as we initiate directly with oSpeaker/target
+	if (IsFollower(oTarget))
+		oTarget = GetPartyLeader(); //DHK not needed, as we initiate directly with oSpeaker/target
 
-	FString rOverrideConversation = GetLocalResource(GetModule(), PARTY_OVERRIDE_DIALOG);
-	int32 bOverride = GetLocalInt(GetModule(), PARTY_OVERRIDE_DIALOG_ACTIVE);
+	int32 rOverrideConversation = GetModule()->PARTY_OVERRIDE_DIALOG.IsNone() ? 0 : 1;
+	int32 bOverride = GetModule()->PARTY_OVERRIDE_DIALOG_ACTIVE;
 
-	if (IsFollower(oSpeaker)
+	if (IsFollower(oTarget)
 		&& bOverride
 		&& GetPartyLeader() != GetHero())
 	{
 		Log_Trace(LOG_CHANNEL_SYSTEMS, "utility_h.UT_Talk", "overriding dialog with: " + rOverrideConversation);
-		rConversation = rOverrideConversation;
-		sDialogResRef = rConversation;
+		nConversation = rOverrideConversation;
+		//sDialogResRef = rConversation;
 	}
 
 
@@ -220,7 +223,7 @@ void UT_Talk(AActor* oSpeaker, AActor* oListener, FString rConversation, int32 n
 	//TODO implement STATS
 	//STATS_TrackStartedDialogues(oListener);
 
-	BeginConversation(oSpeaker, rConversation);
+	BeginConversation(oTarget, nConversation);
 }
 
 AActor* UT_GetNearestCreature(AActor* aActor, int32 nIncludeSelf)

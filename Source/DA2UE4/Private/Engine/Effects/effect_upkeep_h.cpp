@@ -1,7 +1,15 @@
 #include "DA2UE4.h"
 #include "DA2UE4Creature.h"
+#include "ldf.h"
 #include "effect_upkeep_h.h"
 #include "ui_h.h"
+#include "m2da_constants_h.h"
+#include "events_h.h"
+#include "effect_constants_h.h"
+//#include "attributes_h"
+//#include "config_h"
+//#include "ui_h"
+
 
 void Effects_RemoveUpkeepEffect(AActor* oCaster, int32 nAbilityId)
 {

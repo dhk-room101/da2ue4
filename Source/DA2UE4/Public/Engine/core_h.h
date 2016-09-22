@@ -15,13 +15,9 @@
 //  2006/11/27 - Owner: Georg Zoeller
 //------------------------------------------------------------------------------
 
-class ADA2UE4Creature;
-
 #include "ldf.h"
-#include "effect_constants_h.h"
-#include "m2da_data_h.h"
-#include "core_difficulty_h.h"
-#include "STypes.h"
+
+class ADA2UE4Creature;
 
 //const int32   DA_LEVEL_CAP = 25;  // Dragon Age level cap. Note: This is one of several values that control this (including max_val on properties.xls!)
 
@@ -126,7 +122,7 @@ void _LogDamage(FString msg, AActor* oTarget = nullptr);
 int32 IsPartyMember(AActor* oCreature);
 
 /**
-* @brief (core_h)Returns 1 if a creature is currently dying or 
+* @brief (core_h)Returns 1 if a creature is currently dying or
 * has been dealt a deathblow
 *
 * @param oCreature The creature to check
@@ -146,7 +142,7 @@ int32 IsDying(AActor* oCreature);
 *
 * @author Georg Zoeller
 *  ---------------------------------------------------------------------------**/
-int32 IsDisabled(AActor* oCreature, int32 bGroundCheck = 0);
+int32 IsDisabled(AActor* oCreature, int32 bGroundCheck = FALSE_);
 
 /**
 *   @brief Returns a creature's core class (mage, rogue, warrior)
@@ -263,7 +259,7 @@ int32 Min(int32 n1, int32 n2);
 *  @brief Small helper for dealing with random floats in some combat functions
 *  @author Georg
 **/
-float RandFF(float fRange, float fStatic = 0.0f, int32 bDeterministic = 0);
+float RandFF(float fRange, float fStatic = 0.0f, int32 bDeterministic = FALSE_);
 
 /**
 * @brief (core_h)Sets a CREATURE_FLAG_* flag (boolean persistent variable) on a creature
@@ -279,7 +275,7 @@ float RandFF(float fRange, float fStatic = 0.0f, int32 bDeterministic = 0);
 *
 * @author Georg Zoeller
 **/
-void SetCreatureFlag(AActor* oCreature, int32 nFlag, int32 bSet = 1);
+void SetCreatureFlag(AActor* oCreature, int32 nFlag, int32 bSet = TRUE_);
 
 /**
 * @brief (core_h)Returns the state of a creature flag
@@ -308,7 +304,7 @@ int32 GetAIBehavior(AActor* oCreature);
 *  @param bExlcudeWand use to exclude wand (e.g. check specifically for box/xbow)
 *  @author Georg
 **/
-int32 IsUsingRangedWeapon(AActor* oCreature, AActor* oItem = nullptr, int32 bExludeWand = 0);
+int32 IsUsingRangedWeapon(AActor* oCreature, AActor* oItem = nullptr, int32 bExludeWand = FALSE_);
 
 /**
 *  @brief returns true if creature x is using a ranged weapon
@@ -330,7 +326,7 @@ int32 IsUsingShield(AActor* oCreature, AActor* oItem = nullptr);
 *
 * @author Georg Zoeller
 *  ---------------------------------------------------------------------------**/
-void ApplyEffectOnObject(int32 nDurationType, FEffect eEffect, AActor* oTarget, float fDuration = 0.0f, int32 nAbilityId = 0);
+void ApplyEffectOnObject(int32 nDurationType, FEffect eEffect, AActor* oTarget, float fDuration = 0.0f, int32 nAbilityId = FALSE_);
 
 // -----------------------------------------------------------------------------
 // Return if a forced combat result was set on the creature
@@ -367,7 +363,7 @@ float GetCreatureDefense(AActor* oCreature);
 * @brief Retrieves weapon damage for the staff
 * @author georg
 */
-float Combat_Damage_GetMageStaffDamage(AActor* oAttacker, AActor* oTarget, AActor* oWeapon, int32 bDeterministic = 0);
+float Combat_Damage_GetMageStaffDamage(AActor* oAttacker, AActor* oTarget, AActor* oWeapon, int32 bDeterministic = FALSE_);
 
 float GetCreatureSpellPower(AActor* oCreature);
 
@@ -378,7 +374,7 @@ float GetCreatureSpellPower(AActor* oCreature);
 *
 * @author georg
 */
-float DmgGetWeaponDamage(AActor* oWeapon, int32 bForceMaxDamage = 0);
+float DmgGetWeaponDamage(AActor* oWeapon, int32 bForceMaxDamage = FALSE_);
 
 /*
 * @brief Retrieves a weapons base damage from the defined item stat.
@@ -408,7 +404,7 @@ float GetWeaponAttributeBonusFactor(AActor* oWeapon);
 *
 * @author georg
 */
-float Combat_Damage_GetAttributeBonus(AActor* oCreature, int32 nHand = HAND_MAIN, AActor* oWeapon = nullptr, int32 bDeterministic = 0);
+float Combat_Damage_GetAttributeBonus(AActor* oCreature, int32 nHand = HAND_MAIN, AActor* oWeapon = nullptr, int32 bDeterministic = FALSE_);
 
 float GetAttributeModifier(AActor* oCreature, int32 nAttribute);
 
@@ -467,3 +463,33 @@ float CalculateAttackTiming(AActor* oAttacker, AActor* oWeapon);
 int32 IsArmorMassive(AActor* oArmor);
 
 int32 IsArmorHeavyOrMassive(AActor* oArmor);
+
+/** @brief Begins a conversation with the given AActor
+*
+* If rConversationFile is specified then that file will be used, otherwise
+* the conversation specified on the creature will be used
+*
+* @param * oTarget - The AActor* that will own the conversation
+* @param rConversationFile (optional) - The name of a dlg file to be used (*.con)
+* @author Jon Thompson
+*/
+void BeginConversation(AActor* oTarget, int32 rConversationFile = FALSE_);
+
+/**
+*   @brief returns if the creature can be deathblowed
+*
+*   [core_h] Sets the requested combat state on all party members
+*
+*   @param bCombatState True to set combat state, false to unset
+*
+*   @author georg
+**/
+void SetCombatStateParty(int32 bCombatState);
+
+// -----------------------------------------------------------------------------
+// @brief Safe Wrapper for DestroyObject
+//      Reason: There were accidents where creatures would deplete themselves
+//              as Ammo because people were not paying attention....
+// @author Georg
+// -----------------------------------------------------------------------------
+void Safe_Destroy_Object(AActor* aActor, int32 nDelayMs = 0);

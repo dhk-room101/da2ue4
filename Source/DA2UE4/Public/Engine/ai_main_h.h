@@ -1,4 +1,9 @@
 #pragma once
+
+#include "STypes.h"
+
+class Engine;
+
 //////////////////////////////////////////////
 // ai_main_h
 //
@@ -13,20 +18,6 @@
 * Main AI interface functions
 */
 /** @{*/
-
-#include "ldf.h"
-#include "ai_threat_h.h"
-#include "log_h.h"
-#include "wrappers_h.h"
-#include "ai_threat_h.h"
-#include "events_h.h"
-//#include "effects_h.h"
-#include "items_h.h"
-//#include "ability_h.h"
-#include "ai_conditions_h.h"
-#include "ai_constants_h.h"
-//#include "ai_ballista_h.h"
-#include "ai_behaviors_h.h"
 
 /** @brief Determines the exact action to take for the next combat round for the current creature
 *
@@ -43,15 +34,15 @@
 * @param nLastSubCommand last sub command (ability ID for use ability commands)
 * @author Yaron
 */
-void AI_DetermineCombatRound(AActor* OBJECT_SELF, AActor* oLastTarget = nullptr, int32 nLastCommand = -1, int32 nLastCommandStatus = COMMAND_SUCCESSFUL, int32 nLastSubCommand = -1);
+ECombatResult AI_DetermineCombatRound(AActor* OBJECT_SELF, AActor* oLastTarget = nullptr, int32 nLastCommand = -1, int32 nLastCommandStatus = 1 /*COMMAND_SUCCESSFUL*/, int32 nLastSubCommand = -1);
 
 // returns a command to wait or play a taunt animation
-FCommand _AI_DoNothing(AActor* OBJECT_SELF, int32 nLastTacticID, int32 nLastCommandStatus, int32 nAllowTaunts = FALSE_, int32 bQuick = FALSE_, AActor* oTarget = nullptr, int32 nClearThreat = TRUE_);
+FCommand _AI_DoNothing(AActor* OBJECT_SELF, int32 nLastTacticID, int32 nLastCommandStatus, int32 nAllowTaunts = 0, int32 bQuick = 0, AActor* oTarget = nullptr, int32 nClearThreat = 1);
 
 // Light AI for creatures fighting other creatures away from the player
-void AI_DetermineCombatRound_Light(AActor* OBJECT_SELF, AActor* oLastTarget = nullptr, int32 nLastCommand = -1, int32 nLastCommandStatus = COMMAND_SUCCESSFUL, int32 nLastSubCommand = -1);
+void AI_DetermineCombatRound_Light(AActor* OBJECT_SELF, AActor* oLastTarget = nullptr, int32 nLastCommand = -1, int32 nLastCommandStatus = 1 /*COMMAND_SUCCESSFUL*/, int32 nLastSubCommand = -1);
 
-// returns TRUE_ if cooldown is clear to run again, FALSE_ otherwise
+// returns 1 if cooldown is clear to run again, 0 otherwise
 int32 _AI_CheckMoveTimer(AActor* OBJECT_SELF);
 
 void _AI_SetMoveTimer(AActor* OBJECT_SELF);
@@ -61,7 +52,7 @@ void _AI_SetMoveTimer(AActor* OBJECT_SELF);
 * The user can choose to selectively disable AI on a per-creature basis.
 *
 * @param oCreature - the creature to query.
-* @return - TRUE_ if AI is enabled for this creature.
+* @return - 1 if AI is enabled for this creature.
 * @author Jacques
 */
 int32 IsPartyAIEnabled(AActor* aActor);
@@ -76,12 +67,12 @@ int32 IsPartyAIEnabled(AActor* aActor);
 * @param nLastSubCommand last sub command (ability ID for use ability commands)
 * @author Yaron
 */
-void AI_DetermineCombatRound_Partial(AActor* OBJECT_SELF, AActor* oLastTarget = nullptr, int32 nLastCommand = -1, int32 nLastCommandStatus = COMMAND_SUCCESSFUL, int32 nLastSubCommand = -1);
+void AI_DetermineCombatRound_Partial(AActor* OBJECT_SELF, AActor* oLastTarget = nullptr, int32 nLastCommand = -1, int32 nLastCommandStatus = 1 /*COMMAND_SUCCESSFUL*/, int32 nLastSubCommand = -1);
 
 /** @brief Check if the specified target is within melee range
 *
 * @param oTarget the target we check melee range for
-* @returns TRUE_ if oTarget is within melee range, FALSE_ otherwise
+* @returns 1 if oTarget is within melee range, 0 otherwise
 * @author Yaron
 */
 int32 _AI_IsTargetInMeleeRange(AActor* OBJECT_SELF, AActor* oTarget);
@@ -96,7 +87,7 @@ int32 _AI_GetWeaponSetEquipped(AActor* oTarget);
 /** @brief Check if the current creature has a specific weapon set available (non-equipped)
 *
 * @param nWeaponSetType the weapon set we are looking for, assuming it is the non-equipped weapon set
-* @returns TRUE_ if the current creature has the weapon set, FALSE_ otherwise
+* @returns 1 if the current creature has the weapon set, 0 otherwise
 * @author Yaron
 */
 int32 _AI_HasWeaponSet(AActor* OBJECT_SELF, int32 nWeaponSetType);
@@ -116,7 +107,7 @@ FCommand _AI_SwitchWeaponSet(AActor* OBJECT_SELF, int32 nWeaponSetType);
 */
 int32 _AI_GetPackageTable(AActor* OBJECT_SELF);
 
-// Returns TRUE_ if GUI tables should be used, FALSE_ if 2da tables should be used
+// Returns 1 if GUI tables should be used, 0 if 2da tables should be used
 int32 _AI_UseGUITables(AActor* OBJECT_SELF);
 
 /** @brief Returns the number of tactics the creature has in it's package
@@ -134,7 +125,7 @@ int32 _AI_GetTacticsNum(int32 nPackageTable);
 * @param nPackageTable the package table for the specified tactic
 * @param nTacticID the tactic ID that we are trying to execute
 * @param nLastCommandStatus used in AI_ExecuteAttack
-* @returns TRUE_ if the tactic was executed, FALSE_ otherwise
+* @returns 1 if the tactic was executed, 0 otherwise
 * @author Yaron
 */
 int32 _AI_ExecuteTactic(AActor* OBJECT_SELF, int32 nPackageTable, int32 nTacticID, int32 nLastCommandStatus, int32 nUseGUITables);
@@ -147,7 +138,7 @@ FString _AI_GetCommandString(int32 nAICommand);
 *
 * @param nCommand the main command being checked
 * @param nSubCommand the sub-command being checked
-* @returns TRUE_ if the FCommand can be executed, FALSE_ otherwise
+* @returns 1 if the FCommand can be executed, 0 otherwise
 * @author Yaron
 */
 int32 _AI_IsCommandValid(AActor* OBJECT_SELF, int32 nCommand, int32 nSubCommand, int32 nTacticTargetType = -1);
@@ -163,7 +154,7 @@ FCommand _AI_GetPotionUseCommand(AActor* OBJECT_SELF, AActor* oItem);
 // checks for AI-specifics conditions for using this ability on the required target
 int32 _AI_CanUseAbility(AActor* OBJECT_SELF, int32 nAbility, AActor* oTarget);
 
-FCommand _AI_GetFlyCommand(AActor* OBJECT_SELF, AActor* oTurnTo, int32 bMoveTo = FALSE_);
+FCommand _AI_GetFlyCommand(AActor* OBJECT_SELF, AActor* oTurnTo, int32 bMoveTo = 0);
 
 /** @brief Executes an attack command including possible weapon switching
 *
@@ -181,15 +172,15 @@ void _AI_ApplyTimerDifficultyEffects(AActor* OBJECT_SELF, AActor* oTarget);
 * @param sFlag the flag we check for
 * @author Yaron
 */
-void _AI_SetFlag(AActor* OBJECT_SELF, FName sFlag, int32 nValue);
+void _AI_SetFlag(AActor* OBJECT_SELF, int32 nFlag, int32 nValue);
 
 /** @brief Gets the value of a specific AI flag on the current creature
 *
 * @param nFlag the flag we check for
-* @returns TRUE_ if the flag is set on the current creature, FALSE_ otherwise
+* @returns 1 if the flag is set on the current creature, 0 otherwise
 * @author Yaron
 */
-int32 _AI_GetFlag(AActor* OBJECT_SELF, FName Flag);
+int32 _AI_GetFlag(AActor* OBJECT_SELF, int32 nFlag);
 
 // Move to main controlled follower in formation
 FCommand _AI_MoveToControlled(AActor* OBJECT_SELF, int32 nLastCommandStatus);
@@ -197,7 +188,7 @@ FCommand _AI_MoveToControlled(AActor* OBJECT_SELF, int32 nLastCommandStatus);
 int32 AI_GetPartyAllowedToAttack(AActor* OBJECT_SELF);
 
 // Executes the AI default action for DetermineCombatRound
-void AI_ExecuteDefaultAction(AActor* OBJECT_SELF, AActor* oLastTarget = nullptr, int32 nLastCommand = 0, int32 nLastCommandStatus = COMMAND_SUCCESSFUL, int32 nLastSubCommand = -1);
+void AI_ExecuteDefaultAction(AActor* OBJECT_SELF, AActor* oLastTarget = nullptr, int32 nLastCommand = 0, int32 nLastCommandStatus = 1 /*COMMAND_SUCCESSFUL*/, int32 nLastSubCommand = -1);
 
 void AI_HandleCowardFollower(AActor* OBJECT_SELF, AActor* oAppear = nullptr);
 
@@ -206,7 +197,7 @@ void AI_HandleCowardFollower(AActor* OBJECT_SELF, AActor* oAppear = nullptr);
 * A few examples are bashing a container or door, lockpicking and then opening a gate, etc.
 *
 * @param oBlockingObject the AActor* blocking the path
-* @returns TRUE_ if the AI found a solution to deal with the blocking AActor
+* @returns 1 if the AI found a solution to deal with the blocking AActor
 * @author Jose
 */
 int32 AI_DeterminePathBlockedAction(AActor* OBJECT_SELF, AActor* oBlockingObject);

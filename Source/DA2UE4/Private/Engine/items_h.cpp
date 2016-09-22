@@ -1,6 +1,9 @@
 #include "DA2UE4.h"
 #include "items_h.h"
 
+#include "ldf.h"
+#include "core_h.h"
+
 int32 Items_GetMeleeWeaponSet(AActor* oCreature)
 {
 	int32 nWeaponSet = GetActiveWeaponSet(oCreature);

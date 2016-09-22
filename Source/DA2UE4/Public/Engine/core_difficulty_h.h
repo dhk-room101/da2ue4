@@ -12,8 +12,6 @@ as a core file, this CANNOT include any other files
 // owner: noel borstad
 // -----------------------------------------------------------------------------
 
-#include "m2da_constants_h.h"
-
 class Engine;
 
 /** @brief Returns the appropriate autoscale table to use based on current difficulty
@@ -23,8 +21,6 @@ class Engine;
 **/
 int32 Diff_GetAutoScaleTable();
 
-//This function is duplicated within the game executable. Any change made to this function will 
-//result in GUI glitches and other bugs. Sorry.
 float Diff_GetAbilityUseMod(AActor* oCreature);
 
 float Diff_GetRulesAttackBonus(AActor* oAttacker);

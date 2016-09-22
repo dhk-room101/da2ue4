@@ -16,13 +16,6 @@ including, but not limited to:
 // Owner: Georg Zoeller
 // ----------------------------------------------------------------------------
 
-//#include "effects_h.h"
-#include "m2da_constants_h.h"
-//#include "config_h.h"
-#include "events_h.h"
-#include "items_h.h"
-//#include "sys_resistances_h.h"
-
 // abi flags
 const int32 ABILITY_FLAG_RANGED_WEAPON = 1;  /*0x01*/
 
@@ -193,3 +186,51 @@ int32 Ability_CheckUseConditions(AActor* oCaster, AActor* oTarget, int32 nAbilit
 *
 **/
 int32 Ability_GetAbilityTargetType(int32 nAbility, int32 nAbilityType);
+
+void Ability_OnGameModeChange(int32 nNewGM);
+
+/** ----------------------------------------------------------------------------
+* @brief Deactivates a modal ability
+*
+* Runs the spellscript for an ability with the DEACTIVE_MODAL_ABILITY event\
+*
+* @param oCaster        The creature to deactivate the ability on
+* @param nAbility       The modal ability to deactivate
+* @param nAbilityType   The ability type of the modal ability
+*
+*
+* @returns TRUE_ if the ability was terminated successfully
+*
+* @author   Georg Zoeller
+*  -----------------------------------------------------------------------------
+**/
+int32 Ability_DeactivateModalAbility(AActor* oCaster, int32 nAbility, int32 nAbilityType = ABILITY_TYPE_INVALID);
+
+/**
+* @brief Handles running an ability spellscript listed in the prop
+*
+* @param ev           The event to message to the spellscript
+* @param nAbility     The Ability ID (ABILITY_*)
+* @param nAbilityType The type of the ability
+*
+* @returns  COMMAND_RESULT_* constant if event is EventSpellScriptPending:
+*
+* @author   Georg Zoeller
+*
+**/
+int32 Ability_DoRunSpellScript(FGameEvent ev, int32 nAbility, int32 nAbilityType);
+
+/**
+* @brief Special version of HandleEvent for use by Ability_DoRunSpellScript
+*
+*                 ** Utility Function, do not call elsewhere **
+*
+* @param ev           The event to message to the spellscript
+* @param sFile        2da to run
+*
+* @returns  COMMAND_RESULT_* constant if event is EventSpellScriptPending:
+*
+* @author   Georg Zoeller
+*
+**/
+int32 _Ability_HandleEvent(FGameEvent ev, FString rResource);

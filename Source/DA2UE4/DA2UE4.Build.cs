@@ -10,5 +10,6 @@ public class DA2UE4 : ModuleRules
         PublicDependencyModuleNames.AddRange(new string[] { "Json", "JsonUtilities" }); //for Json
         PublicDependencyModuleNames.AddRange(new string[] { "GameplayTasks" }); //for BT
         PublicDependencyModuleNames.AddRange(new string[] { "UMG", "Slate", "SlateCore" }); //for UMG
+        PublicDependencyModuleNames.AddRange(new string[] { "MoviePlayer" }); // for loading screen
     }
 }

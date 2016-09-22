@@ -2,30 +2,76 @@
 #include "DA2UE4.h"
 #include "DA2UE4Creature.h"
 #include "DA2UE4Item.h"
-#include "DA2UE4Module.h"
+#include "DA2UE4GameInstance.h"
 #include "DA2UE4Library.h"
 #include "DA2UE4PlayerController.h"
+#include "DA2UE4CreatureController.h"
+#include "DA2UE4Party.h"
 #include "DA2UE4TargetPoint.h"
+#include "DA2UE4Trigger.h"
 
 #include "Json.h"
 
+#include "UMG.h"
+
 #include "ldf.h"
 #include "events_h.h"
+#include "STypes.h"
 
 #include "Kismet/KismetMathLibrary.h"
 
-/*obsolete
-//#include "Engine.h"
-//#include "Engine/DataTable.h"
-//#include "TableCommands.h"
-*/
+#include <string>
 
 //DHK
 
-//HandleTable();
-/*FString table = "Commands";
-FString key = "Label";
-HandleJson(&table, &key);*/
+FString GetRealName(FString instance)
+{
+	const TCHAR *delim;
+	delim = TEXT("_");
+
+	TArray<FString> Parsed;
+	instance.ParseIntoArray(Parsed, delim);
+
+	FString _final;
+
+	for (int32 i = 0; i < Parsed.Num() - 1; i++)
+	{
+		_final += Parsed[i];
+		if (i < Parsed.Num() - 2)
+			_final += "_";
+	}
+
+	return _final;
+}
+
+int64 GetNewHash(FString sString, int32 bGuid)
+{
+	int64 _hash = 0xCBF29CE484222325;
+
+	if (bGuid == TRUE_)
+	{
+		sString = sString.Replace(TEXT("-"), TEXT(""));
+		sString = sString.Replace(TEXT("{"), TEXT(""));
+		sString = sString.Replace(TEXT("}"), TEXT(""));
+	}
+
+	for (char cc : sString.GetCharArray())
+	{
+		_hash *= 0x00000100000001B3;
+		_hash ^= cc;
+	}
+
+	if (_hash < 0)
+		_hash = _hash + UINT64_MAX + 1;
+
+#ifdef DEBUG
+	FString hashString(std::to_string(_hash).c_str());
+	LogWarning("FNV64 HASH: " + hashString + " from FString " + sString);
+
+#endif // DEBUG
+
+	return _hash;
+}
 
 FString GetJSON(int32 n2DA)
 {
@@ -35,6 +81,9 @@ FString GetJSON(int32 n2DA)
 	{
 		//case TABLE_AREA_LOAD_HINT: _resource = "LoadHints"; break;
 		//case TABLE_AREA_LOAD_HINT_VLOW: _resource = "LoadHintsVLowLevel"; break;
+	case TABLE_CONVERSATION_ANIMATIONS: _resource = "ANIM_conversation"; break;
+	case TABLE_BASE_ANIMATIONS: _resource = "ANIM_base"; break;
+	case TABLE_COMBAT_ANIMATIONS: _resource = "ANIM_combat"; break;
 	case TABLE_PROJECTILES: _resource = "Projectiles"; break;
 	case TABLE_ITEMPRPS: _resource = "ItemProperties"; break;
 	case TABLE_UI_MESSAGES: _resource = "UIMessages"; break;
@@ -75,35 +124,15 @@ FString GetJSON(int32 n2DA)
 
 		//AI Packages
 	case AI_TABLE_DEFAULT: _resource = "AIP_Default"; break;
-
+#ifdef DEBUG
 	default: LogError("Unknown Table ID requested:" + n2DA); break;
+
+#endif // DEBUG
+
 	}
 
 	return _resource;
 }
-
-/*void ADA2UE4GameMode::HandleTable()
-{
-UDataTable* GameObjectLookupTable;
-static ConstructorHelpers::FObjectFinder<UDataTable>
-GameObjectLookupDataTable_BP(TEXT("DataTable'/Game/Data/M2da/TableCommands.TableCommands'"));
-GameObjectLookupTable = GameObjectLookupDataTable_BP.Object;
-FTableCommands* row;
-for (auto it : GameObjectLookupTable->RowMap)
-{
-#ifdef DEBUG
-if (it.Key == "89")
-{
-row = (FTableCommands*)(it.Value);
-FString rLabel = row->Label;
-#ifdef DEBUG
-UE_LOG(LogTemp, Warning, TEXT("%s and %s"), *it.Key.ToString(), *rLabel);
-#endif
-break;
-}
-#endif
-}
-}*/
 
 int32 GetJsonNodeCount(FString table)
 {
@@ -121,7 +150,6 @@ int32 GetJsonNodeCount(FString table)
 
 	if (FJsonSerializer::Deserialize(JsonReader, JsonObject) && JsonObject.IsValid())
 	{
-		FString keyID = "ID";
 		TArray<TSharedPtr<FJsonValue>> objArray = JsonObject->GetArrayField(*table);
 
 		return objArray.Num();
@@ -134,7 +162,7 @@ int32 GetJsonNodeCount(FString table)
 	return -1;
 }
 
-FString GetJsonNode(FString table, FString key, FString sRow)
+FString GetJsonNode(FString table, FString keyValue, FString sRow, FString keyID)
 {
 	FString sValue;
 
@@ -150,7 +178,7 @@ FString GetJsonNode(FString table, FString key, FString sRow)
 
 	if (FJsonSerializer::Deserialize(JsonReader, JsonObject) && JsonObject.IsValid())
 	{
-		FString keyID = "ID";
+		//FString keyID = "ID";
 		TArray<TSharedPtr<FJsonValue>> objArray = JsonObject->GetArrayField(*table);
 
 		if (objArray.Num() > 0)
@@ -164,7 +192,7 @@ FString GetJsonNode(FString table, FString key, FString sRow)
 
 				if (id == sRow)
 				{
-					sValue = json->GetStringField(*key);
+					sValue = json->GetStringField(*keyValue);
 					break;
 				}
 				counter++;
@@ -180,6 +208,30 @@ FString GetJsonNode(FString table, FString key, FString sRow)
 	return sValue;
 }
 
+FString GetConvAnimString(FString sField)
+{
+	FString json = GetJSON(TABLE_CONVERSATION_ANIMATIONS);
+	return GetJsonNode(json, "Name", sField, "AnimationList");
+}
+
+FString GetConvAnimType(FString sField)
+{
+	FString json = GetJSON(TABLE_CONVERSATION_ANIMATIONS);
+	return GetJsonNode(json, "Type", sField, "AnimationList");
+}
+
+UAnimSequence* GetConvAnimation(FString AnimationResource)
+{
+	//AnimSequence'/Game/Data/Art/Anims/CNV/mh_2p_exchange_a.mh_2p_exchange_a'
+	FString sPath = "/Game/Data/Art/Anims/CNV/";
+	sPath += AnimationResource;
+	sPath += ".";
+	sPath += AnimationResource;
+
+	UAnimSequence* animSequence = LoadAnimationSequenceFromPath(FName(*sPath));
+	return animSequence;
+}
+
 UWorld* GetCurrentWorld()
 {
 	bool IsValid;
@@ -188,9 +240,7 @@ UWorld* GetCurrentWorld()
 
 ADA2UE4PlayerController* GetCurrentPlayerController()
 {
-	UWorld* world = GetCurrentWorld();
-	ADA2UE4PlayerController* playerController = Cast<ADA2UE4PlayerController>(GetModule()->PLAYER_LEADER_STORE->GetController());
-	return playerController;
+	return Cast<ADA2UE4PlayerController>(Cast<APawn>(GetActorFromName(GetModule()->PLAYER_LEADER_STORE))->GetController());
 }
 
 int32 GetGameSettings(int32 nSetting)
@@ -198,8 +248,22 @@ int32 GetGameSettings(int32 nSetting)
 	return GetM2DAInt(TABLE_GAME_SETTINGS, "Value", nSetting);
 }
 
-//DA
+AActor* GetActorFromName(FName name)
+{
+	if (name.IsNone()) return nullptr;
 
+	for (TActorIterator<ADA2UE4Creature> ActorItr(GetCurrentWorld()); ActorItr; ++ActorItr)
+	{
+		ADA2UE4Creature* oCreature = *ActorItr;
+		if (oCreature->GetName() == name.ToString())
+		{
+			return oCreature;
+		}
+	}
+	return nullptr;
+}
+
+//DA
 void LogTrace(int32 nChannel, FString sLogEntry, AActor* oTarget)
 {
 #ifdef DEBUG
@@ -216,9 +280,15 @@ FString IntToString(int32 nInteger)
 	return FString::FromInt(nInteger);
 }
 
+FString Int64ToString(int64 nInteger)
+{
+	FString nString(std::to_string(nInteger).c_str());
+	return nString;
+}
+
 FString IntToHexString(int32 nInteger)
 {
-	//TODO int to hex string
+	//TODO int32 to hex FString
 	return FString::FromInt(nInteger);
 }
 
@@ -238,147 +308,6 @@ int32 FloatToInt(float fFloat)
 	return fFloat;
 }
 
-FGameEvent GetLocalEvent(AActor* aActor, FName sVarName)
-{
-	if (aActor == nullptr) return FGameEvent(EVENT_TYPE_INVALID);
-	if (aActor->IsA(ADA2UE4Creature::StaticClass()))
-	{
-		ADA2UE4Creature* aCreature = Cast<ADA2UE4Creature>(aActor);
-
-		UProperty* PropIt = aCreature->GetClass()->FindPropertyByName(sVarName);
-		FGameEvent* ResolvedProperty = PropIt->ContainerPtrToValuePtr<FGameEvent>(aCreature);
-
-		return (*ResolvedProperty);
-	}
-	return FGameEvent(PROPERTY_INVALID);
-}
-
-void SetLocalEvent(AActor* aActor, FName sVarName, FGameEvent evEvent)
-{
-	if (aActor == nullptr) return;
-	if (aActor->IsA(ADA2UE4Creature::StaticClass()))
-	{
-		ADA2UE4Creature* aCreature = Cast<ADA2UE4Creature>(aActor);
-
-		UProperty* PropIt = aCreature->GetClass()->FindPropertyByName(sVarName);
-		FGameEvent* ResolvedProperty = PropIt->ContainerPtrToValuePtr<FGameEvent>(aCreature);
-
-		*ResolvedProperty = evEvent;
-	}
-}
-
-int32 GetLocalInt(AActor* aActor, FName sVarName)
-{
-	if (aActor == nullptr) return 0;
-	if (aActor->IsA(ADA2UE4Creature::StaticClass()))
-	{
-		ADA2UE4Creature* aCreature = Cast<ADA2UE4Creature>(aActor);
-
-		UProperty* PropIt = aCreature->GetClass()->FindPropertyByName(sVarName);
-		UIntProperty *NumericProp = Cast<UIntProperty>(PropIt);
-
-		int32 CurValue = NumericProp->GetPropertyValue_InContainer(aCreature);
-
-		return CurValue;
-	}
-	else if (aActor->IsA(ADA2UE4Module::StaticClass()))
-	{
-		ADA2UE4Module* module = Cast<ADA2UE4Module>(aActor);
-
-		UProperty* PropIt = module->GetClass()->FindPropertyByName(sVarName);
-		UIntProperty *NumericProp = Cast<UIntProperty>(PropIt);
-
-		int32 CurValue = NumericProp->GetPropertyValue_InContainer(module);
-
-		return CurValue;
-	}
-	else if (aActor->IsA(ADA2UE4Item::StaticClass()))
-	{
-		ADA2UE4Item* oItem = Cast<ADA2UE4Item>(aActor);
-
-		UProperty* PropIt = oItem->GetClass()->FindPropertyByName(sVarName);
-		UIntProperty *NumericProp = Cast<UIntProperty>(PropIt);
-
-		int32 CurValue = NumericProp->GetPropertyValue_InContainer(oItem);
-
-		return CurValue;
-	}
-	else LogError("GetLocalInt: unknown actor type");
-	return 0; //error
-}
-
-void SetLocalInt(AActor* aActor, FName sVarName, int32 nValue)
-{
-	if (aActor == nullptr) return;
-	if (aActor->IsA(ADA2UE4Creature::StaticClass()))
-	{
-		ADA2UE4Creature* aCreature = Cast<ADA2UE4Creature>(aActor);
-
-		UProperty* PropIt = aCreature->GetClass()->FindPropertyByName(sVarName);
-		UIntProperty *NumericProp = Cast<UIntProperty>(PropIt);
-
-		void* ValuePtr = NumericProp->ContainerPtrToValuePtr<void>(aActor);
-		int64 temp64 = nValue;
-		NumericProp->SetIntPropertyValue(ValuePtr, temp64);
-	}
-	else if (aActor->IsA(ADA2UE4Module::StaticClass()))
-	{
-		ADA2UE4Module* module = Cast<ADA2UE4Module>(aActor);
-
-		UProperty* PropIt = module->GetClass()->FindPropertyByName(sVarName);
-		UIntProperty *NumericProp = Cast<UIntProperty>(PropIt);
-
-		void* ValuePtr = NumericProp->ContainerPtrToValuePtr<void>(aActor);
-		int64 temp64 = nValue;
-		NumericProp->SetIntPropertyValue(ValuePtr, temp64);
-	}
-	else LogError("SetLocalInt: unknown actor type");
-}
-
-float GetLocalFloat(AActor* aActor, FName sVarName)
-{
-	if (aActor == nullptr) return 0.f;
-	if (aActor->IsA(ADA2UE4Creature::StaticClass()))
-	{
-		ADA2UE4Creature* aCreature = Cast<ADA2UE4Creature>(aActor);
-
-		UProperty* PropIt = aCreature->GetClass()->FindPropertyByName(sVarName);
-		UFloatProperty *NumericProp = Cast<UFloatProperty>(PropIt);
-
-		float CurValue = NumericProp->GetPropertyValue_InContainer(aCreature);
-
-		return CurValue;
-	}
-	else LogError("GetLocalFloat: unknown actor type");
-	return 0.f; //error
-}
-
-void SetLocalFloat(AActor* aActor, FName sVarName, float fValue)
-{
-	if (aActor == nullptr) return;
-	if (aActor->IsA(ADA2UE4Creature::StaticClass()))
-	{
-		ADA2UE4Creature* aCreature = Cast<ADA2UE4Creature>(aActor);
-
-		UProperty* PropIt = aCreature->GetClass()->FindPropertyByName(sVarName);
-		UFloatProperty *NumericProp = Cast<UFloatProperty>(PropIt);
-
-		void* ValuePtr = NumericProp->ContainerPtrToValuePtr<void>(aActor);
-		NumericProp->SetFloatingPointPropertyValue(ValuePtr, fValue);
-	}
-	else if (aActor->IsA(ADA2UE4Module::StaticClass()))
-	{
-		ADA2UE4Module* module = Cast<ADA2UE4Module>(aActor);
-
-		UProperty* PropIt = module->GetClass()->FindPropertyByName(sVarName);
-		UFloatProperty *NumericProp = Cast<UFloatProperty>(PropIt);
-
-		void* ValuePtr = NumericProp->ContainerPtrToValuePtr<void>(aActor);
-		NumericProp->SetFloatingPointPropertyValue(ValuePtr, fValue);
-	}
-	else LogError("SetLocalFloat: unknown actor type");
-}
-
 TArray<ADA2UE4Creature*> GetTeam(int32 nTeamId, int32 nMembersType)
 {
 	//TODO get team for non-creatures? is it expensive?
@@ -386,11 +315,11 @@ TArray<ADA2UE4Creature*> GetTeam(int32 nTeamId, int32 nMembersType)
 
 	for (TActorIterator<ADA2UE4Creature> ActorItr(GetCurrentWorld()); ActorItr; ++ActorItr)
 	{
-		ADA2UE4Creature* aCreature = *ActorItr;
-		int32 CurValue = GetTeamId(aCreature);
+		ADA2UE4Creature* oCreature = *ActorItr;
+		int32 CurValue = GetTeamId(oCreature);
 		if (CurValue == nTeamId)
 		{
-			_team.Add(aCreature);
+			_team.Add(oCreature);
 		}
 	}
 
@@ -399,37 +328,85 @@ TArray<ADA2UE4Creature*> GetTeam(int32 nTeamId, int32 nMembersType)
 
 void SetTeamId(AActor* aActor, int32 nTeamId)
 {
-	SetLocalInt(aActor, TEAM, nTeamId);
+	if (aActor == nullptr) return;
+	if (aActor->IsA(ADA2UE4Creature::StaticClass()))
+	{
+		ADA2UE4Creature* oCreature = Cast<ADA2UE4Creature>(aActor);
+		oCreature->TEAM = nTeamId;
+	}
+#ifdef DEBUG
+	else LogError("SetTeamId: unknown actor type");
+
+#endif // DEBUG
+
 }
 
 int32 GetTeamId(AActor* aActor)
 {
-	return GetLocalInt(aActor, TEAM);
+	if (aActor == nullptr) return -1;
+	if (aActor->IsA(ADA2UE4Creature::StaticClass()))
+	{
+		ADA2UE4Creature* oCreature = Cast<ADA2UE4Creature>(aActor);
+		return oCreature->TEAM;
+	}
+#ifdef DEBUG
+	else LogError("GetTeamId: unknown actor type");
+
+#endif // DEBUG
+
+	return -1;
 }
 
 AActor* GetPartyLeader()
 {
-	return GetModule()->PLAYER_LEADER_STORE;
+	return GetActorFromName(GetModule()->PLAYER_LEADER_STORE);
 }
 
-ADA2UE4Module* GetModule()
+ADA2UE4Party* GetParty(AActor* aActor)
 {
-	bool IsValid;
-	return UDA2UE4Library::GetDA2UE4Data(IsValid)->DA2UE4CurrentModule;
+	//TODO party based on creature, not nullptr
+	return GetModule()->PARTY;
+}
+
+UDA2UE4GameInstance* GetModule()
+{
+	return GetCurrentWorld() ? Cast<UDA2UE4GameInstance>(GetCurrentWorld()->GetGameInstance()) : nullptr;
 }
 
 void SetGroupId(AActor* aActor, int32 nGroupId)
 {
-	SetLocalInt(aActor, GROUP, nGroupId);
+	if (aActor == nullptr) return;
+	if (aActor->IsA(ADA2UE4Creature::StaticClass()))
+	{
+		ADA2UE4Creature* oCreature = Cast<ADA2UE4Creature>(aActor);
+		oCreature->GROUP = nGroupId;
+	}
+#ifdef DEBUG
+	else LogError("SetGroupId: unknown actor type");
+
+#endif // DEBUG
+
 }
 
 int32 GetGroupId(AActor* aActor)
 {
-	return GetLocalInt(aActor, GROUP);
+	if (aActor == nullptr) return -1;
+	if (aActor->IsA(ADA2UE4Creature::StaticClass()))
+	{
+		ADA2UE4Creature* oCreature = Cast<ADA2UE4Creature>(aActor);
+		return oCreature->GROUP;
+	}
+#ifdef DEBUG
+	else LogError("GetGroupId: unknown actor type");
+
+#endif // DEBUG
+
+	return -1;
 }
 
 FString GetTag(AActor* aActor)
 {
+	//if (aActor == nullptr) return "";//TODO uncomment
 	return aActor->GetName();
 }
 
@@ -448,7 +425,11 @@ void RemoveEffectsByParameters(AActor* aActor, int32 nEffectType, int32 nAbility
 			}
 		}
 	}
+#ifdef DEBUG
 	else LogError("RemoveEffectsByParameters: unknown actor type");
+
+#endif // DEBUG
+
 }
 
 int32 GetGroupHostility(int32 nGroupA, int32 nGroupB)
@@ -472,12 +453,14 @@ void SetGroupHostility(int32 nGroupA, int32 nGroupB, int32 bHostile)
 	{
 		for (ADA2UE4Creature* creatureA : arGroupA)
 		{
-			creatureA->HostilityTargetGroup.Add(nGroupB);
+			if (!creatureA->HostilityTargetGroup.Contains(nGroupB))
+				creatureA->HostilityTargetGroup.Add(nGroupB);
 		}
 
 		for (ADA2UE4Creature* creatureB : arGroupB)
 		{
-			creatureB->HostilityTargetGroup.Add(nGroupA);
+			if (creatureB->HostilityTargetGroup.Contains(nGroupA))
+				creatureB->HostilityTargetGroup.Add(nGroupA);
 		}
 	}
 	else
@@ -503,42 +486,12 @@ int32 IsObjectHostile(AActor* oSource, AActor* oTarget)
 	{
 		return GetGroupHostility(Cast<ADA2UE4Creature>(oSource)->GROUP, Cast<ADA2UE4Creature>(oTarget)->GROUP);
 	}
-	else LogError("IsObjectHostile: unknown actor type");
-	return FALSE_;
-}
-
-void SetLocalObject(AActor* aActor, FName sVarName, AActor* oValue)
-{
-	if (aActor == nullptr) return;
-	if (aActor->IsA(ADA2UE4Creature::StaticClass()))
-	{
-		ADA2UE4Creature* aCreature = Cast<ADA2UE4Creature>(aActor);
-
-		UProperty* PropIt = aCreature->GetClass()->FindPropertyByName(sVarName);
-		UObject** ResolvedObject = PropIt->ContainerPtrToValuePtr<UObject*>(aCreature);
-		*ResolvedObject = oValue;
-	}
-	else LogError("SetLocalObject: unknown actor type");
-}
-
-AActor* GetLocalObject(AActor* aActor, FName sVarName)
-{
-	if (aActor == nullptr) return nullptr;
-	if (aActor->IsA(ADA2UE4Creature::StaticClass()))
-	{
-		ADA2UE4Creature* aCreature = Cast<ADA2UE4Creature>(aActor);
-
-		UProperty* PropIt = aCreature->GetClass()->FindPropertyByName(sVarName);
-		AActor** ResolvedObject = PropIt->ContainerPtrToValuePtr<AActor*>(aCreature);
-
 #ifdef DEBUG
-		LogWarning("Got local actor " + (IsObjectValid(*ResolvedObject) ? Cast<AActor>(*ResolvedObject)->GetName() : "null") + " from actor " + aCreature->GetName());
+	else LogError("IsObjectHostile: unknown actor type");
+
 #endif // DEBUG
 
-		return IsObjectValid(*ResolvedObject) ? Cast<ADA2UE4Creature>(*ResolvedObject) : nullptr;
-	}
-	else LogError("GetLocalObject: unknown actor type");
-	return nullptr;
+	return FALSE_;
 }
 
 AActor* GetEventObject(FGameEvent evEvent, int32 nIndex)
@@ -567,44 +520,6 @@ FGameEvent SetEventCreator(FGameEvent evEvent, AActor* oCreator)
 	evEvent.oCreator = oCreator;
 	ev = evEvent;
 	return ev;
-}
-
-FString GetLocalString(AActor* aActor, FName sVarName)
-{
-	if (aActor == nullptr) return "";
-	if (aActor->IsA(ADA2UE4Creature::StaticClass()))
-	{
-		ADA2UE4Creature* aCreature = Cast<ADA2UE4Creature>(aActor);
-
-		UProperty* PropIt = aCreature->GetClass()->FindPropertyByName(sVarName);
-		UStrProperty *NumericProp = Cast<UStrProperty>(PropIt);
-
-		FString CurValue = NumericProp->GetPropertyValue_InContainer(aCreature);
-
-		return CurValue;
-	}
-	else if (aActor->IsA(ADA2UE4Module::StaticClass()))
-	{
-		ADA2UE4Module* module = Cast<ADA2UE4Module>(aActor);
-
-		UProperty* PropIt = module->GetClass()->FindPropertyByName(sVarName);
-		UStrProperty *NumericProp = Cast<UStrProperty>(PropIt);
-
-		FString CurValue = NumericProp->GetPropertyValue_InContainer(module);
-
-		return CurValue;
-	}
-	else LogError("GetLocalString: unknown actor type");
-	return ""; //error
-}
-
-FString GetLocalResource(AActor* aActor, FName sVarName)
-{
-	FString resource = GetLocalString(aActor, sVarName);
-#ifdef DEBUG
-	LogWarning("Resource " + resource + " was requested for " + aActor->GetName());
-#endif // DEBUG
-	return resource;
 }
 
 FCommand Command(int32 nCommandType)
@@ -637,42 +552,42 @@ FString GetCommandString(FCommand cCommand, int32 nIndex)
 	return (cCommand.sList.Num() > nIndex) ? cCommand.sList[nIndex] : "";
 }
 
-FCommand SetCommandFloat(FCommand cCommand, float nCommandFloat, int32 nIndex)
+FCommand SetCommandFloat(FCommand cCommand, float nCommandFloat)
 {
 	FCommand c;
-	cCommand.fList.Insert(nCommandFloat, nIndex);
+	cCommand.fList.Add(nCommandFloat);
 	c = cCommand;
 	return c;
 }
 
-FCommand SetCommandInt(FCommand cCommand, int32 nCommandInt, int32 nIndex)
+FCommand SetCommandInt(FCommand cCommand, int32 nCommandInt)
 {
 	FCommand c;
-	cCommand.nList.Insert(nCommandInt, nIndex);
+	cCommand.nList.Add(nCommandInt);
 	c = cCommand;
 	return c;
 }
 
-FCommand SetCommandObject(FCommand cCommand, AActor* nCommandObject, int32 nIndex)
+FCommand SetCommandObject(FCommand cCommand, AActor* nCommandObject)
 {
 	FCommand c;
-	cCommand.oList.Insert(nCommandObject, nIndex);
+	cCommand.oList.Add(nCommandObject);
 	c = cCommand;
 	return c;
 }
 
-FCommand SetCommandVector(FCommand cCommand, FVector vVector, int32 nIndex)
+FCommand SetCommandVector(FCommand cCommand, FVector vVector)
 {
 	FCommand c;
-	cCommand.vList.Insert(vVector, nIndex);
+	cCommand.vList.Add(vVector);
 	c = cCommand;
 	return c;
 }
 
-FCommand SetCommandString(FCommand cCommand, FString sString, int32 nIndex)
+FCommand SetCommandString(FCommand cCommand, FString sString)
 {
 	FCommand c;
-	cCommand.sList.Insert(sString, nIndex);
+	cCommand.sList.Add(sString);
 	c = cCommand;
 	return c;
 }
@@ -698,7 +613,11 @@ void Engine_ApplyEffectOnObject(int32 nDurationType, FEffect eEffect, AActor* aT
 	if ((nDurationType == EFFECT_DURATION_TYPE_PERMANENT ||
 		nDurationType == EFFECT_DURATION_TYPE_INSTANT) && fDuration > 0.f)
 	{
+#ifdef DEBUG
 		LogError("Engine_ApplyEffectOnObject: permanent/instant with timer ?!?");
+
+#endif // DEBUG
+
 		return;
 	}
 
@@ -712,7 +631,11 @@ void Engine_ApplyEffectOnObject(int32 nDurationType, FEffect eEffect, AActor* aT
 		SignalEvent(oTarget, ev);
 
 	}
+#ifdef DEBUG
 	else LogError("Engine_ApplyEffectOnObject: unknown actor type");
+
+#endif // DEBUG
+
 }
 
 int32 GetEffectType(FEffect eEffect)
@@ -725,10 +648,10 @@ int32 GetEffectInteger(FEffect efEffect, int32 nIndex)
 	return (efEffect.nList.Num() > nIndex) ? efEffect.nList[nIndex] : -1;
 }
 
-FEffect SetEffectInteger(FEffect efEffect, int32 nIndex, int32 nValue)
+FEffect SetEffectInteger(FEffect efEffect, int32 nValue)
 {
 	FEffect ef;
-	efEffect.nList.Insert(nValue, nIndex);
+	efEffect.nList.Add(nValue);
 	ef = efEffect;
 	return ef;
 }
@@ -741,18 +664,18 @@ FEffect SetEffectCreator(FEffect efEffect, AActor* oCreator)
 	return ef;
 }
 
-FEffect SetEffectFloat(FEffect efEffect, int32 nIndex, float fValue)
+FEffect SetEffectFloat(FEffect efEffect, float fValue)
 {
 	FEffect ef;
-	efEffect.fList.Insert(fValue, nIndex);
+	efEffect.fList.Add(fValue);
 	ef = efEffect;
 	return ef;
 }
 
-FEffect SetEffectObject(FEffect efEffect, int32 nIndex, AActor* aActor)
+FEffect SetEffectObject(FEffect efEffect, AActor* aActor)
 {
 	FEffect ef;
-	efEffect.oList.Insert(aActor, nIndex);
+	efEffect.oList.Add(aActor);
 	ef = efEffect;
 	return ef;
 }
@@ -760,140 +683,152 @@ FEffect SetEffectObject(FEffect efEffect, int32 nIndex, AActor* aActor)
 AActor* GetHero()
 {
 	//TODO return proper hero, not party member controlled
-	return GetModule()->PLAYER_LEADER_STORE;
+	return GetActorFromName(GetModule()->PLAYER_LEADER_STORE);
 }
 
 AActor* GetMainControlled()
 {
-	return GetModule()->PLAYER_LEADER_STORE;
+	return GetActorFromName(GetModule()->PLAYER_LEADER_STORE);
 }
 
-FGameEvent SetEventObject(FGameEvent evEvent, int32 nIndex, AActor* oValue)
+FGameEvent SetEventObject(FGameEvent evEvent, AActor* oValue)
 {
 	FGameEvent ev;
-	evEvent.oList.Insert(oValue, nIndex);
+	evEvent.oList.Add(oValue);
 	ev = evEvent;
 	return ev;
 }
 
-FGameEvent SetEventInteger(FGameEvent evEvent, int32 nIndex, int32 nValue)
+FGameEvent SetEventInteger(FGameEvent evEvent, int32 nValue)
 {
 	FGameEvent ev;
-	evEvent.nList.Insert(nValue, nIndex);
+	evEvent.nList.Add(nValue);
 	ev = evEvent;
 	return ev;
 }
 
-FGameEvent SetEventFloat(FGameEvent evEvent, int32 nIndex, float fValue)
+FGameEvent SetEventFloat(FGameEvent evEvent, float fValue)
 {
 	FGameEvent ev;
-	evEvent.fList.Insert(fValue, nIndex);
+	evEvent.fList.Add(fValue);
 	ev = evEvent;
 	return ev;
 }
 
-FGameEvent SetEventVector(FGameEvent evEvent, int32 nIndex, FVector vValue)
+FGameEvent SetEventVector(FGameEvent evEvent, FVector vValue)
 {
 	FGameEvent ev;
-	evEvent.vList.Insert(vValue, nIndex);
+	evEvent.vList.Add(vValue);
 	ev = evEvent;
 	return ev;
 }
 
-FGameEvent SetEventString(FGameEvent evEvent, int32 nIndex, FString sValue)
+FGameEvent SetEventString(FGameEvent evEvent, FString sValue)
 {
 	FGameEvent ev;
-	evEvent.sList.Insert(sValue, nIndex);
+	evEvent.sList.Add(sValue);
 	ev = evEvent;
 	return ev;
 }
 
-void SignalEvent(AActor* aActor, FGameEvent evEvent, int32 bProcessImmediate)
+void SignalEvent(UObject* oObject, FGameEvent evEvent, int32 bProcessImmediate)
 {
-	if (aActor == nullptr) return;
-	if (aActor->IsA(ADA2UE4Creature::StaticClass()))
+	if (oObject == nullptr) return;
+	if (oObject->IsA(ADA2UE4Creature::StaticClass()))
 	{
-		ADA2UE4Creature* aCreature = Cast<ADA2UE4Creature>(aActor);
+		ADA2UE4Creature* oCreature = Cast<ADA2UE4Creature>(oObject);
 		if (bProcessImmediate)
-			aCreature->qEvents.Insert(evEvent, 0);
+			oCreature->qEvents.Insert(evEvent, 0);
 		else
-			aCreature->qEvents.Add(evEvent);
+			oCreature->qEvents.Add(evEvent);
 	}
-	else if (aActor->IsA(ADA2UE4Module::StaticClass()))
+	else if (oObject->IsA(UDA2UE4GameInstance::StaticClass()))
 	{
-		ADA2UE4Module* module = Cast<ADA2UE4Module>(aActor);
+		//UDA2UE4GameInstance* module = Cast<UDA2UE4GameInstance>(aActor);
 		if (bProcessImmediate)
-			module->qEvents.Insert(evEvent, 0);
+			GetModule()->qEvents.Insert(evEvent, 0);
 		else
-			module->qEvents.Add(evEvent);
+			GetModule()->qEvents.Add(evEvent);
 	}
+#ifdef DEBUG
 	else LogError("SignalEvent: unknown actor type");
+
+#endif // DEBUG
+
 }
 
-void DelayEvent(float fSeconds, AActor* aActor, FGameEvent evEvent, FString scriptname)
+void DelayEvent(float fSeconds, UObject* oObject, FGameEvent evEvent, FString scriptname)
 {
-	if (aActor == nullptr) return;
-	if (aActor->IsA(ADA2UE4Creature::StaticClass()))
+	if (oObject == nullptr) return;
+	if (oObject->IsA(ADA2UE4Creature::StaticClass()))
 	{
-		ADA2UE4Creature* aCreature = Cast<ADA2UE4Creature>(aActor);
+		ADA2UE4Creature* oCreature = Cast<ADA2UE4Creature>(oObject);
 		evEvent.signalTime = GetCurrentWorld()->GetTimeSeconds() + fSeconds;
-		aCreature->qEvents.Add(evEvent);
+		oCreature->qEvents.Add(evEvent);
 	}
-	else if (aActor->IsA(ADA2UE4Module::StaticClass()))
+	else if (oObject->IsA(UDA2UE4GameInstance::StaticClass()))
 	{
-		ADA2UE4Module* module = Cast<ADA2UE4Module>(aActor);
+		//UDA2UE4GameInstance* module = Cast<UDA2UE4GameInstance>(aActor);
 		evEvent.signalTime = GetCurrentWorld()->GetTimeSeconds() + fSeconds;
-		module->qEvents.Add(evEvent);
+		GetModule()->qEvents.Add(evEvent);
 	}
+#ifdef DEBUG
 	else LogError("DelayEvent: unknown actor type");
+
+#endif // DEBUG
+
 }
 
-FGameEvent GetCurrentEvent(AActor* aActor)
+FGameEvent GetCurrentEvent(UObject* oObject)
 {
 	FGameEvent ev;
-	if (aActor == nullptr) return ev;
+	if (oObject == nullptr) return ev;
 
-	if (aActor->IsA(ADA2UE4Creature::StaticClass()))
+	if (oObject->IsA(ADA2UE4Creature::StaticClass()))
 	{
-		ADA2UE4Creature* aCreature = Cast<ADA2UE4Creature>(aActor);
-		if (aCreature)
+		ADA2UE4Creature* oCreature = Cast<ADA2UE4Creature>(oObject);
+		if (oCreature)
 		{
-			if (aCreature->qEvents.Num() > 0)
+			if (oCreature->qEvents.Num() > 0)
 			{
-				for (int32 i = 0; i < aCreature->qEvents.Num(); i++)
+				for (int32 i = 0; i < oCreature->qEvents.Num(); i++)
 				{
-					ev = aCreature->qEvents[i];
+					ev = oCreature->qEvents[i];
 					if (ev.signalTime == 0 ||
 						GetCurrentWorld()->GetTimeSeconds() - ev.signalTime > 0)
 					{
-						aCreature->qEvents.RemoveAt(i);
+						oCreature->qEvents.RemoveAt(i);
 						return ev;
 					}
 				}
 			}
 		}
 	}
-	else if (aActor->IsA(ADA2UE4Module::StaticClass()))
+	else if (oObject->IsA(UDA2UE4GameInstance::StaticClass()))
 	{
-		ADA2UE4Module* module = Cast<ADA2UE4Module>(aActor);
-		if (module)
+		//UDA2UE4GameInstance* module = Cast<UDA2UE4GameInstance>(aActor);
+		if (GetModule())
 		{
-			if (module->qEvents.Num() > 0)
+			if (GetModule()->qEvents.Num() > 0)
 			{
-				for (int32 i = 0; i < module->qEvents.Num(); i++)
+				for (int32 i = 0; i < GetModule()->qEvents.Num(); i++)
 				{
-					ev = module->qEvents[i];
+					ev = GetModule()->qEvents[i];
 					if (ev.signalTime == 0 ||
 						GetCurrentWorld()->GetTimeSeconds() - ev.signalTime > 0)
 					{
-						module->qEvents.RemoveAt(i);
+						GetModule()->qEvents.RemoveAt(i);
 						return ev;
 					}
 				}
 			}
 		}
 	}
+#ifdef DEBUG
 	else LogError("GetCurrentEvent: unknown actor type");
+
+#endif // DEBUG
+
 
 	return ev;
 }
@@ -908,24 +843,45 @@ FString GetEventString(FGameEvent evEvent, int32 nIndex)
 	return (evEvent.sList.Num() > nIndex) ? evEvent.sList[nIndex] : "";
 }
 
-int32 IsFollower(AActor* oCreature)
+int32 IsFollower(AActor* aActor)
 {
-	if (oCreature == nullptr) return FALSE_;
-	if (oCreature->IsA(ADA2UE4Creature::StaticClass()))
+	if (aActor == nullptr) return FALSE_;
+	if (aActor->IsA(ADA2UE4Creature::StaticClass()))
 	{
-		return GetModule()->Party.Contains(Cast<ADA2UE4Creature>(oCreature)) ? TRUE_ : FALSE_;
+		return (GetModule()->PARTY->Henchman0 == FName(*aActor->GetName()) ||
+			GetModule()->PARTY->Henchman1 == FName(*aActor->GetName()) ||
+			GetModule()->PARTY->Henchman2 == FName(*aActor->GetName()) ||
+			GetModule()->PARTY->Henchman3 == FName(*aActor->GetName())) ? TRUE_ : FALSE_;
 	}
+	if (aActor->IsA(ADA2UE4Trigger::StaticClass()))
+	{
+		return FALSE_;
+	}
+#ifdef DEBUG
 	else LogError("IsFollower: unknown actor type");
+
+#endif // DEBUG
+
 	return FALSE_;
 }
 
 void LogWarning(FString sWarning)
 {
+	if (GetCurrentWorld())
+	{
+		FString sTime = FloatToString(GetCurrentWorld()->GetTimeSeconds()) + ": ";
+		sWarning = sTime + sWarning;
+	}
 	UE_LOG(LogTemp, Warning, TEXT("%s"), *sWarning);
 }
 
 void LogError(FString sError)
 {
+	if (GetCurrentWorld())
+	{
+		FString sTime = FloatToString(GetCurrentWorld()->GetTimeSeconds()) + ": ";
+		sError = sTime + sError;
+	}
 	UE_LOG(LogTemp, Error, TEXT("%s"), *sError);
 }
 
@@ -934,20 +890,20 @@ FString GetCurrentScriptName(FGameEvent ev)
 	return ev.sList[0];
 }
 
-FString GetM2DAString(int32 n2DA, FString sColumn, int32 nRow, FString s2DA)
+FString GetM2DAString(int32 n2DA, FString sColumn, int32 nRow)
 {
 	FString json = GetJSON(n2DA);
 	return GetJsonNode(json, sColumn, FString::FromInt(nRow));
 }
 
-int32 GetM2DAInt(int32 n2DA, FString sColumn, int32 nRow, FString s2DA)
+int32 GetM2DAInt(int32 n2DA, FString sColumn, int32 nRow)
 {
 	FString json = GetJSON(n2DA);
 	FString sInt = GetJsonNode(json, sColumn, FString::FromInt(nRow));
 	return FCString::Atoi(*sInt);
 }
 
-float GetM2DAFloat(int32 n2DA, FString sColumn, int32 nRow, FString s2DA)
+float GetM2DAFloat(int32 n2DA, FString sColumn, int32 nRow)
 {
 	FString json = GetJSON(n2DA);
 	FString sFloat = GetJsonNode(json, sColumn, FString::FromInt(nRow));
@@ -962,13 +918,36 @@ int32 IsModalAbilityActive(AActor* aActor, int32 nAbilityId)
 		ADA2UE4Creature* oCreature = Cast<ADA2UE4Creature>(aActor);
 		for (FAbility a : oCreature->Abilities)
 		{
-			if (a.nAbilityID == nAbilityId && a.bSustained == TRUE_)
+			if (a.nAbilityID == nAbilityId && IsModalAbility(nAbilityId) && IsAbilityActive(aActor, nAbilityId))
 				return TRUE_;
 		}
 		return FALSE_;
 	}
+#ifdef DEBUG
 	else LogError("IsModalAbilityActive: unknown actor type");
+
+#endif // DEBUG
+
 	return FALSE_;
+}
+
+int32 IsModalAbility(int32 nAbility)
+{
+	return GetM2DAInt(TABLE_ABILITIES_SPELLS, "usetype", nAbility) == 2 ? TRUE_ : FALSE_;
+}
+
+int32 IsAbilityActive(AActor* aActor, int32 nAbilityID)
+{
+	if (aActor == nullptr) return FALSE_;
+	int32 nActive = FALSE_;
+	TArray<FEffect> thisEffects = GetEffects(aActor, EFFECT_TYPE_INVALID, nAbilityID);
+	int32 nSize = thisEffects.Num();
+
+#ifdef DEBUG
+	LogWarning("START, abilityID: " + FString::FromInt(nAbilityID) + ", number of effects for this ability: " + FString::FromInt(nSize) + " : " + aActor->GetName());
+#endif
+
+	return (nSize > 0 ? TRUE_ : FALSE_);
 }
 
 TArray<FEffect> GetEffects(AActor* aActor, int32 nEffectType, int32 nAbilityId, AActor* oCreator, int32 nDurationType, int32 nEffectId)
@@ -1016,7 +995,11 @@ TArray<FEffect> GetEffects(AActor* aActor, int32 nEffectType, int32 nAbilityId, 
 		}
 		return effects;
 	}
+#ifdef DEBUG
 	else LogError("GetEffects: unknown actor type");
+
+#endif // DEBUG
+
 	return effects;
 }
 
@@ -1042,7 +1025,11 @@ int32 GetHasEffects(AActor* aActor, int32 nEffectType, int32 nAbilityId)
 		}
 		return FALSE_;
 	}
+#ifdef DEBUG
 	else LogError("GetHasEffect: unknown actor type");
+
+#endif // DEBUG
+
 	return FALSE_;
 }
 
@@ -1061,23 +1048,49 @@ void RemoveEffect(AActor* aActor, FEffect eEffect)
 		}
 #endif
 	}
+#ifdef DEBUG
 	else LogError("RemoveEffect: unknown actor type");
+
+#endif // DEBUG
+
 }
 
-
-void SetCombatState(AActor* oCreature, int32 nCombatState, int32 nInstantEquipWeapon)
+void SetCombatState(AActor* aActor, int32 nCombatState, int32 nInstantEquipWeapon)
 {
-	SetLocalInt(oCreature, COMBAT_STATE, TRUE_);
+	//TODO SetCombatState nInstantEquipWeapon
+	if (aActor == nullptr) return;
+	if (aActor->IsA(ADA2UE4Creature::StaticClass()))
+	{
+		ADA2UE4Creature* oCreature = Cast<ADA2UE4Creature>(aActor);
+		oCreature->COMBAT_STATE = nCombatState;
+	}
+#ifdef DEBUG
+	else LogError("SetCombatState: unknown actor type");
+
+#endif // DEBUG
+
 }
 
-int32 GetCombatState(AActor* oCreature)
+int32 GetCombatState(AActor* aActor)
 {
-	return GetLocalInt(oCreature, COMBAT_STATE);
+	if (aActor == nullptr) return -1;
+	if (aActor->IsA(ADA2UE4Creature::StaticClass()))
+	{
+		ADA2UE4Creature* oCreature = Cast<ADA2UE4Creature>(aActor);
+		return oCreature->COMBAT_STATE;
+	}
+#ifdef DEBUG
+	else LogError("GetCombatState: unknown actor type");
+
+#endif // DEBUG
+
+	return -1;
 }
 
-int32 GetStealthEnabled(AActor* oCreature)
+int32 GetStealthEnabled(AActor* aActor)
 {
-	return GetHasEffects(oCreature, EFFECT_TYPE_STEALTH);
+	if (aActor == nullptr) return -1;
+	return GetHasEffects(aActor, EFFECT_TYPE_STEALTH);
 }
 
 int32 GetAttributeBool(FString sAttribute)
@@ -1094,12 +1107,13 @@ int32 GetDebugHelpersEnabled()
 
 FString GetStringByStringId(int32 nId)
 {
-	return GetM2DAString(TABLE_TALK, "tlkID", nId);
+	return GetM2DAString(TABLE_TALK, "String", nId);
 }
 
-void DisplayFloatyMessage(AActor* oCreature, FString sMessage, int32 nStyle, int32 nColor, float fDuration)
+void DisplayFloatyMessage(AActor* aActor, FString sMessage, int32 nStyle, int32 nColor, float fDuration)
 {
-	GetCurrentPlayerController()->CreateWidgetFloaty(oCreature, sMessage);
+	if (aActor == nullptr) return;
+	GetCurrentPlayerController()->CreateWidgetFloaty(aActor, sMessage);
 }
 
 int32 HasAbility(AActor* aActor, int32 nAbility)
@@ -1114,13 +1128,28 @@ int32 HasAbility(AActor* aActor, int32 nAbility)
 		}
 		return FALSE_;
 	}
+#ifdef DEBUG
 	else LogError("HasAbility: unknown actor type");
+
+#endif // DEBUG
+
 	return FALSE_;
 }
 
 int32 GetCreatureRank(AActor* aActor)
 {
-	return GetLocalInt(aActor, RANK);
+	if (aActor == nullptr) return -1;
+	if (aActor->IsA(ADA2UE4Creature::StaticClass()))
+	{
+		ADA2UE4Creature* oCreature = Cast<ADA2UE4Creature>(aActor);
+		return oCreature->RANK;
+	}
+#ifdef DEBUG
+	else LogError("GetCreatureRank: unknown actor type");
+
+#endif // DEBUG
+
+	return -1;
 }
 
 int32 IsControlled(AActor* aActor)
@@ -1131,7 +1160,11 @@ int32 IsControlled(AActor* aActor)
 		//TODO return party members controlled
 		return (aActor == GetHero() ? TRUE_ : FALSE_);
 	}
+#ifdef DEBUG
 	else LogError("IsControlled: unknown actor type");
+
+#endif // DEBUG
+
 	return FALSE_;
 }
 
@@ -1142,7 +1175,11 @@ int32 GetObjectType(AActor* aActor)
 	{
 		return OBJECT_TYPE_CREATURE;
 	}
+#ifdef DEBUG
 	else LogError("GetObjectType: unknown actor type");
+
+#endif // DEBUG
+
 	return OBJECT_TYPE_INVALID;
 }
 
@@ -1160,7 +1197,11 @@ int32 GetThreatTableSize(AActor* aActor)
 		ADA2UE4Creature* oCreature = Cast<ADA2UE4Creature>(aActor);
 		return oCreature->Threats.Num();
 	}
+#ifdef DEBUG
 	else LogError("GetThreatTableSize: unknown actor type");
+
+#endif // DEBUG
+
 	return 0;
 }
 
@@ -1172,7 +1213,11 @@ AActor* GetThreatEnemy(AActor* aActor, int32 i)
 		ADA2UE4Creature* oCreature = Cast<ADA2UE4Creature>(aActor);
 		return (i < oCreature->Threats.Num()) ? oCreature->Threats[i].oThreat : nullptr;
 	}
+#ifdef DEBUG
 	else LogError("GetThreatEnemy: unknown actor type");
+
+#endif // DEBUG
+
 	return nullptr;
 }
 
@@ -1184,7 +1229,11 @@ float GetThreatValueByIndex(AActor* aActor, int32 i)
 		ADA2UE4Creature* oCreature = Cast<ADA2UE4Creature>(aActor);
 		return (i < oCreature->Threats.Num()) ? oCreature->Threats[i].fThreat : 0.f;
 	}
+#ifdef DEBUG
 	else LogError("GetThreatValueByIndex: unknown actor type");
+
+#endif // DEBUG
+
 	return 0.f;
 }
 
@@ -1204,7 +1253,11 @@ float GetThreatValueByObjectID(AActor* aActor, AActor* aEnemy)
 			}
 		}
 	}
+#ifdef DEBUG
 	else LogError("GetThreatValueByObjectID: unknown actor type");
+
+#endif // DEBUG
+
 	return 0.0f;
 }
 
@@ -1224,7 +1277,11 @@ void UpdateThreatTable(AActor* aActor, AActor* aEnemy, float fThreatChange)
 			}
 		}
 	}
+#ifdef DEBUG
 	else LogError("UpdateThreatTable: unknown actor type");
+
+#endif // DEBUG
+
 }
 
 void ClearEnemyThreat(AActor* aActor, AActor* aEnemy)
@@ -1244,12 +1301,16 @@ void ClearEnemyThreat(AActor* aActor, AActor* aEnemy)
 			}
 		}
 	}
+#ifdef DEBUG
 	else LogError("ClearEnemyThreat: unknown actor type");
+
+#endif // DEBUG
+
 }
 
 int32 IsDead(AActor* aActor)
 {
-	if (aActor == nullptr) return FALSE_;
+	if (aActor == nullptr) return -1;
 	//TODO dead flag on creature?
 	if (aActor->IsA(ADA2UE4Creature::StaticClass()))
 	{
@@ -1259,13 +1320,17 @@ int32 IsDead(AActor* aActor)
 			return TRUE_;
 		}
 	}
+#ifdef DEBUG
 	else LogError("IsDead: unknown actor type");
-	return FALSE_;
+
+#endif // DEBUG
+
+	return -1;
 }
 
 int32 HasDeathEffect(AActor* aActor, int32 bCheckForDeathEvent)
 {
-	if (aActor == nullptr) return FALSE_;
+	if (aActor == nullptr) return -1;
 	if (aActor->IsA(ADA2UE4Creature::StaticClass()))
 	{
 		ADA2UE4Creature* oCreature = Cast<ADA2UE4Creature>(aActor);
@@ -1277,8 +1342,12 @@ int32 HasDeathEffect(AActor* aActor, int32 bCheckForDeathEvent)
 			}
 		}
 	}
+#ifdef DEBUG
 	else LogError("HasDeathEffect: unknown actor type");
-	return FALSE_;
+
+#endif // DEBUG
+
+	return -1;
 }
 
 int32 IsPerceiving(AActor* oidA, AActor* oidB)
@@ -1297,87 +1366,119 @@ int32 IsPerceiving(AActor* oidA, AActor* oidB)
 			}
 		}
 	}
+#ifdef DEBUG
 	else LogError("IsPerceiving: unknown actor type");
+
+#endif // DEBUG
+
 	return FALSE_;
 }
 
 int32 GetCreatureGender(AActor* aActor)
 {
-	return GetLocalInt(aActor, GENDER);
+	if (aActor == nullptr) return -1;
+	if (aActor->IsA(ADA2UE4Creature::StaticClass()))
+	{
+		ADA2UE4Creature* oCreature = Cast<ADA2UE4Creature>(aActor);
+		return oCreature->GENDER;
+	}
+#ifdef DEBUG
+	else LogError("GetCreatureGender: unknown actor type");
+
+#endif // DEBUG
+
+	return -1;
 }
 
 int32 GetCreatureRacialType(AActor* aActor)
 {
-	return GetLocalInt(aActor, RACE);
+	if (aActor == nullptr) return -1;
+	if (aActor->IsA(ADA2UE4Creature::StaticClass()))
+	{
+		ADA2UE4Creature* oCreature = Cast<ADA2UE4Creature>(aActor);
+		return oCreature->RACE;
+	}
+#ifdef DEBUG
+	else LogError("GetCreatureRacialType: unknown actor type");
+
+#endif // DEBUG
+
+	return -1;
 }
 
-float GetCreatureProperty(AActor* oCreature, int32 nProperty, int32 nValueType)
+float GetCreatureProperty(AActor* aActor, int32 nProperty, int32 nValueType)
 {
+	if (aActor == nullptr) return 0.f;
 	//TODO attribute vs depletable vs simple vs derived?
-	FString sProperty = GetM2DAString(TABLE_PROPERTIES, "Stat", nProperty);
+	FActorProperty property = GetProperty(aActor, nProperty);
 
-	FActorProperty property = GetProperty(oCreature, FName(*sProperty));
+	if (property.nPropertyID != PROPERTY_INVALID)
+	{
+		if (nValueType == PROPERTY_VALUE_TOTAL) return property.fValueTotal;
+		else if (nValueType == PROPERTY_VALUE_BASE) return property.fValueBase;
+		else if (nValueType == PROPERTY_VALUE_MODIFIER) return property.fValueModifier;
+		else if (nValueType == PROPERTY_VALUE_CURRENT) return property.fValueCurrent;
+#ifdef DEBUG
+		else LogError("Unknown property value type!!!");
 
-	if (nValueType == PROPERTY_VALUE_TOTAL) return property.fValueTotal;
-	else if (nValueType == PROPERTY_VALUE_BASE) return property.fValueBase;
-	else if (nValueType == PROPERTY_VALUE_MODIFIER) return property.fValueModifier;
-	else if (nValueType == PROPERTY_VALUE_CURRENT) return property.fValueCurrent;
-	else LogError("Unknown property value type!!!");
+#endif // DEBUG
+
+	}
+#ifdef DEBUG
+	LogError("Unknown property!!!");
+
+#endif // DEBUG
 
 	return 0.f;
 }
 
-void SetCreatureProperty(AActor* oCreature, int32 nProperty, float fNewValue, int32 nValueType)
+void SetCreatureProperty(AActor* aActor, int32 nProperty, float fNewValue, int32 nValueType)
 {
-	FString sProperty = GetM2DAString(TABLE_PROPERTIES, "Stat", nProperty);
-	FActorProperty property = GetProperty(oCreature, FName(*sProperty));
+	if (aActor == nullptr) return;
+	//FString sProperty = GetM2DAString(TABLE_PROPERTIES, "Stat", nProperty);
+	FActorProperty property = GetProperty(aActor, nProperty);
 
 	if (nValueType == PROPERTY_VALUE_TOTAL) property.fValueTotal = fNewValue;
 	else if (nValueType == PROPERTY_VALUE_BASE) property.fValueBase = fNewValue;
 	else if (nValueType == PROPERTY_VALUE_MODIFIER) property.fValueModifier = fNewValue;
 	else if (nValueType == PROPERTY_VALUE_CURRENT) property.fValueCurrent = fNewValue;
+#ifdef DEBUG
 	else LogError("Unknown property value type!!!");
+
+#endif // DEBUG
+
 }
 
-FActorProperty GetProperty(AActor* aActor, FName sVarName)
+FActorProperty GetProperty(AActor* aActor, int32 nProperty)
 {
 	if (aActor == nullptr) return FActorProperty(PROPERTY_INVALID);
 	if (aActor->IsA(ADA2UE4Creature::StaticClass()))
 	{
-		ADA2UE4Creature* aCreature = Cast<ADA2UE4Creature>(aActor);
+		ADA2UE4Creature* oCreature = Cast<ADA2UE4Creature>(aActor);
 
-		UProperty* PropIt = aCreature->GetClass()->FindPropertyByName(sVarName);
-		FActorProperty* ResolvedProperty = PropIt->ContainerPtrToValuePtr<FActorProperty>(aCreature);
-
+		switch (nProperty)
+		{
+		case PROPERTY_DEPLETABLE_HEALTH: return oCreature->Health;
+		case PROPERTY_DEPLETABLE_MANA_STAMINA: return oCreature->Mana_Stamina;
+		case PROPERTY_ATTRIBUTE_FATIGUE: return oCreature->Fatigue;
+		case PROPERTY_SIMPLE_LEVEL: return oCreature->Level;
+		case PROPERTY_SIMPLE_CURRENT_CLASS: return oCreature->CurrentClass;
+		default:
 #ifdef DEBUG
-		FString s = FString::FromInt((ResolvedProperty)->nPropertyID);
-		LogWarning("Getting property with ID: " + s + " and value " + (FString::FromInt((ResolvedProperty)->fValueTotal) + " from actor " + aActor->GetName()));
+			LogError("Unknown property " + FString::FromInt(nProperty));
+
 #endif // DEBUG
 
-		return (*ResolvedProperty);
+			return FActorProperty(PROPERTY_INVALID);
+		}
 	}
 	return FActorProperty(PROPERTY_INVALID);
 }
 
 int32 IsObjectValid(AActor* aActor)
 {
+	if (aActor == nullptr) return FALSE_;
 	return aActor->IsValidLowLevel() ? TRUE_ : FALSE_;
-	/*if (aActor == nullptr) return FALSE_;
-	//split it into object_types
-	if (aActor->IsA(ADA2UE4Creature::StaticClass()))
-	{
-		for (TActorIterator<ADA2UE4Creature> ActorItr(GetCurrentWorld()); ActorItr; ++ActorItr)
-		{
-			ADA2UE4Creature* oCreature = Cast<ADA2UE4Creature>(aActor);
-			if (oCreature == *ActorItr)
-			{
-				return TRUE_;
-			}
-		}
-		LogError("IsObjectValid: creature not found!!!");
-	}
-	else LogError("IsObjectValid: unknown actor type");
-	return FALSE_;*/
 }
 
 int32 GetTime()
@@ -1425,12 +1526,20 @@ AActor* GetItemInEquipSlot(int32 nSlot, AActor* aActor, int32 nWeaponSet)
 		}
 		else
 		{
+#ifdef DEBUG
 			LogError("Inventory slots can be only 0 and 1, got " + wSet);
+
+#endif // DEBUG
+
 			return nullptr;
 		}
 		return item;
 	}
+#ifdef DEBUG
 	else LogError("GetItemInEquipSlot: unknown actor type");
+
+#endif // DEBUG
+
 	return item; //nullptr
 }
 
@@ -1443,7 +1552,11 @@ int32 GetBaseItemType(AActor* aActor)
 		ADA2UE4Item* oItem = Cast<ADA2UE4Item>(aActor);
 		return GetM2DAInt(TABLE_ITEMS, "ID", oItem->BaseItemType);
 	}
+#ifdef DEBUG
 	else LogError("GetBaseItemType: unknown actor type");
+
+#endif // DEBUG
+
 	return FALSE_;
 }
 
@@ -1455,11 +1568,15 @@ int32 IsPerceivingHostiles(AActor* aActor)
 		ADA2UE4Creature* oCreature = Cast<ADA2UE4Creature>(aActor);
 		for (APawn* pawn : oCreature->SensedPawns)
 		{
-			if (IsObjectHostile(aActor, Cast<AActor>(pawn)))
+			if (IsObjectHostile(oCreature, Cast<AActor>(pawn)))
 				return TRUE_;
 		}
 	}
+#ifdef DEBUG
 	else LogError("IsPerceivingHostiles: unknown actor type");
+
+#endif // DEBUG
+
 	return FALSE_;
 }
 
@@ -1468,49 +1585,80 @@ int32 IsPartyPerceivingHostiles(AActor* aActor)
 	if (aActor == nullptr) return FALSE_;
 	if (aActor->IsA(ADA2UE4Creature::StaticClass()))
 	{
-		if (GetLocalInt(aActor, TEAM) <= 0)
+		ADA2UE4Creature* oCreature = Cast<ADA2UE4Creature>(aActor);
+		if (oCreature->TEAM <= 0)
 		{
+#ifdef DEBUG
 			Log_Trace(LOG_CHANNEL_SYSTEMS, "ldf.h : IsPartyPerceivingHostiles", "Invalid Team ID");
+
+#endif // DEBUG
+
 			return FALSE_;
 		}
 
-		ADA2UE4Creature* oCreature = Cast<ADA2UE4Creature>(aActor);
 		TArray<ADA2UE4Creature*> arNewList;
 
-		arNewList = GetTeam(GetLocalInt(oCreature, TEAM), OBJECT_TYPE_CREATURE);
+		arNewList = GetTeam(oCreature->TEAM, OBJECT_TYPE_CREATURE);
 
 		for (ADA2UE4Creature* teamMember : arNewList)
 		{
 			if (IsPerceivingHostiles(teamMember)) return TRUE_;
 		}
 	}
+#ifdef DEBUG
 	else LogError("IsPartyPerceivingHostiles: unknown actor type");
+
+#endif // DEBUG
+
 	return FALSE_;
 }
 
-TArray<AActor*> GetPartyList(AActor* oCreature)
+TArray<AActor*> GetPartyList(AActor* aActor)
 {
-	return GetModule()->Party;
+	TArray<AActor*> party;
+
+	if (aActor == nullptr) return party;
+	if (aActor->IsA(ADA2UE4Creature::StaticClass()))
+	{
+		ADA2UE4Creature* oCreature = Cast<ADA2UE4Creature>(aActor);
+		if (!GetModule()->PARTY->Henchman0.IsNone())
+			party.Add(GetActorFromName(GetModule()->PARTY->Henchman0));
+		if (!GetModule()->PARTY->Henchman1.IsNone())
+			party.Add(GetActorFromName(GetModule()->PARTY->Henchman1));
+		if (!GetModule()->PARTY->Henchman2.IsNone())
+			party.Add(GetActorFromName(GetModule()->PARTY->Henchman2));
+		if (!GetModule()->PARTY->Henchman3.IsNone())
+			party.Add(GetActorFromName(GetModule()->PARTY->Henchman3));
+		return party;
+	}
+#ifdef DEBUG
+	else LogError("GetPartyList: unknown actor type");
+
+#endif // DEBUG
+
+	return party;
 }
 
-int32 GetObjectActive(AActor* oActor)
+int32 GetObjectActive(AActor* aActor)
 {
+	if (aActor == nullptr) return 0;
 	//TODO get object active custom in creature class
 	/*SetActorHiddenInGame(!active);
 	SetActorEnableCollision(active);
 	SetActorTickEnabled(active);*/
 #ifdef DEBUG
-	bool b = (!(oActor->bHidden) && oActor->GetActorEnableCollision() && oActor->IsActorTickEnabled());
+	bool b = (!(aActor->bHidden) && aActor->GetActorEnableCollision() && aActor->IsActorTickEnabled());
 	FString s;
 	if (b) s = "true"; else s = "false";
-	LogWarning("actor " + oActor->GetName() + " is active: " + s);
+	LogWarning("actor " + aActor->GetName() + " is active: " + s);
 #endif // DEBUG
 
-	return !(oActor->bHidden) && oActor->GetActorEnableCollision() && oActor->IsActorTickEnabled();
+	return !(aActor->bHidden) && aActor->GetActorEnableCollision() && aActor->IsActorTickEnabled();
 }
 
 void SetObjectActive(AActor* aActor, int32 nActive, int32 nAnimation, int32 nVFX, int32 nNextLine)
 {
+	if (aActor == nullptr) return;
 	bool bActive;
 	if (nActive == TRUE_)
 		bActive = true;
@@ -1522,9 +1670,42 @@ void SetObjectActive(AActor* aActor, int32 nActive, int32 nAnimation, int32 nVFX
 	aActor->SetActorTickEnabled(bActive);
 }
 
-int32 GetGameMode()
+EGameMode GetGameMode()
 {
 	return GetModule()->GAME_MODE;
+}
+
+void SetGameMode(int32 nMode)
+{
+	FGameEvent ev = Event(EVENT_TYPE_GAMEMODE_CHANGE);
+	ev = SetEventInteger(ev, nMode);//New desired game mode
+	ev = SetEventInteger(ev, static_cast<uint8>(GetGameMode()));//Current-old Game mode
+	SignalEvent(GetModule(), ev);
+
+	switch (nMode)
+	{
+	case GM_EXPLORE:
+	{
+		GetModule()->GAME_MODE = EGameMode::GM_EXPLORE;
+		break;
+	}
+	case GM_COMBAT:
+	{
+		GetModule()->GAME_MODE = EGameMode::GM_COMBAT;
+		break;
+	}
+	case GM_CONVERSATION:
+	{
+		GetModule()->GAME_MODE = EGameMode::GM_CONVERSATION;
+		break;
+	}
+	default:
+#ifdef DEBUG
+		LogError("SetGameMode: unknown mode!");
+
+#endif
+		break;
+	}
 }
 
 int32 IsImmortal(AActor* aActor)
@@ -1535,7 +1716,15 @@ int32 IsImmortal(AActor* aActor)
 		ADA2UE4Creature* oCreature = Cast<ADA2UE4Creature>(aActor);
 		return oCreature->bImmortal;
 	}
+	if (aActor->IsA(ADA2UE4Trigger::StaticClass()))
+	{
+		return FALSE_;
+	}
+#ifdef DEBUG
 	else LogError("IsImmortal: unknown actor type");
+
+#endif // DEBUG
+
 	return FALSE_;
 }
 
@@ -1547,13 +1736,21 @@ int32 IsPlot(AActor* aActor)
 		ADA2UE4Creature* oCreature = Cast<ADA2UE4Creature>(aActor);
 		return oCreature->bPlot;
 	}
+	if (aActor->IsA(ADA2UE4Trigger::StaticClass()))
+	{
+		return FALSE_;
+	}
+#ifdef DEBUG
 	else LogError("IsPlot: unknown actor type");
+
+#endif // DEBUG
 	return FALSE_;
 }
 
 void PlaySoundSet(AActor* oTarget, int32 nSoundSetEntry, float fProbabilityOverride)
 {
-	FString sound = GetM2DAString(TABLE_SOUNDSETS, SS_NODENAME, nSoundSetEntry);
+	if (oTarget == nullptr) return;
+	FString sound = GetM2DAString(TABLE_SOUNDSETS, "NODENAME", nSoundSetEntry);
 #ifdef DEBUG
 	LogWarning("Playing SoundSet: " + sound);
 #endif // DEBUG
@@ -1565,10 +1762,13 @@ int32 GetAppearanceType(AActor* aActor)
 	if (aActor->IsA(ADA2UE4Creature::StaticClass()))
 	{
 		ADA2UE4Creature* oCreature = Cast<ADA2UE4Creature>(aActor);
-		int32 nRace = GetLocalInt(oCreature, RACE);
+		int32 nRace = oCreature->RACE;
 		return GetM2DAInt(TABLE_RULES_RACES, "Appearance", nRace);
 	}
+#ifdef DEBUG
 	else LogError("GetAppearanceType: unknown actor type");
+
+#endif // DEBUG
 	return FALSE_;
 }
 
@@ -1578,10 +1778,16 @@ int32 GetFollowerApproval(AActor* aActor)
 	if (aActor->IsA(ADA2UE4Creature::StaticClass()))
 	{
 		ADA2UE4Creature* oCreature = Cast<ADA2UE4Creature>(aActor);
-		if (oCreature->bApproval) { return GetLocalInt(oCreature, APPROVAL); }
+		if (oCreature->bApproval)
+		{
+			return oCreature->APPROVAL;
+		}
 		else return 0; //not permanent follower plot/story related
 	}
+#ifdef DEBUG
 	else LogError("GetFollowerApproval: unknown actor type");
+
+#endif // DEBUG
 	return FALSE_;
 }
 
@@ -1596,18 +1802,31 @@ TArray<AActor*> GetPerceivedCreatureList(AActor* aActor, int32 bHostile)
 		{
 			if (bHostile)
 			{
-				if (IsObjectHostile(aActor, pawn))	aArray.Add(pawn);
+				if (IsObjectHostile(oCreature, pawn))	aArray.Add(pawn);
 			}
 			else aArray.Add(pawn);
 		}
 	}
+#ifdef DEBUG
 	else LogError("GetPerceivedCreatureList: unknown actor type");
+
+#endif // DEBUG
 	return aArray;
 }
 
 int32 GetFollowerState(AActor* aActor)
 {
-	return GetLocalInt(aActor, FOLLOWER_STATE);
+	if (aActor == nullptr) return -1;
+	if (aActor->IsA(ADA2UE4Creature::StaticClass()))
+	{
+		ADA2UE4Creature* oCreature = Cast<ADA2UE4Creature>(aActor);
+		return oCreature->FOLLOWER_STATE;
+	}
+#ifdef DEBUG
+	else LogError("GetFollowerState: unknown actor type");
+
+#endif // DEBUG
+	return -1;
 }
 
 void SetPlaceableHealth(AActor* oPlc, int32 nHealth)
@@ -1616,8 +1835,9 @@ void SetPlaceableHealth(AActor* oPlc, int32 nHealth)
 	LogError("SetPlaceableHealth to be implemented");
 }
 
-void SetAILevel(AActor* oActor, int32 nAILevel)
+void SetAILevel(AActor* aActor, int32 nAILevel)
 {
+	if (aActor == nullptr) return;
 	//TODO implement SetAILevel
 	LogError("SetAILevel to be implemented");
 }
@@ -1627,36 +1847,35 @@ int32 ClearAmbientDialogs(AActor* aActor)
 	//TODO implement ClearAmbientDialogs fully
 	if (aActor == nullptr)
 	{
+#ifdef DEBUG
 		LogError("ClearAmbientDialogs to be implemented for all creatures if nullptr");
+
+#endif // DEBUG
 		return 0;
 	}
 	else if (aActor->IsA(ADA2UE4Creature::StaticClass()))
 	{
 		ADA2UE4Creature* oCreature = Cast<ADA2UE4Creature>(aActor);
-		if (GetLocalInt(oCreature, AMB_SYSTEM_DIALOG) != 0)
+		if (oCreature->AMB_SYSTEM_DIALOG != 0)
 		{
 			//nResult = TRUE_;
-			SetLocalInt(oCreature, AMB_SYSTEM_DIALOG, 0);
+			oCreature->AMB_SYSTEM_DIALOG = 0;
 		}
 	}
-	else if (aActor->IsA(ADA2UE4Module::StaticClass()))
+	else if (aActor->IsA(UDA2UE4GameInstance::StaticClass()))
 	{
 		//TODO this makes sure an already running ambient dialog triggers its plot flag action and look at gen00pt_ambient_ai
-		ADA2UE4Module* module = Cast<ADA2UE4Module>(aActor);
-		if (GetLocalInt(module, AMB_SYSTEM_DIALOG) != 0)
+		UDA2UE4GameInstance* module = Cast<UDA2UE4GameInstance>(aActor);
+		if (module->AMB_SYSTEM_DIALOG != 0)
 		{
-			SetLocalInt(module, AMB_SYSTEM_DIALOG, 0);
+			module->AMB_SYSTEM_DIALOG = 0;
 		}
 	}
+#ifdef DEBUG
 	else LogError("ClearAmbientDialogs: unknown actor type");
-	return 0;
-}
 
-int32 BeginConversation(AActor* oTarget, FString rConversationFile)
-{
-	//TODO implement BeginConversation
-	LogError("BeginConversation to be implemented");
-	return FALSE_;
+#endif // DEBUG
+	return 0;
 }
 
 int32 GetGameDifficulty()
@@ -1666,34 +1885,63 @@ int32 GetGameDifficulty()
 
 int32 GetPackage(AActor* aActor)
 {
-	return GetLocalInt(aActor, PACKAGE);
+	if (aActor == nullptr) return -1;
+	if (aActor->IsA(ADA2UE4Creature::StaticClass()))
+	{
+		ADA2UE4Creature* oCreature = Cast<ADA2UE4Creature>(aActor);
+		return oCreature->PACKAGE;
+	}
+#ifdef DEBUG
+	else LogError("GetPackage: unknown actor type");
+
+#endif // DEBUG
+	return -1;
 }
 
 int32 GetPackageAI(AActor* aActor)
 {
-	return GetLocalInt(aActor, PACKAGEAI);
+	if (aActor == nullptr) return -1;
+	if (aActor->IsA(ADA2UE4Creature::StaticClass()))
+	{
+		ADA2UE4Creature* oCreature = Cast<ADA2UE4Creature>(aActor);
+		return oCreature->PACKAGEAI;
+	}
+#ifdef DEBUG
+	else LogError("GetPackageAI: unknown actor type");
+
+#endif // DEBUG
+	return -1;
 }
 
 int32 ClearAllCommands(AActor* aActor, int32 nHardClear)
 {
 	if (aActor == nullptr) return FALSE_;
-	if (!nHardClear) { LogError("ClearAllCommands: nHardClear not implemented"); return 0; }
+	if (!nHardClear)
+	{
+#ifdef DEBUG
+		LogError("ClearAllCommands: nHardClear not implemented");
+
+#endif // DEBUG
+		return 0;
+	}
 	if (aActor->IsA(ADA2UE4Creature::StaticClass()))
 	{
 		ADA2UE4Creature* oCreature = Cast<ADA2UE4Creature>(aActor);
 		oCreature->qCommands.Empty();
 		oCreature->currentCommand = FCommand(COMMAND_TYPE_INVALID);
 	}
+#ifdef DEBUG
 	else LogError("ClearAllCommands: unknown actor type");
+
+#endif // DEBUG
 	return 0;
 }
 
-float GetDistanceBetween(AActor* oActorA, AActor* oActorB, int32 bSubtractPersonalSpace)
+float GetDistanceBetween(AActor* aActorA, AActor* aActorB, int32 bSubtractPersonalSpace)
 {
 	//TODO implement GetDistanceBetween with bSubtractPersonalSpace
-	if (oActorA == nullptr || oActorB == nullptr) return -1.0f;
-	float distanceBetween = (oActorA->GetActorLocation() - oActorB->GetActorLocation()).Size();
-	return distanceBetween;
+	if (aActorA == nullptr || aActorB == nullptr) return -1.0f;
+	return (aActorA->GetActorLocation() - aActorB->GetActorLocation()).Size();
 }
 
 float GetDistanceBetweenLocations(FVector vVectorA, FVector vVectorB)
@@ -1703,7 +1951,17 @@ float GetDistanceBetweenLocations(FVector vVectorA, FVector vVectorB)
 
 int32 GetCombatantType(AActor* aActor)
 {
-	return GetLocalInt(aActor, COMBATANT_TYPE);
+	if (aActor == nullptr) return -1;
+	if (aActor->IsA(ADA2UE4Creature::StaticClass()))
+	{
+		ADA2UE4Creature* oCreature = Cast<ADA2UE4Creature>(aActor);
+		return oCreature->COMBATANT_TYPE;
+	}
+#ifdef DEBUG
+	else LogError("GetCombatantType: unknown actor type");
+
+#endif // DEBUG
+	return -1;
 }
 
 TArray<AActor*> GetNearestObjectByGroup(AActor* aActor, int32 nGroupId, int32 nObjectType, int32 nNumberOfObjects, int32 nCheckLiving, int32 nCheckPerceived, int32 nIncludeSelf)
@@ -1713,17 +1971,26 @@ TArray<AActor*> GetNearestObjectByGroup(AActor* aActor, int32 nGroupId, int32 nO
 	if (aActor == nullptr) return aArray;
 	if (nObjectType != OBJECT_TYPE_CREATURE)
 	{
+#ifdef DEBUG
 		LogError("GetNearestObjectByGroup: only creatures are considered");
+
+#endif // DEBUG
 		return aArray;
 	}
 	if (nCheckLiving != TRUE_)
 	{
+#ifdef DEBUG
 		LogError("GetNearestObjectByGroup: why looking for dead people?");
+
+#endif // DEBUG
 		return aArray;
 	}
 	if (nCheckPerceived != TRUE_)
 	{
+#ifdef DEBUG
 		LogError("GetNearestObjectByGroup: why looking for unsensed pawns?");
+
+#endif // DEBUG
 		return aArray;
 	}
 	if (aActor->IsA(ADA2UE4Creature::StaticClass()))
@@ -1759,7 +2026,10 @@ TArray<AActor*> GetNearestObjectByGroup(AActor* aActor, int32 nGroupId, int32 nO
 
 		return aArray;
 	}
+#ifdef DEBUG
 	else LogError("GetNearestObjectByGroup: unknown actor type");
+
+#endif // DEBUG
 	return aArray;
 }
 
@@ -1769,17 +2039,26 @@ TArray<AActor*> GetNearestObjectByHostility(AActor* aActor, int32 nHostility, in
 	if (aActor == nullptr) return aArray;
 	if (nObjectType != OBJECT_TYPE_CREATURE)
 	{
+#ifdef DEBUG
 		LogError("GetNearestObjectByHostility: only creatures are considered");
+
+#endif // DEBUG
 		return aArray;
 	}
 	if (nCheckLiving != TRUE_)
 	{
+#ifdef DEBUG
 		LogError("GetNearestObjectByHostility: why looking for dead people?");
+
+#endif // DEBUG
 		return aArray;
 	}
 	if (nCheckPerceived != TRUE_)
 	{
+#ifdef DEBUG
 		LogError("GetNearestObjectByHostility: why looking for unsensed pawns?");
+
+#endif // DEBUG
 		return aArray;
 	}
 	if (aActor->IsA(ADA2UE4Creature::StaticClass()))
@@ -1791,7 +2070,7 @@ TArray<AActor*> GetNearestObjectByHostility(AActor* aActor, int32 nHostility, in
 
 		for (APawn* pawn : oCreature->SensedPawns)
 		{
-			if (IsObjectHostile(aActor, pawn))
+			if (IsObjectHostile(oCreature, pawn))
 				sensedArray.Add(pawn);
 		}
 
@@ -1814,7 +2093,10 @@ TArray<AActor*> GetNearestObjectByHostility(AActor* aActor, int32 nHostility, in
 
 		return aArray;
 	}
+#ifdef DEBUG
 	else LogError("GetNearestObjectByHostility: unknown actor type");
+
+#endif // DEBUG
 	return aArray;
 }
 
@@ -1825,12 +2107,18 @@ TArray<AActor*> GetNearestObjectToLocation(FVector vVector, int32 nObjectType, i
 	TArray<AActor*> tempArray;
 	if (nObjectType != OBJECT_TYPE_CREATURE)
 	{
+#ifdef DEBUG
 		LogError("GetNearestObjectToLocation: only creatures are considered");
+
+#endif // DEBUG
 		return aArray;
 	}
 	if (nNumberOfObjects != 1)
 	{
+#ifdef DEBUG
 		LogError("GetNearestObjectToLocation: why more than 1?");
+
+#endif // DEBUG
 		return aArray;
 	}
 	for (TActorIterator<ADA2UE4Creature> ActorItr(GetCurrentWorld()); ActorItr; ++ActorItr)
@@ -1869,7 +2157,10 @@ TArray<AActor*> GetNearestObjectToLocation(FVector vVector, int32 nObjectType, i
 				aArray.Add(tempArray[i + 1]);
 				break;
 			}
+#ifdef DEBUG
 			else LogError("a world with no actors?");
+
+#endif // DEBUG
 		}
 	}
 
@@ -1882,27 +2173,41 @@ TArray<AActor*> GetNearestObjectToLocation(FVector vVector, int32 nObjectType, i
 TArray<AActor*> GetNearestObject(AActor* aActor, int32 nObjectType, int32 nNumberOfObjects, int32 nCheckLiving, int32 nCheckPerceived, int32 nIncludeSelf)
 {
 	TArray<AActor*> aArray;
+	if (aActor == nullptr) return aArray;
 	if (nObjectType != OBJECT_TYPE_PLACEABLE)
 	{
+#ifdef DEBUG
 		LogError("GetNearestObject: only Placeables are considered");
+
+#endif // DEBUG
 		return aArray;
 	}
 	//TODO GetNearestObject to be implemented
+#ifdef DEBUG
 	LogError("GetNearestObject: to be implemented!!");
+
+#endif // DEBUG
 	return aArray;
 }
 
 TArray<AActor*> GetNearestObjectByTag(AActor* aActor, FString sTag, int32 nObjectType, int32 nNumberOfObjects, int32 nCheckLiving, int32 nCheckPerceived, int32 nIncludeSelf)
 {
 	TArray<AActor*> aArray;
+	if (aActor == nullptr) return aArray;
 	if (nObjectType != OBJECT_TYPE_WAYPOINT)
 	{
+#ifdef DEBUG
 		LogError("GetNearestObjectByTag: only waypoints are considered for now");
+
+#endif // DEBUG
 		return aArray;
 	}
 	if (nNumberOfObjects != 1)
 	{
+#ifdef DEBUG
 		LogError("GetNearestObjectByTag: why more than 1?");
+
+#endif // DEBUG
 		return aArray;
 	}
 	for (TActorIterator<ADA2UE4TargetPoint> ActorItr(GetCurrentWorld()); ActorItr; ++ActorItr)
@@ -1928,7 +2233,10 @@ int32 GetEffectsFlags(AActor* aActor)
 		ADA2UE4Creature* oCreature = Cast<ADA2UE4Creature>(aActor);
 		return oCreature->EffectFlags;
 	}
+#ifdef DEBUG
 	else LogError("GetEffectsFlags: unknown actor type");
+
+#endif // DEBUG
 	return 0; //error
 }
 
@@ -1940,7 +2248,10 @@ int32 GetObjectInteractive(AActor* aActor)
 		ADA2UE4Creature* oCreature = Cast<ADA2UE4Creature>(aActor);
 		return oCreature->bInteractive;
 	}
+#ifdef DEBUG
 	else LogError("GetObjectInteractive: unknown actor type");
+
+#endif // DEBUG
 	return FALSE_;
 }
 
@@ -1952,7 +2263,10 @@ void SetObjectInteractive(AActor* aActor, int32 nValue)
 		ADA2UE4Creature* oCreature = Cast<ADA2UE4Creature>(aActor);
 		oCreature->bInteractive = nValue;
 	}
+#ifdef DEBUG
 	else LogError("SetObjectInteractive: unknown actor type");
+
+#endif // DEBUG
 }
 
 TArray<int32> GetAbilitiesDueToAOEs(AActor* aActor)
@@ -1970,18 +2284,50 @@ TArray<int32> GetAbilitiesDueToAOEs(AActor* aActor)
 			}
 		}
 	}
+#ifdef DEBUG
 	else LogError("GetEffectsFlags: unknown actor type");
+
+#endif // DEBUG
 	return aArray;
 }
 
-UWorld* GetArea(AActor* oActor)
+UWorld* GetArea(AActor* aActor)
 {
-	return oActor->GetWorld();
+	if (aActor == nullptr) return nullptr;
+	return aActor->GetWorld();
 }
 
-AActor* GetAttackTarget(AActor* oCreature)
+AActor* GetAttackTarget(AActor* aActor)
 {
-	return GetLocalObject(oCreature, AI_THREAT_TARGET);
+	if (aActor == nullptr) return nullptr;
+	if (aActor->IsA(ADA2UE4Creature::StaticClass()))
+	{
+		ADA2UE4Creature* oCreature = Cast<ADA2UE4Creature>(aActor);
+		return Cast<ADA2UE4CreatureController>(oCreature->GetController())->GetActionTarget();
+	}
+#ifdef DEBUG
+	else LogError("GetAttackTarget: unknown actor type");
+
+#endif // DEBUG
+	return nullptr;
+}
+
+void SetAttackTarget(AActor* aActor, AActor* aTarget)
+{
+	//TODO doublecheck SetAttackTarget null target
+	if (aActor == nullptr) return;
+	if (aActor->IsA(ADA2UE4Creature::StaticClass()))
+	{
+		ADA2UE4Creature* oCreature = Cast<ADA2UE4Creature>(aActor);
+		if (aTarget == nullptr)
+			Cast<ADA2UE4CreatureController>(oCreature->GetController())->SetActionTarget(nullptr);
+		else
+			Cast<ADA2UE4CreatureController>(oCreature->GetController())->SetActionTarget(Cast<APawn>(aTarget));
+	}
+#ifdef DEBUG
+	else LogError("SetAttackTarget: unknown actor type");
+
+#endif // DEBUG
 }
 
 int32 GetActiveWeaponSet(AActor* aActor)
@@ -1992,7 +2338,10 @@ int32 GetActiveWeaponSet(AActor* aActor)
 		ADA2UE4Creature* oCreature = Cast<ADA2UE4Creature>(aActor);
 		return oCreature->nActiveWeaponSet;
 	}
+#ifdef DEBUG
 	else LogError("GetActiveWeaponSet: unknown actor type");
+
+#endif // DEBUG
 	return 0; //error
 }
 
@@ -2005,7 +2354,10 @@ AActor* GetTacticTargetObject(AActor* aActor, int32 nIndex)
 		if (oCreature->Tactics.Num() < nIndex) return nullptr;
 		else return (oCreature->Tactics[nIndex].oTacticTarget);
 	}
+#ifdef DEBUG
 	else LogError("GetTacticTargetObject: unknown actor type");
+
+#endif // DEBUG
 	return nullptr; //error
 }
 
@@ -2018,7 +2370,10 @@ AActor* GetTacticConditionObject(AActor* aActor, int32 nIndex)
 		if (oCreature->Tactics.Num() < nIndex) return nullptr;
 		else return (oCreature->Tactics[nIndex].oTacticCondition);
 	}
+#ifdef DEBUG
 	else LogError("GetTacticConditionObject: unknown actor type");
+
+#endif // DEBUG
 	return nullptr; //error
 }
 
@@ -2030,18 +2385,24 @@ TArray<AActor*> GetCreaturesInMeleeRing(AActor* aActor, float fStartAngle, float
 	{
 		ADA2UE4Creature* oCreature = Cast<ADA2UE4Creature>(aActor);
 
-		for (APawn* pawn : oCreature->MeleeRingPawns)
+		for (APawn* pawn : oCreature->SensedPawns)
 		{
-			if (bOnlyHostiles)
+			if (GetDistanceBetween(oCreature, pawn) < AI_MELEE_RANGE*SCALE_MULTIPLIER)
 			{
-				if (IsObjectHostile(oCreature, pawn))
-					aArray.Add(pawn);
+				if (bOnlyHostiles)
+				{
+					if (IsObjectHostile(oCreature, pawn))
+						aArray.Add(pawn);
+				}
+				else aArray.Add(pawn);
 			}
-			else aArray.Add(pawn);
 		}
 		return aArray;
 	}
+#ifdef DEBUG
 	else LogError("GetCreaturesInMeleeRing: unknown actor type");
+
+#endif // DEBUG
 	return aArray;
 }
 
@@ -2065,7 +2426,10 @@ TArray<AActor*> GetCreaturesInCone(AActor* aActor, int32 bOnlyHostiles)
 		}
 		return aArray;
 	}
+#ifdef DEBUG
 	else LogError("GetCreaturesInCone: unknown actor type");
+
+#endif // DEBUG
 	return aArray;
 }
 
@@ -2081,16 +2445,19 @@ int32 GetNumTactics(AActor* aActor)
 	{
 		ADA2UE4Creature* oCreature = Cast<ADA2UE4Creature>(aActor);
 		//TODO make sure current num of tactics doesn't exceed max allowed by current creature level
-		//int32 level = GetCreatureProperty(aActor, PROPERTY_SIMPLE_LEVEL);
+		//int32 level = GetCreatureProperty(oCreature, PROPERTY_SIMPLE_LEVEL);
 		//int32 maxTactics = GetM2DAInt(TABLE_EXPERIENCE, "Tactics", level);
 		//int32 populatedTactics = oCreature->Tactics.Num();
 		return oCreature->Tactics.Num();
 	}
+#ifdef DEBUG
 	else LogError("GetNumTactics: unknown actor type");
+
+#endif // DEBUG
 	return 0; //error
 }
 
-int32 GetM2DARows(int32 n2DA, FString s2DA)
+int32 GetM2DARows(int32 n2DA)
 {
 	FString json = GetJSON(n2DA);
 	return GetJsonNodeCount(json);
@@ -2104,7 +2471,10 @@ int32 IsTacticEnabled(AActor* aActor, int32 nIndex)
 		ADA2UE4Creature* oCreature = Cast<ADA2UE4Creature>(aActor);
 		return (oCreature->Tactics.Num() > nIndex) ? oCreature->Tactics[nIndex].bEnabled : FALSE_;
 	}
+#ifdef DEBUG
 	else LogError("IsTacticEnabled: unknown actor type");
+
+#endif // DEBUG
 	return FALSE_; //error
 }
 
@@ -2116,7 +2486,10 @@ FString GetTacticCommandItemTag(AActor* aActor, int32 nIndex)
 		ADA2UE4Creature* oCreature = Cast<ADA2UE4Creature>(aActor);
 		return (oCreature->Tactics.Num() > nIndex) ? oCreature->Tactics[nIndex].sTacticTag : "";
 	}
+#ifdef DEBUG
 	else LogError("GetTacticCommandItemTag: unknown actor type");
+
+#endif // DEBUG
 	return ""; //error
 }
 
@@ -2128,7 +2501,10 @@ int32 GetTacticTargetType(AActor* aActor, int32 nIndex)
 		ADA2UE4Creature* oCreature = Cast<ADA2UE4Creature>(aActor);
 		return (oCreature->Tactics.Num() > nIndex) ? oCreature->Tactics[nIndex].nTacticTargetType : 0;
 	}
+#ifdef DEBUG
 	else LogError("GetTacticTargetType: unknown actor type");
+
+#endif // DEBUG
 	return 0; //error
 }
 
@@ -2140,7 +2516,10 @@ int32 GetTacticCondition(AActor* aActor, int32 nIndex)
 		ADA2UE4Creature* oCreature = Cast<ADA2UE4Creature>(aActor);
 		return (oCreature->Tactics.Num() > nIndex) ? oCreature->Tactics[nIndex].nTacticCondition : 0;
 	}
+#ifdef DEBUG
 	else LogError("GetTacticCondition: unknown actor type");
+
+#endif // DEBUG
 	return 0; //error
 }
 
@@ -2152,7 +2531,10 @@ int32 GetTacticCommand(AActor* aActor, int32 nIndex)
 		ADA2UE4Creature* oCreature = Cast<ADA2UE4Creature>(aActor);
 		return (oCreature->Tactics.Num() > nIndex) ? oCreature->Tactics[nIndex].nTacticCommand : 0;
 	}
+#ifdef DEBUG
 	else LogError("GetTacticCommand: unknown actor type");
+
+#endif // DEBUG
 	return 0; //error
 }
 
@@ -2164,7 +2546,10 @@ int32 GetTacticCommandParam(AActor* aActor, int32 nIndex)
 		ADA2UE4Creature* oCreature = Cast<ADA2UE4Creature>(aActor);
 		return (oCreature->Tactics.Num() > nIndex) ? oCreature->Tactics[nIndex].nTacticSubCommand : 0;
 	}
+#ifdef DEBUG
 	else LogError("GetTacticCommandParam: unknown actor type");
+
+#endif // DEBUG
 	return 0; //error
 }
 
@@ -2178,7 +2563,10 @@ int32 GetItemStackSize(AActor* aActor)
 		if (oItem->Stackable == 0) return 1;
 		else return oItem->StackSize;
 	}
+#ifdef DEBUG
 	else LogError("GetItemStackSize: unknown actor type");
+
+#endif // DEBUG
 	return 0; //error
 }
 
@@ -2189,21 +2577,27 @@ float GetRemainingCooldown(AActor* aActor, int32 nAbilityId, FString sSourceItem
 	{
 		ADA2UE4Creature* oCreature = Cast<ADA2UE4Creature>(aActor);
 		float fCooldown = GetM2DAFloat(TABLE_ABILITIES_SPELLS, "cooldown", nAbilityId);
-		float fLastUsed = 0.f;
 		for (FAbility abi : oCreature->Abilities)
 		{
 			if (abi.nAbilityID == nAbilityId)
 			{
-				fLastUsed = abi.fLastUsed;
-				break;
+				if (abi.fLastUsed == 0.f) //never used
+				{
+					return 0.f;
+				}
+				else
+				{
+					float currentTime = GetCurrentWorld()->GetTimeSeconds();
+					return (currentTime - abi.fLastUsed < fCooldown) ? currentTime - abi.fLastUsed : 0.f;
+				}
 			}
 		}
-		float currentTime = GetCurrentWorld()->GetTimeSeconds();
-		return (currentTime - fLastUsed < fCooldown) ? currentTime - fLastUsed : 0.f;
-
 	}
+#ifdef DEBUG
 	else LogError("GetRemainingCooldown: unknown actor type");
-	return 1.f; //error
+
+#endif // DEBUG
+	return 1.f; //error: > 0
 
 }
 
@@ -2228,10 +2622,14 @@ int32 GetPlaceableState(AActor* oPlaceable)
 	return int32();
 }
 
-float GetFacing(AActor* oTarget)
+float GetFacing(AActor* aActor)
 {
+	if (aActor == nullptr) return -1.f;
+#ifdef DEBUG
 	LogWarning("get facing, ensure that right is correct, instead of down, or something else");
-	return FMath::RadiansToDegrees(FMath::Atan2(oTarget->GetActorLocation().Z, oTarget->GetActorLocation().X));
+
+#endif // DEBUG
+	return FMath::RadiansToDegrees(FMath::Atan2(aActor->GetActorLocation().Z, aActor->GetActorLocation().X));
 }
 
 int32 IsLocationValid(FVector vVector)
@@ -2266,7 +2664,10 @@ TArray<AActor*> GetItemsInInventory(AActor* aActor, int32 nGetItemsOptions, int3
 			return aArray;
 		}
 	}
+#ifdef DEBUG
 	else LogError("GetItemsInInventory: unknown actor type");
+
+#endif // DEBUG
 	return aArray; //error
 }
 
@@ -2290,7 +2691,10 @@ float GetItemPropertyPower(AActor* aActor, int32 nPropertyId, int32 bIncludeSubI
 		}
 		return 0;
 	}
+#ifdef DEBUG
 	else LogError("GetItemPropertyPower: unknown actor type");
+
+#endif // DEBUG
 	return 0; //error
 }
 
@@ -2310,17 +2714,31 @@ int32 GetItemValue(AActor* aActor)
 #endif // DEBUG
 		return cost;
 	}
+#ifdef DEBUG
 	else LogError("GetItemValue: unknown actor type");
+
+#endif // DEBUG
 	return 0; //error
 }
 
-int32 GetItemAbilityId(AActor* oItem)
+int32 GetItemAbilityId(AActor* aItem)
 {
-	return GetLocalInt(oItem, ABILITY);
+	if (aItem == nullptr) return -1;
+	if (aItem->IsA(ADA2UE4Item::StaticClass()))
+	{
+		ADA2UE4Item* oItem = Cast<ADA2UE4Item>(aItem);
+		return oItem->ABILITY;
+	}
+#ifdef DEBUG
+	else LogError("GetItemAbilityId: unknown actor type");
+
+#endif // DEBUG
+	return -1;
 }
 
 float GetAngleBetweenObjects(AActor* aActorA, AActor* aActorB)
 {
+	if (aActorA == nullptr || aActorB == nullptr) return -1.f;
 	//TODO GetAngleBetweenObjects doublecheck
 	//return FMath::Acos(FMath::Clamp(FVector::DotProduct(aActorA->GetActorLocation()->Normalize(),aActorB->GetActorLocation()->Normalize()),-1.f,1.f)* 57.29578f)
 	return FMath::Atan2(aActorA->GetActorLocation().Z - aActorB->GetActorLocation().Z, aActorA->GetActorLocation().X - aActorB->GetActorLocation().X);
@@ -2328,6 +2746,7 @@ float GetAngleBetweenObjects(AActor* aActorA, AActor* aActorB)
 
 int32 IsHumanoid(AActor* aActor)
 {
+	if (aActor == nullptr) return -1;
 	//TODO IsHumanoid implement 
 	return TRUE_;
 }
@@ -2347,9 +2766,9 @@ int32 GetWeaponStyle(AActor* aActor)
 		if (oCreature->INVENTORY_SLOTS.Contains(INVENTORY_SLOT_OFFHAND))
 			off = *oCreature->INVENTORY_SLOTS.Find(INVENTORY_SLOT_OFFHAND);
 
-		int t0 = GetBaseItemType(main);
-		int t1 = GetBaseItemType(off);
-		
+		int32 t0 = GetBaseItemType(main);
+		int32 t1 = GetBaseItemType(off);
+
 		switch (t0)
 		{
 		case 40://battle axe
@@ -2369,10 +2788,20 @@ int32 GetWeaponStyle(AActor* aActor)
 				return WEAPONSTYLE_DUAL;
 			else return WEAPONSTYLE_SINGLE;
 		}
-		default: LogError("GetWeaponStyle passed out :D"); break;
+		default:
+		{
+#ifdef DEBUG
+			LogError("GetWeaponStyle passed out :D");
+
+#endif // DEBUG
+			break;
+		}
 		}
 	}
+#ifdef DEBUG
 	else LogError("GetWeaponStyle: unknown actor type");
+
+#endif // DEBUG
 	return 0; //error
 }
 
@@ -2385,14 +2814,19 @@ int32 CheckLineOfSightObject(AActor* aSource, AActor* aTarget)
 		ADA2UE4Creature* oCreature = Cast<ADA2UE4Creature>(aSource);
 		return oCreature->SensedPawns.Contains(Cast<APawn>(aTarget));
 	}
-	else LogError("GetWeaponStyle: unknown actor type");
+#ifdef DEBUG
+	else LogError("CheckLineOfSightObject: unknown actor type");
+
+#endif // DEBUG
 	return 0; //error
 }
 
-void SetFacingObject(AActor* aActor, AActor* oTarget, int32 bInvert, int32 bInstant)
+void SetFacingObject(AActor* aActorA, AActor* aActorB, int32 bInvert, int32 bInstant)
 {
-	FRotator r = UKismetMathLibrary::FindLookAtRotation(aActor->GetActorLocation(), oTarget->GetActorLocation());
-	aActor->SetActorRotation(r);
+	//TODO SetFacingObject bInvert/bInstant
+	if (aActorA == nullptr || aActorB == nullptr) return;
+	FRotator r = UKismetMathLibrary::FindLookAtRotation(aActorA->GetActorLocation(), aActorB->GetActorLocation());
+	aActorA->SetActorRotation(r);
 }
 
 int32 TriggerPerception(AActor* oPerceivingCreature, AActor* oPerceivedCreature)
@@ -2403,6 +2837,7 @@ int32 TriggerPerception(AActor* oPerceivingCreature, AActor* oPerceivedCreature)
 
 void SetCreatureIsStatue(AActor* aActor, int32 value)
 {
+	if (aActor == nullptr) return;
 	aActor->FindComponentByClass<class USkeletalMeshComponent>()->bNoSkeletonUpdate = value;
 }
 
@@ -2414,19 +2849,25 @@ AActor* CreateItemOnObject(FString rItemFileName, AActor* aTarget, int32 nStackS
 	{
 		ADA2UE4Creature* oCreature = Cast<ADA2UE4Creature>(aTarget);
 
-		FString sItem = "/Game/Data/Blueprints/GameObjects/Items/";
-		sItem += rItemFileName;
-		sItem += '.';
-		sItem += rItemFileName;
-		UBlueprint* itemBlueprint = LoadBlueprintFromPath(FName(*sItem));
-		ADA2UE4Item* oItem = GetCurrentWorld()->SpawnActor<ADA2UE4Item>(itemBlueprint->GeneratedClass);
+		FString sPath = "/Game/Data/Blueprints/GameObjects/Items";
+
+		UBlueprintGeneratedClass* bpItem = LoadBlueprintFromPath<UBlueprintGeneratedClass>(FName(*sPath), FName(*rItemFileName));
+		ADA2UE4Item* aItem = oCreature->GetWorld()->SpawnActor<ADA2UE4Item>(bpItem);
+
+		ADA2UE4Item* oItem = NewObject<ADA2UE4Item>();
+		oItem = aItem;
+
+		aItem->Destroy();
 
 		//add item to backpack
 		if (oItem)	oCreature->Inventory.Add(oItem);
 
 		return oItem;
 	}
+#ifdef DEBUG
 	else LogError("CreateItemOnObject: unknown actor type");
+
+#endif // DEBUG
 	return nullptr;
 }
 
@@ -2438,7 +2879,10 @@ void SetItemDroppable(AActor* aItem, int32 bDroppable)
 		ADA2UE4Item* oItem = Cast<ADA2UE4Item>(aItem);
 		oItem->Droppable = bDroppable;
 	}
+#ifdef DEBUG
 	else LogError("SetItemDroppable: unknown actor type");
+
+#endif // DEBUG
 	return;
 }
 
@@ -2480,11 +2924,17 @@ int32 EquipItem(AActor* aActor, AActor* aItem, int32 nEquipSlot, int32 nWeaponSe
 		}
 		else
 		{
-			LogError("Inventory slots can be only 0 and 1, got " + wSet);
+#ifdef DEBUG
+			LogError("Inventory weapon sets can be only 0 and 1, got " + wSet);
+
+#endif // DEBUG
 			return FALSE_;
 		}
 	}
+#ifdef DEBUG
 	else LogError("EquipItem: unknown actor type");
+
+#endif // DEBUG
 	return FALSE_;//error
 }
 
@@ -2495,8 +2945,8 @@ float GetItemStat(AActor* aItem, int32  nStatType)
 	if (aItem->IsA(ADA2UE4Item::StaticClass()))
 	{
 		ADA2UE4Item* oItem = Cast<ADA2UE4Item>(aItem);
-		int _Type = GetBaseItemType(oItem);
-		int _Stat = 0;
+		int32 _Type = GetBaseItemType(oItem);
+		int32 _Stat = 0;
 		switch (nStatType)
 		{
 		case ITEM_STAT_ATTACK:
@@ -2529,11 +2979,19 @@ float GetItemStat(AActor* aItem, int32  nStatType)
 			_Stat = GetM2DAInt(TABLE_ITEMSTATS, "Damage", _Type);
 			break;
 		}
-		default: LogError("GetItemStat: unknown stat");
+		default:
+#ifdef DEBUG
+			LogError("GetItemStat: unknown stat");
+
+#endif // DEBUG
+			break;
 		}
 		return _Stat;
 	}
+#ifdef DEBUG
 	else LogError("GetItemStat: unknown actor type");
+
+#endif // DEBUG
 	return 0.f;
 }
 
@@ -2546,7 +3004,10 @@ int32 GetItemEquipSlot(AActor* aItem)
 
 		return oItem->Slot;
 	}
+#ifdef DEBUG
 	else LogError("GetItemEquipSlot: unknown actor type");
+
+#endif // DEBUG
 	return INVENTORY_SLOT_INVALID;
 }
 
@@ -2560,18 +3021,21 @@ int32 GetCanDiePermanently(AActor* aActor)
 
 		return oCreature->NoPermDeath;
 	}
+#ifdef DEBUG
 	else LogError("GetCanDiePermanently: unknown actor type");
+
+#endif // DEBUG
 	return FALSE_;
 }
 
 FEffect EffectImpact(float fDamage, AActor* oWeapon, int32 nVfx, int32 nAbi, int32 nDamageType)
 {
 	FEffect ef = Effect(EFFECT_TYPE_IMPACT);
-	ef = SetEffectObject(ef, 0, oWeapon);
-	ef = SetEffectFloat(ef, 0, fDamage);
-	ef = SetEffectInteger(ef, 0, nVfx);
-	ef = SetEffectInteger(ef, 1, nAbi);
-	ef = SetEffectInteger(ef, 2, nDamageType);
+	ef = SetEffectObject(ef, oWeapon);
+	ef = SetEffectFloat(ef, fDamage);
+	ef = SetEffectInteger(ef, nVfx);
+	ef = SetEffectInteger(ef, nAbi);
+	ef = SetEffectInteger(ef, nDamageType);
 
 	return ef;
 }
@@ -2597,7 +3061,10 @@ void SetAttackResult(AActor* aAttacker, int32 nResult1, FEffect eDamageEffect1, 
 		oAttacker->AttackResults.Add(off);
 	}
 
+#ifdef DEBUG
 	else LogError("SetAttackResult: unknown actor type");
+
+#endif // DEBUG
 }
 
 void SetAimLoopDuration(AActor* aActor, float fDuration)
@@ -2608,7 +3075,10 @@ void SetAimLoopDuration(AActor* aActor, float fDuration)
 		ADA2UE4Creature* oCreature = Cast<ADA2UE4Creature>(aActor);
 		SetAttackDuration(oCreature, fDuration);
 	}
+#ifdef DEBUG
 	else LogError("SetAimLoopDuration: unknown actor type");
+
+#endif // DEBUG
 }
 
 void SetAttackDuration(AActor* aActor, float fDuration)
@@ -2619,7 +3089,10 @@ void SetAttackDuration(AActor* aActor, float fDuration)
 		ADA2UE4Creature* oCreature = Cast<ADA2UE4Creature>(aActor);
 		oCreature->AttackDuration += fDuration;
 	}
+#ifdef DEBUG
 	else LogError("SetAttackDuration: unknown actor type");
+
+#endif // DEBUG
 }
 
 void EnableWeaponTrail(AActor* aActor, int32 bEnable)
@@ -2629,9 +3102,16 @@ void EnableWeaponTrail(AActor* aActor, int32 bEnable)
 	{
 		ADA2UE4Creature* oCreature = Cast<ADA2UE4Creature>(aActor);
 		//TODO EnableWeaponTrail to be implemented
+#ifdef DEBUG
+		LogError("EnableWeaponTrail to be implemented!!");
+
+#endif // DEBUG
 		return;
 	}
+#ifdef DEBUG
 	else LogError("EnableWeaponTrail: unknown actor type");
+
+#endif // DEBUG
 }
 
 FVector GetRoamLocation(AActor* aActor)
@@ -2642,7 +3122,10 @@ FVector GetRoamLocation(AActor* aActor)
 		ADA2UE4Creature* oCreature = Cast<ADA2UE4Creature>(aActor);
 		return oCreature->HOME_LOCATION;
 	}
+#ifdef DEBUG
 	else LogError("GetRoamLocation: unknown actor type");
+
+#endif // DEBUG
 	return FVector(0.f);
 }
 
@@ -2653,9 +3136,12 @@ void ClearPerceptionList(AActor* aActor)
 	{
 		ADA2UE4Creature* oCreature = Cast<ADA2UE4Creature>(aActor);
 		oCreature->SensedPawns.Empty();
-		oCreature->MeleeRingPawns.Empty();
+		//oCreature->MeleeRingPawns.Empty();
 	}
+#ifdef DEBUG
 	else LogError("ClearPerceptionList: unknown actor type");
+
+#endif // DEBUG
 }
 
 AActor* GetObjectByTag(FString sTag, int32 nNth, int32 nObjectType)
@@ -2669,13 +3155,16 @@ AActor* GetObjectByTag(FString sTag, int32 nNth, int32 nObjectType)
 		{
 			ADA2UE4TargetPoint* waypoint = *ActorItr;
 			if (GetTag(waypoint) == sTag) return waypoint;
-			else return nullptr;
 		}
+		return nullptr;
 	}
-	default: 
+	default:
 	{
+#ifdef DEBUG
 		LogError("GetObjectByTag unknown object type!!");
-		return nullptr; 
+
+#endif // DEBUG
+		return nullptr;
 	}
 	}
 }
@@ -2684,4 +3173,16 @@ void InteractWithObject(AActor* oCreature, AActor* oTarget, int32 nInteractionId
 {
 	//TODO InteractWithObject
 	LogError("InteractWithObject to be implemented!!");
+}
+
+void DestroyObject(AActor* aActor, int32 nDelay)
+{
+#ifdef DEBUG
+	if (nDelay != 0)
+	{
+		LogError("Why destroy with delay?");
+	}
+#endif // DEBUG
+
+	aActor->Destroy();
 }

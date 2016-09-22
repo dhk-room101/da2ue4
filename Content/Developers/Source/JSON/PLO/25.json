@@ -1,0 +1,331 @@
+{
+  "Resource": {
+    "-Requested": "1",
+    "-URI": "gen00pt_random.plo|++|moduleid=1|++|resrefid=25",
+    "-ResType": "plo",
+    "-State": "0",
+    "-Type": "3",
+    "-OwnerIsCore": "1",
+    "-IsCore": "1",
+    "-ResRefName": "gen00pt_random",
+    "-Folder": "\\_Global\\Generic\\",
+    "-ResRefID": "25",
+    "-OwnerModuleID": "1",
+    "-ModuleID": "1",
+    "Agent": {
+      "ResRefName": "gen00pt_random",
+      "LocalCopy": "False",
+      "NameStringID": "90",
+      "NameRequiresReTranslation": "False",
+      "GUID": "{6526F8E7-7048-4223-A6FD-7B72C1DE70C8}",
+      "ScriptURI": "15",
+      "Priority": "1",
+      "EntryType": "1",
+      "AllowPausing": "False",
+      "StatusList": {
+        "Agent": [
+          {
+            "Flag": "256",
+            "Name": "GEN_R5",
+            "Final": "False",
+            "Repeatable": "False",
+            "JournalTextStringID": "84",
+            "JournalTextRequiresReTranslation": "False",
+            "RewardID": "0",
+            "DefaultValue": "0"
+          },
+          {
+            "Flag": "257",
+            "Name": "GEN_R10",
+            "Final": "False",
+            "Repeatable": "False",
+            "JournalTextStringID": "85",
+            "JournalTextRequiresReTranslation": "False",
+            "RewardID": "0",
+            "DefaultValue": "0"
+          },
+          {
+            "Flag": "258",
+            "Name": "GEN_R25",
+            "Final": "False",
+            "Repeatable": "False",
+            "JournalTextStringID": "86",
+            "JournalTextRequiresReTranslation": "False",
+            "RewardID": "0",
+            "DefaultValue": "0"
+          },
+          {
+            "Flag": "259",
+            "Name": "GEN_R30",
+            "Final": "False",
+            "Repeatable": "False",
+            "JournalTextStringID": "87",
+            "JournalTextRequiresReTranslation": "False",
+            "RewardID": "0",
+            "DefaultValue": "0"
+          },
+          {
+            "Flag": "260",
+            "Name": "GEN_R33",
+            "Final": "False",
+            "Repeatable": "False",
+            "JournalTextStringID": "88",
+            "JournalTextRequiresReTranslation": "False",
+            "RewardID": "0",
+            "DefaultValue": "0"
+          },
+          {
+            "Flag": "261",
+            "Name": "GEN_R50",
+            "Final": "False",
+            "Repeatable": "False",
+            "JournalTextStringID": "89",
+            "JournalTextRequiresReTranslation": "False",
+            "RewardID": "0",
+            "DefaultValue": "0"
+          },
+          {
+            "Flag": "262",
+            "Name": "GEN_RAND_LINES_LEFT_01",
+            "Final": "False",
+            "Repeatable": "False",
+            "JournalTextStringID": "98041",
+            "JournalTextRequiresReTranslation": "False",
+            "RewardID": "0",
+            "DefaultValue": "0"
+          },
+          {
+            "Flag": "263",
+            "Name": "GEN_RAND_LINES_LEFT_02",
+            "Final": "False",
+            "Repeatable": "False",
+            "JournalTextStringID": "98042",
+            "JournalTextRequiresReTranslation": "False",
+            "RewardID": "0",
+            "DefaultValue": "0"
+          },
+          {
+            "Flag": "264",
+            "Name": "GEN_RAND_LINES_LEFT_03",
+            "Final": "False",
+            "Repeatable": "False",
+            "JournalTextStringID": "98043",
+            "JournalTextRequiresReTranslation": "False",
+            "RewardID": "0",
+            "DefaultValue": "0"
+          },
+          {
+            "Flag": "265",
+            "Name": "GEN_RAND_LINES_LEFT_04",
+            "Final": "False",
+            "Repeatable": "False",
+            "JournalTextStringID": "98044",
+            "JournalTextRequiresReTranslation": "False",
+            "RewardID": "0",
+            "DefaultValue": "0"
+          },
+          {
+            "Flag": "266",
+            "Name": "GEN_RAND_LINES_LEFT_05",
+            "Final": "False",
+            "Repeatable": "False",
+            "JournalTextStringID": "98045",
+            "JournalTextRequiresReTranslation": "False",
+            "RewardID": "0",
+            "DefaultValue": "0"
+          },
+          {
+            "Flag": "267",
+            "Name": "GEN_RAND_LINES_LEFT_06",
+            "Final": "False",
+            "Repeatable": "False",
+            "JournalTextStringID": "98046",
+            "JournalTextRequiresReTranslation": "False",
+            "RewardID": "0",
+            "DefaultValue": "0"
+          },
+          {
+            "Flag": "268",
+            "Name": "GEN_RAND_LINES_LEFT_07",
+            "Final": "False",
+            "Repeatable": "False",
+            "JournalTextStringID": "98047",
+            "JournalTextRequiresReTranslation": "False",
+            "RewardID": "0",
+            "DefaultValue": "0"
+          },
+          {
+            "Flag": "269",
+            "Name": "GEN_RAND_LINES_LEFT_08",
+            "Final": "False",
+            "Repeatable": "False",
+            "JournalTextStringID": "98048",
+            "JournalTextRequiresReTranslation": "False",
+            "RewardID": "0",
+            "DefaultValue": "0"
+          },
+          {
+            "Flag": "270",
+            "Name": "GEN_RAND_LINES_LEFT_09",
+            "Final": "False",
+            "Repeatable": "False",
+            "JournalTextStringID": "98049",
+            "JournalTextRequiresReTranslation": "False",
+            "RewardID": "0",
+            "DefaultValue": "0"
+          },
+          {
+            "Flag": "271",
+            "Name": "GEN_RAND_LINES_LEFT_10",
+            "Final": "False",
+            "Repeatable": "False",
+            "JournalTextStringID": "98050",
+            "JournalTextRequiresReTranslation": "False",
+            "RewardID": "0",
+            "DefaultValue": "0"
+          },
+          {
+            "Flag": "272",
+            "Name": "GEN_RAND_LINES_LEFT_11",
+            "Final": "False",
+            "Repeatable": "False",
+            "JournalTextStringID": "98051",
+            "JournalTextRequiresReTranslation": "False",
+            "RewardID": "0",
+            "DefaultValue": "0"
+          },
+          {
+            "Flag": "273",
+            "Name": "GEN_RAND_LINES_LEFT_12",
+            "Final": "False",
+            "Repeatable": "False",
+            "JournalTextStringID": "98052",
+            "JournalTextRequiresReTranslation": "False",
+            "RewardID": "0",
+            "DefaultValue": "0"
+          },
+          {
+            "Flag": "274",
+            "Name": "GEN_RAND_LINES_LEFT_13",
+            "Final": "False",
+            "Repeatable": "False",
+            "JournalTextStringID": "98053",
+            "JournalTextRequiresReTranslation": "False",
+            "RewardID": "0",
+            "DefaultValue": "0"
+          },
+          {
+            "Flag": "275",
+            "Name": "GEN_RAND_LINES_LEFT_14",
+            "Final": "False",
+            "Repeatable": "False",
+            "JournalTextStringID": "98054",
+            "JournalTextRequiresReTranslation": "False",
+            "RewardID": "0",
+            "DefaultValue": "0"
+          },
+          {
+            "Flag": "276",
+            "Name": "GEN_RAND_LINES_LEFT_15",
+            "Final": "False",
+            "Repeatable": "False",
+            "JournalTextStringID": "98055",
+            "JournalTextRequiresReTranslation": "False",
+            "RewardID": "0",
+            "DefaultValue": "0"
+          },
+          {
+            "Flag": "277",
+            "Name": "GEN_BARK_STEN",
+            "Final": "False",
+            "Repeatable": "False",
+            "JournalTextStringID": "366566",
+            "JournalTextRequiresReTranslation": "False",
+            "RewardID": "0",
+            "DefaultValue": "0"
+          },
+          {
+            "Flag": "278",
+            "Name": "GEN_BARK_OGHREN",
+            "Final": "False",
+            "Repeatable": "False",
+            "JournalTextStringID": "366565",
+            "JournalTextRequiresReTranslation": "False",
+            "RewardID": "0",
+            "DefaultValue": "0"
+          },
+          {
+            "Flag": "279",
+            "Name": "GEN_BARK_ALISTAIR",
+            "Final": "False",
+            "Repeatable": "False",
+            "JournalTextStringID": "366567",
+            "JournalTextRequiresReTranslation": "False",
+            "RewardID": "0",
+            "DefaultValue": "0"
+          },
+          {
+            "Flag": "280",
+            "Name": "GEN_BARK_WYNNE",
+            "Final": "False",
+            "Repeatable": "False",
+            "JournalTextStringID": "366568",
+            "JournalTextRequiresReTranslation": "False",
+            "RewardID": "0",
+            "DefaultValue": "0"
+          },
+          {
+            "Flag": "281",
+            "Name": "GEN_BARK_LELIANA",
+            "Final": "False",
+            "Repeatable": "False",
+            "JournalTextStringID": "366569",
+            "JournalTextRequiresReTranslation": "False",
+            "RewardID": "0",
+            "DefaultValue": "0"
+          },
+          {
+            "Flag": "282",
+            "Name": "GEN_BARK_MORRIGAN",
+            "Final": "False",
+            "Repeatable": "False",
+            "JournalTextStringID": "366570",
+            "JournalTextRequiresReTranslation": "False",
+            "RewardID": "0",
+            "DefaultValue": "0"
+          },
+          {
+            "Flag": "283",
+            "Name": "GEN_BARK_ZEVRAN",
+            "Final": "False",
+            "Repeatable": "False",
+            "JournalTextStringID": "366571",
+            "JournalTextRequiresReTranslation": "False",
+            "RewardID": "0",
+            "DefaultValue": "0"
+          },
+          {
+            "Flag": "284",
+            "Name": "GEN_BARK_LOGHAIN",
+            "Final": "False",
+            "Repeatable": "False",
+            "JournalTextStringID": "366572",
+            "JournalTextRequiresReTranslation": "False",
+            "RewardID": "0",
+            "DefaultValue": "0"
+          },
+          {
+            "Flag": "285",
+            "Name": "GEN_BARK_SHALE",
+            "Final": "False",
+            "Repeatable": "False",
+            "JournalTextStringID": "366573",
+            "JournalTextRequiresReTranslation": "False",
+            "RewardID": "0",
+            "DefaultValue": "0"
+          }
+        ]
+      }
+    }
+  }
+}

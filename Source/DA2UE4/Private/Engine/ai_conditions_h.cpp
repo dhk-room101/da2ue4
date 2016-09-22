@@ -487,7 +487,7 @@ TArray<AActor*> _AI_GetEnemies(AActor* OBJECT_SELF, int32 nCommandType, int32 nC
 			Log_Trace_AI(OBJECT_SELF, "_AI_GetEnemies", "Follower current target: " + GetTag(oCurrentTarget) + ", range: " + FloatToString(fRangeToTarget)
 				+ ", ability range: " + IntToString(GetM2DAInt(TABLE_ABILITIES_TALENTS, "range", nCommandSubType)));
 #endif
-			if ((nAbilityTargetType == 1 *SCALE_MULTIPLIER || nAbilityTargetType == 0 * SCALE_MULTIPLIER) &&
+			if ((nAbilityTargetType == 1 * SCALE_MULTIPLIER || nAbilityTargetType == 0 * SCALE_MULTIPLIER) &&
 				fRangeToTarget <= AI_MELEE_RANGE * SCALE_MULTIPLIER &&
 				IsUsingMeleeWeapon(OBJECT_SELF))
 			{
@@ -532,7 +532,7 @@ TArray<AActor*> _AI_GetEnemies(AActor* OBJECT_SELF, int32 nCommandType, int32 nC
 	AActor* oCurrent;
 	float fDistance;
 	float fEnemyDistanceToMainControlled;
-	int32 j = 0;
+
 	for (i = 0; i < nSize; i++)
 	{
 		oCurrent = arEnemies[i];
@@ -572,8 +572,7 @@ TArray<AActor*> _AI_GetEnemies(AActor* OBJECT_SELF, int32 nCommandType, int32 nC
 #ifdef DEBUG
 		Log_Trace_AI(OBJECT_SELF, "_AI_GetEnemies", "Adding creature to list of enemies: [" + GetTag(oCurrent) + "]");
 #endif
-		arEnemiesFinal[j] = oCurrent;
-		j++;
+		arEnemiesFinal.Add(oCurrent);
 	}
 
 	nSize = arEnemiesFinal.Num();
@@ -584,16 +583,18 @@ TArray<AActor*> _AI_GetEnemies(AActor* OBJECT_SELF, int32 nCommandType, int32 nC
 	return arEnemiesFinal;
 }
 
-AActor* _AI_GetTargetOverride(AActor* OBJECT_SELF)
+AActor* _AI_GetTargetOverride(AActor* aActor)
 {
+	ADA2UE4Creature* OBJECT_SELF = Cast<ADA2UE4Creature>(aActor);
 	AActor* oTarget = nullptr;
-	AActor* oTargetOverride = GetLocalObject(OBJECT_SELF, AI_TARGET_OVERRIDE); // if overridden by UT_CombatStart
-	int32 nTargetOverrideCount = GetLocalInt(OBJECT_SELF, AI_TARGET_OVERRIDE_DUR_COUNT); // how long was overridden
+
+	AActor* oTargetOverride = GetActorFromName(OBJECT_SELF->AI_TARGET_OVERRIDE); // if overridden by UT_CombatStart
+	int32 nTargetOverrideCount = OBJECT_SELF->AI_TARGET_OVERRIDE_DUR_COUNT; // how long was overridden
 
 	if (!IsObjectValid(oTargetOverride) || IsDead(oTargetOverride))
 	{
-		SetLocalInt(OBJECT_SELF, AI_TARGET_OVERRIDE_DUR_COUNT, 0);
-		SetLocalObject(OBJECT_SELF, AI_TARGET_OVERRIDE, nullptr);
+		OBJECT_SELF->AI_TARGET_OVERRIDE_DUR_COUNT = 0;
+		OBJECT_SELF->AI_TARGET_OVERRIDE = "";
 		return nullptr;
 	}
 
@@ -608,14 +609,14 @@ AActor* _AI_GetTargetOverride(AActor* OBJECT_SELF)
 		if (nTargetOverrideCount != -1)
 		{
 			nTargetOverrideCount++;
-			SetLocalInt(OBJECT_SELF, AI_TARGET_OVERRIDE_DUR_COUNT, nTargetOverrideCount);
+			OBJECT_SELF->AI_TARGET_OVERRIDE_DUR_COUNT = nTargetOverrideCount;
 		}
 	}
 	else if (nTargetOverrideCount >= AI_TARGET_OVERRIDE_DURATION)
 	{
 		Log_Trace_AI(OBJECT_SELF, "_AI_GetTargetOverride", "Stopping target override (timed out) - will try to pick new target. Override target: " + GetTag(oTargetOverride));
-		SetLocalInt(OBJECT_SELF, AI_TARGET_OVERRIDE_DUR_COUNT, 0);
-		SetLocalObject(OBJECT_SELF, AI_TARGET_OVERRIDE, nullptr);
+		OBJECT_SELF->AI_TARGET_OVERRIDE_DUR_COUNT = 0;
+		OBJECT_SELF->AI_TARGET_OVERRIDE = "";
 	}
 
 	return oTarget;
@@ -1381,6 +1382,8 @@ AActor* _AI_Condition_GetNearestFlipCoverByState(AActor* OBJECT_SELF, int32 nFli
 	return nullptr;
 	}*/
 
+	//TODO _AI_Condition_GetNearestFlipCoverByState 
+	/*
 	TArray<AActor*> arPlaceables = GetNearestObject(OBJECT_SELF, OBJECT_TYPE_PLACEABLE, AI_MAX_NEAREST_PLACEABLE);
 	int32 nSize = arPlaceables.Num();
 	// Return first flip cover placeable in an Idle state, the does not yet have anyone registering a flipcover
@@ -1394,11 +1397,11 @@ AActor* _AI_Condition_GetNearestFlipCoverByState(AActor* OBJECT_SELF, int32 nFli
 			continue;
 		if (GetPlaceableState(oCurrent) != nFlipState)
 			continue;
-		if (GetLocalInt(oCurrent, PLC_FLIP_COVER_USE_COUNT) > 0) // Got users already
+		if (oCurrent->PLC_FLIP_COVER_USE_COUNT > 0) // Got users already
 			continue;
 		oTarget = oCurrent;
 		break;
-	}
+	}*/
 	return oTarget;
 }
 
@@ -1906,7 +1909,7 @@ AActor* _AI_Condition_AtLeastXCreaturesAreDead(AActor* OBJECT_SELF, int32 nTarge
 		(nTacticSubCommand == ABILITY_TALENT_DEVOUR || nTacticSubCommand == ABILITY_SPELL_ANIMATE_DEAD))
 	{
 		int32 nRangeID = GetM2DAInt(TABLE_ABILITIES_SPELLS, "range", nTacticSubCommand);
-		float fRange = GetM2DAFloat(TABLE_RANGES, "PrimaryRange", nRangeID) * SCALE_MULTIPLIER;
+		fRange = GetM2DAFloat(TABLE_RANGES, "PrimaryRange", nRangeID) * SCALE_MULTIPLIER;
 	}
 
 	int32 nSize = arCorpses.Num();

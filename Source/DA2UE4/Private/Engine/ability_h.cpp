@@ -1,18 +1,20 @@
 #include "DA2UE4.h"
 #include "ability_h.h"
 #include "effect_upkeep_h.h"
+#include "core_difficulty_h.h"
+
+//#include "effects_h.h"
+#include "m2da_constants_h.h"
+//#include "config_h.h"
+#include "events_h.h"
+#include "items_h.h"
+//#include "sys_resistances_h.h"
+
+#include "STypes.h"
 
 int32 Ability_IsAbilityActive(AActor* oCreature, int32 nAbilityID)
 {
-	int32 nActive = FALSE_;
-	TArray<FEffect> thisEffects = GetEffects(oCreature, EFFECT_TYPE_INVALID, nAbilityID);
-	int32 nSize = thisEffects.Num();
-
-#ifdef DEBUG
-	Log_Trace(LOG_CHANNEL_COMBAT_ABILITY, "Ability_IsAbilityActive", "START, abilityID: " + IntToString(nAbilityID) + ", number of effects for this ability: " + IntToString(nSize), oCreature);
-#endif
-
-	return (nSize > 0 ? TRUE_ : FALSE_);
+	return IsAbilityActive(oCreature, nAbilityID);
 }
 
 int32 Ability_CheckFlag(int32 nAbility, int32 nFlag)
@@ -57,7 +59,7 @@ int32 Ability_CostCheck(AActor* oCaster, int32 nAbility, int32 nAbilityType, AAc
 {
 	int32 bModal = Ability_IsModalAbility(nAbility);
 	float fCost = Ability_GetAbilityCost(oCaster, nAbility, nAbilityType, bModal);
-	float fMana=0.f;
+	float fMana = 0.f;
 	if (bModal)
 	{
 		fMana = GetCreatureProperty(oCaster, PROPERTY_DEPLETABLE_MANA_STAMINA, PROPERTY_VALUE_TOTAL);
@@ -65,7 +67,7 @@ int32 Ability_CostCheck(AActor* oCaster, int32 nAbility, int32 nAbilityType, AAc
 		// than upkeep cost and at least 1 point of mana
 		return fMana >= fCost && fMana >= 1.0f;
 	}
-	
+
 	//unused 	int32 nNumItems;
 	int32 bRet = TRUE_;
 
@@ -159,7 +161,7 @@ float Ability_GetAbilityCost(AActor* oCaster, int32 nAbility, int32 nAbilityType
 			}
 
 #ifdef DEBUG
-			Log_Trace(LOG_CHANNEL_COMBAT_ABILITY, "Ability_GetAbilityCost", "Calculating: " + FloatToString(fCost) + "*(1+(" + FloatToString(GetCreatureProperty(oCaster, PROPERTY_ATTRIBUTE_ABILITY_COST_MODIFIER)) + "*0.01))");
+			Log_Trace(LOG_CHANNEL_COMBAT_ABILITY, "Ability_GetAbilityCost", "Calculating: " + FloatToString(fCost) + "*(1+(" + FloatToString(GetCreatureProperty(oCaster, PROPERTY_ATTRIBUTE_FATIGUE)) + "*0.01))");
 			Log_Trace(LOG_CHANNEL_COMBAT_ABILITY, "Ability_GetAbilityCost", "New Cost:" + FloatToString(fCost));
 #endif
 		}
@@ -177,7 +179,7 @@ int32 Ability_CheckUseConditions(AActor* oCaster, AActor* oTarget, int32 nAbilit
 {
 
 	FString sItemTag = IsObjectValid(oItem) ? GetTag(oItem) : "";
-	int32 nAbilityType = GetAbilityType(nAbility);
+	int32 nAbilityType = Ability_GetAbilityType(nAbility);
 
 	int32 nCondition = GetM2DAInt(TABLE_ABILITIES_SPELLS, "conditions", nAbility);
 	int32 bRet = TRUE_;
@@ -209,7 +211,7 @@ int32 Ability_CheckUseConditions(AActor* oCaster, AActor* oTarget, int32 nAbilit
 	if (nCondition == 0)
 	{
 #ifdef DEBUG
-		Log_Trace(LOG_CHANNEL_COMBAT_ABILITY, "CheckUseConditions", "TRUE_ (no condition)");
+		Log_Trace(LOG_CHANNEL_COMBAT_ABILITY, "Ability_CheckUseConditions", "TRUE_ (no condition)");
 #endif
 		return TRUE_;
 	}
@@ -222,7 +224,7 @@ int32 Ability_CheckUseConditions(AActor* oCaster, AActor* oTarget, int32 nAbilit
 
 #ifdef DEBUG
 		sRet = ((bRet) ? "TRUE_" : "FALSE_");
-		Log_Trace(LOG_CHANNEL_COMBAT_ABILITY, "CheckUseConditions", "Melee: " + sRet);
+		Log_Trace(LOG_CHANNEL_COMBAT_ABILITY, "Ability_CheckUseConditions", "Melee: " + sRet);
 #endif
 		bRet = bRet &&   IsUsingMeleeWeapon(oCaster);
 
@@ -241,7 +243,7 @@ int32 Ability_CheckUseConditions(AActor* oCaster, AActor* oTarget, int32 nAbilit
 		bRet = bRet && IsUsingShield(oCaster);
 #ifdef DEBUG
 		sRet = ((bRet) ? "TRUE_" : "FALSE_");
-		Log_Trace(LOG_CHANNEL_COMBAT_ABILITY, "CheckUseConditions", "Shield: " + sRet);
+		Log_Trace(LOG_CHANNEL_COMBAT_ABILITY, "Ability_CheckUseConditions", "Shield: " + sRet);
 #endif
 
 		if (!bRet)
@@ -259,7 +261,7 @@ int32 Ability_CheckUseConditions(AActor* oCaster, AActor* oTarget, int32 nAbilit
 		bRet = bRet && IsUsingRangedWeapon(oCaster);
 #ifdef DEBUG
 		sRet = ((bRet) ? "TRUE_" : "FALSE_");
-		Log_Trace(LOG_CHANNEL_COMBAT_ABILITY, "CheckUseConditions", "Ranged: " + sRet);
+		Log_Trace(LOG_CHANNEL_COMBAT_ABILITY, "Ability_CheckUseConditions", "Ranged: " + sRet);
 #endif
 
 		if (!bRet)
@@ -280,7 +282,7 @@ int32 Ability_CheckUseConditions(AActor* oCaster, AActor* oTarget, int32 nAbilit
 		bRet = bRet && (fAngle >= 90.0f && fAngle <= 270.0f);
 #ifdef DEBUG
 		sRet = ((bRet) ? "TRUE_" : "FALSE_");
-		Log_Trace(LOG_CHANNEL_COMBAT_ABILITY, "CheckUseConditions", "Back: " + sRet);
+		Log_Trace(LOG_CHANNEL_COMBAT_ABILITY, "Ability_CheckUseConditions", "Back: " + sRet);
 #endif
 
 		if (!bRet)
@@ -301,7 +303,7 @@ int32 Ability_CheckUseConditions(AActor* oCaster, AActor* oTarget, int32 nAbilit
 			bRet = bRet && IsModalAbilityActive(oCaster, nModalAbility);
 #ifdef DEBUG
 			sRet = ((bRet) ? "TRUE_" : "FALSE_");
-			Log_Trace(LOG_CHANNEL_COMBAT_ABILITY, "CheckUseConditions", "Mode Active: " + sRet);
+			Log_Trace(LOG_CHANNEL_COMBAT_ABILITY, "Ability_CheckUseConditions", "Mode Active: " + sRet);
 #endif
 		}
 
@@ -321,7 +323,7 @@ int32 Ability_CheckUseConditions(AActor* oCaster, AActor* oTarget, int32 nAbilit
 
 #ifdef DEBUG
 		sRet = ((bRet) ? "TRUE_" : "FALSE_");
-		Log_Trace(LOG_CHANNEL_COMBAT_ABILITY, "CheckUseConditions", "IsHumanoid: " + sRet);
+		Log_Trace(LOG_CHANNEL_COMBAT_ABILITY, "Ability_CheckUseConditions", "IsHumanoid: " + sRet);
 #endif
 
 		if (!bRet)
@@ -340,7 +342,7 @@ int32 Ability_CheckUseConditions(AActor* oCaster, AActor* oTarget, int32 nAbilit
 		bRet = bRet && GetWeaponStyle(oCaster) == WEAPONSTYLE_DUAL;
 #ifdef DEBUG
 		sRet = ((bRet) ? "TRUE_" : "FALSE_");
-		Log_Trace(LOG_CHANNEL_COMBAT_ABILITY, "CheckUseConditions", "UsingDualWeapons: " + sRet);
+		Log_Trace(LOG_CHANNEL_COMBAT_ABILITY, "Ability_CheckUseConditions", "UsingDualWeapons: " + sRet);
 #endif
 
 		if (!bRet)
@@ -357,7 +359,7 @@ int32 Ability_CheckUseConditions(AActor* oCaster, AActor* oTarget, int32 nAbilit
 		bRet = bRet && GetWeaponStyle(oCaster) == WEAPONSTYLE_TWOHANDED;
 #ifdef DEBUG
 		sRet = ((bRet) ? "TRUE_" : "FALSE_");
-		Log_Trace(LOG_CHANNEL_COMBAT_ABILITY, "CheckUseConditions", "Using2HWeapon: " + sRet);
+		Log_Trace(LOG_CHANNEL_COMBAT_ABILITY, "Ability_CheckUseConditions", "Using2HWeapon: " + sRet);
 #endif
 		if (!bRet)
 		{
@@ -369,7 +371,7 @@ int32 Ability_CheckUseConditions(AActor* oCaster, AActor* oTarget, int32 nAbilit
 
 #ifdef DEBUG
 	sRet = ((bRet) ? "TRUE_" : "FALSE_");
-	Log_Trace(LOG_CHANNEL_COMBAT_ABILITY, "CheckUseConditions", sRet + " condition: " + IntToHexString(nCondition));
+	Log_Trace(LOG_CHANNEL_COMBAT_ABILITY, "Ability_CheckUseConditions", sRet + " condition: " + IntToHexString(nCondition));
 #endif
 
 	return bRet;
@@ -381,4 +383,160 @@ int32 Ability_GetAbilityTargetType(int32 nAbility, int32 nAbilityType)
 	int32 n2DA = Ability_GetAbilityTable(nAbilityType);
 	int32 nTargetType = GetM2DAInt(n2DA, "TargetType", nAbility);
 	return nTargetType;
+}
+
+void Ability_OnGameModeChange(int32 nNewGM)
+{
+	if (nNewGM == GM_EXPLORE)
+	{
+		TArray<AActor*> partyMembers = GetPartyList();
+		int32 memberCount = partyMembers.Num();
+		int32 i;
+
+		for (i = 0; i < memberCount; i++)
+		{
+
+			// ----------------------------------------------------------------
+			// Feign Death ends automatically at the end of combat
+			// ----------------------------------------------------------------
+			if (IsModalAbilityActive(partyMembers[i], ABILITY_TALENT_FEIGN_DEATH))
+			{
+				Ability_DeactivateModalAbility(partyMembers[i], ABILITY_TALENT_FEIGN_DEATH);
+			}
+
+			// ----------------------------------------------------------------
+			// Dueling ends automatically at the end of combat
+			// ----------------------------------------------------------------
+
+			// REMOVED PER EV 155600 -- yaron
+			/*if (IsModalAbilityActive(partyMembers[i],ABILITY_TALENT_DUELING))
+			{
+			Ability_DeactivateModalAbility(partyMembers[i],ABILITY_TALENT_DUELING);
+			}*/
+
+
+			/*
+			if (IsModalAbilityActive(partyMembers[i],ABILITY_TALENT_SHIELD_DEFENSE))
+			{
+			Ability_DeactivateModalAbility(partyMembers[i],ABILITY_TALENT_SHIELD_DEFENSE);
+			}
+
+			if (IsModalAbilityActive(partyMembers[i],ABILITY_TALENT_SHIELD_WALL))
+			{
+			Ability_DeactivateModalAbility(partyMembers[i],ABILITY_TALENT_SHIELD_WALL);
+			}
+
+			if (IsModalAbilityActive(partyMembers[i],ABILITY_SPELL_SPELL_SHIELD))
+			{
+			Ability_DeactivateModalAbility(partyMembers[i],ABILITY_SPELL_SPELL_SHIELD);
+			}
+
+			if (IsModalAbilityActive(partyMembers[i],ABILITY_TALENT_SHIELD_COVER))
+			{
+			Ability_DeactivateModalAbility(partyMembers[i],ABILITY_TALENT_SHIELD_COVER);
+			}
+
+			*/
+			if (IsModalAbilityActive(partyMembers[i], ABILITY_SPELL_BLOOD_MAGIC))
+			{
+				Ability_DeactivateModalAbility(partyMembers[i], ABILITY_SPELL_BLOOD_MAGIC);
+			}
+
+			if (IsModalAbilityActive(partyMembers[i], ABILITY_TALENT_CAPTIVATE))
+			{
+				Ability_DeactivateModalAbility(partyMembers[i], ABILITY_TALENT_CAPTIVATE);
+			}
+
+			if (IsModalAbilityActive(partyMembers[i], ABILITY_TALENT_PAIN))
+			{
+				Ability_DeactivateModalAbility(partyMembers[i], ABILITY_TALENT_PAIN);
+			}
+
+			// EV 156479
+			/*if (IsModalAbilityActive(partyMembers[i],ABILITY_TALENT_BLOOD_FRENZY))
+			{
+			Ability_DeactivateModalAbility(partyMembers[i],ABILITY_TALENT_BLOOD_FRENZY);
+			}*/
+
+			if (IsModalAbilityActive(partyMembers[i], ABILITY_TALENT_BERSERK))
+			{
+				Ability_DeactivateModalAbility(partyMembers[i], ABILITY_TALENT_BERSERK);
+			}
+		}
+	}
+}
+
+int32 Ability_DeactivateModalAbility(AActor* oCaster, int32 nAbility, int32 nAbilityType)
+{
+
+	if (nAbilityType == ABILITY_TYPE_INVALID)
+	{
+		nAbilityType = Ability_GetAbilityType(nAbility);
+	}
+
+	if (IsModalAbilityActive(oCaster, nAbility))
+	{
+
+#ifdef DEBUG
+		Log_Trace(LOG_CHANNEL_COMBAT_ABILITY, " ++++++Modal Ability  deactivated");
+#endif
+
+		// -----------------------------------------------------------------
+		// Handle player requests to disable a modal ability
+		// If the modal ability is running, send Deactivate event to the spellscript
+		// -----------------------------------------------------------------
+		FGameEvent evDeactivate = EventSpellScriptDeactivate(oCaster, nAbility, nAbilityType);
+		return Ability_DoRunSpellScript(evDeactivate, nAbility, nAbilityType);                // we don't care for the return value of this function
+
+	}
+#ifdef DEBUG
+	Log_Trace(LOG_CHANNEL_COMBAT_ABILITY, " ++++++Modal Ability  not deactivated ");
+#endif
+	return COMMAND_RESULT_SUCCESS;
+}
+
+int32 Ability_DoRunSpellScript(FGameEvent ev, int32 nAbility, int32 nAbilityType)
+{
+	int32 n2DA = Ability_GetAbilityTable(nAbilityType);
+
+	FString rResource = GetM2DAString(n2DA, "SpellScript", nAbility);
+#ifdef DEBUG
+	Log_Trace(LOG_CHANNEL_COMBAT_ABILITY, "ability_h.DoRunSpellScript", "running spellscript for ability: " + IntToString(nAbility) + " type =" + IntToString(nAbilityType));
+	Log_Trace(LOG_CHANNEL_COMBAT_ABILITY, "ability_h.DoRunSpellScript", "spell script = " + rResource);
+#endif
+
+	if (rResource != "")
+	{
+		int32 nRet = _Ability_HandleEvent(ev, rResource);
+
+		return nRet;
+
+	}
+	else
+	{
+#ifdef DEBUG
+		Log_Trace(LOG_CHANNEL_COMBAT_ABILITY, "ability_h.DoRunSpellScript", "ability_core: running spellscript failed, no 2da entry", nullptr, LOG_SEVERITY_CRITICAL);
+#endif
+	}
+
+	return COMMAND_RESULT_INVALID; // FALSE;
+}
+
+int32 _Ability_HandleEvent(FGameEvent ev, FString rResource)
+{
+	//TODO _Ability_HandleEvent
+	// this populates with the default value
+// 	Ability_SetSpellscriptPendingEventResult(COMMAND_RESULT_SUCCESS);
+// 
+// 	HandleEvent(ev, rResource);
+// 
+// 	int32 nRet = Ability_GetSpellscriptPendingEventResult();
+
+//	return nRet;
+#ifdef DEBUG
+	LogError("_Ability_HandleEvent to be implemented!!");
+
+#endif // DEBUG
+
+	return FALSE_;
 }

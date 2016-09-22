@@ -51,6 +51,7 @@ const int32 EVENT_TYPE_DEATH = 4;
 //const int32 EVENT_TYPE_TRAP_TRIGGERED = 16;
 //const int32 EVENT_TYPE_TRAP_DISARMED = 17;
 //const int32 EVENT_TYPE_DIALOGUE = 18;
+const int32 EVENT_TYPE_CONVERSATION = 18;
 //const int32 EVENT_TYPE_MODULE_START = 19;
 //const int32 EVENT_TYPE_MODULE_LOAD = 20;
 //const int32 EVENT_TYPE_LISTENER = 21;
@@ -59,8 +60,8 @@ const int32 EVENT_TYPE_DEATH = 4;
 //const int32 EVENT_TYPE_PLAYERLEVELUP = 24;
 const int32 EVENT_TYPE_PERCEPTION_APPEAR = 25;
 const int32 EVENT_TYPE_PERCEPTION_DISAPPEAR = 26;
-//const int32 EVENT_TYPE_SET_PLOT = 27;
-//const int32 EVENT_TYPE_GET_PLOT = 28;
+const int32 EVENT_TYPE_SET_PLOT = 27;
+const int32 EVENT_TYPE_GET_PLOT = 28;
 //const int32 EVENT_TYPE_ATTACK_IMPACT = 29;
 //const int32 EVENT_TYPE_COMBAT_INITIATED = 30; // was ENGAGE_TARGET
 //const int32 EVENT_TYPE_ABILITY_CAST_IMPACT = 31; // was CAST
@@ -79,6 +80,7 @@ const int32 EVENT_TYPE_AREALOADSAVE_SPECIAL = 41;
 const int32 EVENT_TYPE_AREALOADSAVE_PRELOADEXIT = 42;
 const int32 EVENT_TYPE_AREALOADSAVE_POSTLOADEXIT = 43;
 
+const int32 EVENT_TYPE_GAMEMODE_CHANGE = 60;
 
 //const int32 EVENT_TYPE_ATTACKED = 1001;
 //const int32 EVENT_TYPE_ALLY_ATTACKED = 1002; // an ally has got the 'attacked' event and asked for help
@@ -92,7 +94,7 @@ const int32 EVENT_TYPE_DELAYED_SHOUT = 1004; // used to fire a dialog shout ever
 //const int32 EVENT_TYPE_SPELLSCRIPT_PENDING = 1005;
 //const int32 EVENT_TYPE_SPELLSCRIPT_CAST = 1006;  // cast
 //const int32 EVENT_TYPE_SPELLSCRIPT_IMPACT = 1007;  // impact
-//const int32 EVENT_TYPE_SPELLSCRIPT_DEACTIVATE = 1008; // talent deactivated
+const int32 EVENT_TYPE_SPELLSCRIPT_DEACTIVATE = 1008; // talent deactivated
 
 //const int32 EVENT_TYPE_DOT_TICK = 1010;
 //const int32 EVENT_TYPE_CAST_AT = 1011; //an ability has been cast on me
@@ -139,7 +141,7 @@ const int32 EVENT_TYPE_OBJECT_ACTIVE = 1058;
 //const int32 EVENT_TYPE_CREATURE_SHAPESHIFTED = 1100;
 
 const int32 EVENT_TYPE_DELAYED_GM_CHANGE = 2000;
-//const int32 EVENT_TYPE_AUTOPAUSE = 2001;
+const int32 EVENT_TYPE_AUTOPAUSE = 2001;
 
 //const int32 EVENT_TYPE_CHARGEN_AUTOLEVEL = 56;
 //const int32 EVENT_TYPE_DESTROY_OBJECT = 1070; // AActor* should destroy itself
@@ -215,3 +217,16 @@ void SendEventHandleCustomAI(AActor* oTarget, AActor* oLastTarget, int32 nLastCo
 *  @author Georg Zoeller
 **/
 int32 Events_ValidateCommandPending(AActor* oCommandOwner, AActor* oTarget, int32 nCommandId, int32 nCommandSubType);
+
+/** ----------------------------------------------------------------------------
+* @brief Creates a EVENT_TYPE_SPELLSCRIPT_DEACTIVATE event and returns it
+*
+* @param oCaster      The caster using the ability (EventObject 0)
+* @param nAbility     The ability id               (EventInteger 0)
+* @param nAbilityType The ability type             (EventInteger 1)
+
+* @returns  event with populated event parameters
+* @author   Georg Zoeller
+*  -----------------------------------------------------------------------------
+**/
+FGameEvent EventSpellScriptDeactivate(AActor* oCaster, int32 nAbility, int32 nAbilityType);

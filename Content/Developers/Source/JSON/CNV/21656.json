@@ -1,0 +1,1367 @@
+{
+  "Resource": {
+    "-Requested": "1",
+    "-URI": "demo200cr_bandit.dlg|++|moduleid=3|++|resrefid=21656",
+    "-ResType": "dlg",
+    "-State": "0",
+    "-Type": "3",
+    "-OwnerIsCore": "0",
+    "-IsCore": "0",
+    "-ResRefName": "demo200cr_bandit",
+    "-Folder": "\\Demo\\demo200ar_tavern\\",
+    "-ResRefID": "21656",
+    "-OwnerModuleID": "3",
+    "-ModuleID": "3",
+    "Agent": {
+      "ResRefName": "demo200cr_bandit",
+      "LocalCopy": "False",
+      "EndConversationParameter": "0",
+      "EndConversationPlotFlag": "-1",
+      "EndConversationResult": "True",
+      "Comment": "The bandit who's taken over this inn. Nothing much happens in this particular conversation, the event that triggers combat comes in a conversation that's triggered when the player tries going up the stairs.",
+      "DefaultNPCSpeaker": "OWNER",
+      "DefaultNPCListener": "PLAYER",
+      "DefaultPCListener": "OWNER",
+      "StageURI": "21654",
+      "StageAtCurrentLocation": "False",
+      "AllGesturesLocked": "False",
+      "AllPosesLocked": "False",
+      "AllRoboBradLocked": "False",
+      "AllCameraLocked": "False",
+      "AmbientSoundSetType": "False",
+      "OwnerIsHenchman": "False",
+      "VOHardTimeRestriction": "False",
+      "PreviewStageUseFirstMatch": "True",
+      "PreviewStagePosition": "0,0,0",
+      "PreviewStageOrientation": "0,0,0",
+      "IsSoundset": "False",
+      "StartList": {
+        "Agent": { "LineIndex": "0" }
+      },
+      "NPCLineList": {
+        "Agent": [
+          {
+            "StringID": "405436",
+            "LanguageID": "0",
+            "ConditionParameter": "0",
+            "ConditionPlotFlag": "-1",
+            "ConditionResult": "True",
+            "ActionParameter": "0",
+            "ActionPlotFlag": "-1",
+            "ActionResult": "True",
+            "text": "I'm the barkeep. Would you like a drink? On the house.",
+            "TextRequiresReTranslation": "False",
+            "TextRequiresReRecording": "False",
+			"Speaker": "demo200cr_bandit",
+            "icon": "0",
+            "FastPath": "0",
+            "LineVisibility": "0",
+            "Ambient": "False",
+            "SkipLine": "False",
+            "StageAtCurrentLocation": "False",
+            "CameraLocked": "False",
+            "SecondaryCameraDelay": "0",
+            "Emotion": "0",
+            "RevertAnimation": "False",
+            "LockAnimations": "False",
+            "PlaySoundEvents": "True",
+            "RoboBradSeed": "0",
+            "RoboBradSeedOverride": "False",
+            "RoboBradLocked": "False",
+            "PreviewStageUseFirstMatch": "True",
+            "PreviewStagePosition": "0,0,0",
+            "PreviewStageOrientation": "0,0,0",
+            "UseAnimationDuration": "False",
+            "NoVOInGame": "False",
+            "Narration": "False",
+            "PreCacheVO": "False",
+            "TransitionList": {
+              "Agent": [
+                {
+                  "IsLink": "False",
+                  "LineIndex": "0"
+                },
+                {
+                  "IsLink": "False",
+                  "LineIndex": "2"
+                },
+                {
+                  "IsLink": "False",
+                  "LineIndex": "4"
+                }
+              ]
+            },
+            "AnimationListList": {
+              "Agent": [
+                {
+                  "Tag": "henchman 1",
+                  "Locked": "False",
+                  "AnimationList": {
+                    "Agent": {
+                      "Animation": "weightshift_7",
+                      "StartTime": "0.4518544",
+                      "Weight": "10",
+                      "Speed": "0.8965762",
+                      "StartOffset": "0",
+                      "BlendIn": "1",
+                      "EndOffset": "0",
+                      "BlendOut": "1"
+                    }
+                  }
+                },
+                {
+                  "Tag": "henchman 2",
+                  "Locked": "False",
+                  "AnimationList": {
+                    "Agent": {
+                      "Animation": "weightshift_5",
+                      "StartTime": "0.5489239",
+                      "Weight": "36.14063",
+                      "Speed": "0.7333527",
+                      "StartOffset": "0",
+                      "BlendIn": "1",
+                      "EndOffset": "0",
+                      "BlendOut": "1"
+                    }
+                  }
+                },
+                {
+                  "Tag": "henchman 3",
+                  "Locked": "False",
+                  "AnimationList": {
+                    "Agent": {
+                      "Animation": "weightshift_8",
+                      "StartTime": "0.5247595",
+                      "Weight": "10",
+                      "Speed": "0.9065131",
+                      "StartOffset": "0",
+                      "BlendIn": "1",
+                      "EndOffset": "0",
+                      "BlendOut": "1"
+                    }
+                  }
+                },
+                {
+                  "Tag": "owner",
+                  "Locked": "False",
+                  "AnimationList": {
+                    "Agent": [
+                      {
+                        "Animation": "weightshift_5",
+                        "StartTime": "0.5147347",
+                        "Weight": "47.97571",
+                        "Speed": "0.7568009",
+                        "StartOffset": "0",
+                        "BlendIn": "1",
+                        "EndOffset": "0",
+                        "BlendOut": "1"
+                      },
+                      {
+                        "Animation": "rarm_gesture_2",
+                        "StartTime": "0.3553029",
+                        "Weight": "40.30793",
+                        "Speed": "0.9480794",
+                        "StartOffset": "0",
+                        "BlendIn": "0.5",
+                        "EndOffset": "0",
+                        "BlendOut": "0.5"
+                      },
+                      {
+                        "Animation": "larm_gesture_4",
+                        "StartTime": "2.287696",
+                        "Weight": "92.24525",
+                        "Speed": "0.8649471",
+                        "StartOffset": "0",
+                        "BlendIn": "0.5",
+                        "EndOffset": "0",
+                        "BlendOut": "0.5"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "Tag": "player",
+                  "Locked": "False",
+                  "AnimationList": {
+                    "Agent": {
+                      "Animation": "weightshift_5",
+                      "StartTime": "0.5241924",
+                      "Weight": "10",
+                      "Speed": "0.6964766",
+                      "StartOffset": "0",
+                      "BlendIn": "1",
+                      "EndOffset": "0",
+                      "BlendOut": "1"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "StringID": "405437",
+            "LanguageID": "0",
+            "ConditionParameter": "0",
+            "ConditionPlotFlag": "-1",
+            "ConditionResult": "True",
+            "ActionParameter": "0",
+            "ActionPlotFlag": "-1",
+            "ActionResult": "True",
+            "text": "Here you go. By the way, don't try pulling that lever in back.",
+            "TextRequiresReTranslation": "False",
+            "TextRequiresReRecording": "False",
+			"Speaker": "demo200cr_bandit",
+            "icon": "0",
+            "FastPath": "0",
+            "LineVisibility": "0",
+            "Ambient": "False",
+            "SkipLine": "False",
+            "StageAtCurrentLocation": "False",
+            "CameraLocked": "False",
+            "SecondaryCameraDelay": "0",
+            "Emotion": "0",
+            "RevertAnimation": "False",
+            "LockAnimations": "False",
+            "PlaySoundEvents": "True",
+            "RoboBradSeed": "0",
+            "RoboBradSeedOverride": "False",
+            "RoboBradLocked": "False",
+            "PreviewStageUseFirstMatch": "True",
+            "PreviewStagePosition": "0,0,0",
+            "PreviewStageOrientation": "0,0,0",
+            "UseAnimationDuration": "False",
+            "NoVOInGame": "False",
+            "Narration": "False",
+            "PreCacheVO": "False",
+            "TransitionList": {
+              "Agent": {
+                "IsLink": "False",
+                "LineIndex": "1"
+              }
+            },
+            "AnimationListList": {
+              "Agent": [
+                {
+                  "Tag": "henchman 1",
+                  "Locked": "False",
+                  "AnimationList": {
+                    "Agent": {
+                      "Animation": "weightshift_5",
+                      "StartTime": "0.6692584",
+                      "Weight": "52.66213",
+                      "Speed": "0.6876144",
+                      "StartOffset": "0",
+                      "BlendIn": "1",
+                      "EndOffset": "0",
+                      "BlendOut": "1"
+                    }
+                  }
+                },
+                {
+                  "Tag": "henchman 2",
+                  "Locked": "False",
+                  "AnimationList": {
+                    "Agent": {
+                      "Animation": "weightshift_4",
+                      "StartTime": "0.4210903",
+                      "Weight": "23.44981",
+                      "Speed": "0.9456283",
+                      "StartOffset": "0",
+                      "BlendIn": "1",
+                      "EndOffset": "0",
+                      "BlendOut": "1"
+                    }
+                  }
+                },
+                {
+                  "Tag": "henchman 3",
+                  "Locked": "False",
+                  "AnimationList": {
+                    "Agent": {
+                      "Animation": "weightshift_5",
+                      "StartTime": "0.6612316",
+                      "Weight": "50.8298",
+                      "Speed": "0.7968616",
+                      "StartOffset": "0",
+                      "BlendIn": "1",
+                      "EndOffset": "0",
+                      "BlendOut": "1"
+                    }
+                  }
+                },
+                {
+                  "Tag": "owner",
+                  "Locked": "False",
+                  "AnimationList": {
+                    "Agent": [
+                      {
+                        "Animation": "weightshift_8",
+                        "StartTime": "0.5207564",
+                        "Weight": "10",
+                        "Speed": "0.7680985",
+                        "StartOffset": "0",
+                        "BlendIn": "1",
+                        "EndOffset": "0",
+                        "BlendOut": "1"
+                      },
+                      {
+                        "Animation": "2arm_gesture_6",
+                        "StartTime": "0.6504394",
+                        "Weight": "77.30949",
+                        "Speed": "0.783639",
+                        "StartOffset": "0",
+                        "BlendIn": "0.5",
+                        "EndOffset": "0",
+                        "BlendOut": "0.5"
+                      },
+                      {
+                        "Animation": "rarm_gesture_2",
+                        "StartTime": "3.255857",
+                        "Weight": "81.15787",
+                        "Speed": "0.9639623",
+                        "StartOffset": "0",
+                        "BlendIn": "0.5",
+                        "EndOffset": "0",
+                        "BlendOut": "0.5"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "Tag": "player",
+                  "Locked": "False",
+                  "AnimationList": {
+                    "Agent": {
+                      "Animation": "weightshift_5",
+                      "StartTime": "0.5134829",
+                      "Weight": "21.38188",
+                      "Speed": "0.6009728",
+                      "StartOffset": "0",
+                      "BlendIn": "1",
+                      "EndOffset": "0",
+                      "BlendOut": "1"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "StringID": "405438",
+            "LanguageID": "0",
+            "ConditionParameter": "0",
+            "ConditionPlotFlag": "-1",
+            "ConditionResult": "True",
+            "ActionParameter": "0",
+            "ActionPlotFlag": "-1",
+            "ActionResult": "True",
+            "text": "Very well, then. Don't try pulling that lever in back.",
+            "TextRequiresReTranslation": "False",
+            "TextRequiresReRecording": "False",
+			"Speaker": "demo200cr_bandit",
+            "icon": "0",
+            "FastPath": "0",
+            "LineVisibility": "0",
+            "Ambient": "False",
+            "SkipLine": "False",
+            "StageAtCurrentLocation": "False",
+            "CameraLocked": "False",
+            "SecondaryCameraDelay": "0",
+            "Emotion": "0",
+            "RevertAnimation": "False",
+            "LockAnimations": "False",
+            "PlaySoundEvents": "True",
+            "RoboBradSeed": "0",
+            "RoboBradSeedOverride": "False",
+            "RoboBradLocked": "False",
+            "PreviewStageUseFirstMatch": "True",
+            "PreviewStagePosition": "0,0,0",
+            "PreviewStageOrientation": "0,0,0",
+            "UseAnimationDuration": "False",
+            "NoVOInGame": "False",
+            "Narration": "False",
+            "PreCacheVO": "False",
+            "TransitionList": {
+              "Agent": {
+                "IsLink": "False",
+                "LineIndex": "3"
+              }
+            },
+            "AnimationListList": {
+              "Agent": [
+                {
+                  "Tag": "henchman 1",
+                  "Locked": "False",
+                  "AnimationList": {
+                    "Agent": {
+                      "Animation": "weightshift_5",
+                      "StartTime": "0.6129135",
+                      "Weight": "10",
+                      "Speed": "0.7290311",
+                      "StartOffset": "0",
+                      "BlendIn": "1",
+                      "EndOffset": "0",
+                      "BlendOut": "1"
+                    }
+                  }
+                },
+                {
+                  "Tag": "henchman 2",
+                  "Locked": "False",
+                  "AnimationList": {
+                    "Agent": {
+                      "Animation": "weightshift_8",
+                      "StartTime": "0.4910783",
+                      "Weight": "10",
+                      "Speed": "0.9198602",
+                      "StartOffset": "0",
+                      "BlendIn": "1",
+                      "EndOffset": "0",
+                      "BlendOut": "1"
+                    }
+                  }
+                },
+                {
+                  "Tag": "henchman 3",
+                  "Locked": "False",
+                  "AnimationList": {
+                    "Agent": {
+                      "Animation": "weightshift_5",
+                      "StartTime": "0.5662411",
+                      "Weight": "46.26057",
+                      "Speed": "0.7594165",
+                      "StartOffset": "0",
+                      "BlendIn": "1",
+                      "EndOffset": "0",
+                      "BlendOut": "1"
+                    }
+                  }
+                },
+                {
+                  "Tag": "owner",
+                  "Locked": "False",
+                  "AnimationList": {
+                    "Agent": [
+                      {
+                        "Animation": "weightshift_5",
+                        "StartTime": "0.7663814",
+                        "Weight": "33.15714",
+                        "Speed": "0.9241987",
+                        "StartOffset": "0",
+                        "BlendIn": "1",
+                        "EndOffset": "0",
+                        "BlendOut": "1"
+                      },
+                      {
+                        "Animation": "larm_gesture_4",
+                        "StartTime": "0.6812814",
+                        "Weight": "98.47408",
+                        "Speed": "0.6973324",
+                        "StartOffset": "0",
+                        "BlendIn": "0.5",
+                        "EndOffset": "0",
+                        "BlendOut": "0.5"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "Tag": "player",
+                  "Locked": "False",
+                  "AnimationList": {
+                    "Agent": {
+                      "Animation": "weightshift_5",
+                      "StartTime": "0.6125336",
+                      "Weight": "56.9042",
+                      "Speed": "0.8300914",
+                      "StartOffset": "0",
+                      "BlendIn": "1",
+                      "EndOffset": "0",
+                      "BlendOut": "1"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "StringID": "405439",
+            "LanguageID": "0",
+            "ConditionParameter": "0",
+            "ConditionPlotFlag": "-1",
+            "ConditionResult": "True",
+            "ActionParameter": "0",
+            "ActionPlotFlag": "-1",
+            "ActionResult": "True",
+            "text": "This is true. However, if you're here to reclaim this tavern or anything in it, be warned; the patrons like me much more than the old guy.",
+            "TextRequiresReTranslation": "False",
+            "TextRequiresReRecording": "False",
+			"Speaker": "demo200cr_bandit",
+            "icon": "0",
+            "FastPath": "0",
+            "LineVisibility": "0",
+            "Ambient": "False",
+            "SkipLine": "False",
+            "StageAtCurrentLocation": "False",
+            "CameraLocked": "False",
+            "SecondaryCameraDelay": "0",
+            "Emotion": "0",
+            "RevertAnimation": "False",
+            "LockAnimations": "False",
+            "PlaySoundEvents": "True",
+            "RoboBradSeed": "0",
+            "RoboBradSeedOverride": "False",
+            "RoboBradLocked": "False",
+            "PreviewStageUseFirstMatch": "True",
+            "PreviewStagePosition": "0,0,0",
+            "PreviewStageOrientation": "0,0,0",
+            "UseAnimationDuration": "False",
+            "NoVOInGame": "False",
+            "Narration": "False",
+            "PreCacheVO": "False",
+            "TransitionList": {
+              "Agent": {
+                "IsLink": "False",
+                "LineIndex": "5"
+              }
+            },
+            "AnimationListList": {
+              "Agent": [
+                {
+                  "Tag": "henchman 1",
+                  "Locked": "False",
+                  "AnimationList": {
+                    "Agent": [
+                      {
+                        "Animation": "weightshift_5",
+                        "StartTime": "0.6567053",
+                        "Weight": "33.8554",
+                        "Speed": "0.8976712",
+                        "StartOffset": "0",
+                        "BlendIn": "1",
+                        "EndOffset": "0",
+                        "BlendOut": "1"
+                      },
+                      {
+                        "Animation": "weightshift_4",
+                        "StartTime": "4.530083",
+                        "Weight": "10",
+                        "Speed": "0.8006836",
+                        "StartOffset": "0",
+                        "BlendIn": "1",
+                        "EndOffset": "0",
+                        "BlendOut": "1"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "Tag": "henchman 2",
+                  "Locked": "False",
+                  "AnimationList": {
+                    "Agent": [
+                      {
+                        "Animation": "weightshift_7",
+                        "StartTime": "0.6474784",
+                        "Weight": "58.43257",
+                        "Speed": "0.9623325",
+                        "StartOffset": "0",
+                        "BlendIn": "1",
+                        "EndOffset": "0",
+                        "BlendOut": "1"
+                      },
+                      {
+                        "Animation": "weightshift_5",
+                        "StartTime": "5.955361",
+                        "Weight": "10",
+                        "Speed": "0.7214729",
+                        "StartOffset": "0",
+                        "BlendIn": "1",
+                        "EndOffset": "0",
+                        "BlendOut": "1"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "Tag": "henchman 3",
+                  "Locked": "False",
+                  "AnimationList": {
+                    "Agent": {
+                      "Animation": "weightshift_1",
+                      "StartTime": "0.5475515",
+                      "Weight": "56.31276",
+                      "Speed": "0.9076711",
+                      "StartOffset": "0",
+                      "BlendIn": "1",
+                      "EndOffset": "0",
+                      "BlendOut": "1"
+                    }
+                  }
+                },
+                {
+                  "Tag": "owner",
+                  "Locked": "False",
+                  "AnimationList": {
+                    "Agent": [
+                      {
+                        "Animation": "weightshift_7",
+                        "StartTime": "0.5523248",
+                        "Weight": "71.554",
+                        "Speed": "0.9346217",
+                        "StartOffset": "0",
+                        "BlendIn": "1",
+                        "EndOffset": "0",
+                        "BlendOut": "1"
+                      },
+                      {
+                        "Animation": "rarm_gesture_4",
+                        "StartTime": "4.557465",
+                        "Weight": "59.00021",
+                        "Speed": "0.7439467",
+                        "StartOffset": "0",
+                        "BlendIn": "0.5",
+                        "EndOffset": "0",
+                        "BlendOut": "0.5"
+                      },
+                      {
+                        "Animation": "rarm_gesture_2",
+                        "StartTime": "8.547505",
+                        "Weight": "96.63686",
+                        "Speed": "0.6599475",
+                        "StartOffset": "0",
+                        "BlendIn": "0.5",
+                        "EndOffset": "0",
+                        "BlendOut": "0.5"
+                      },
+                      {
+                        "Animation": "weightshift_7",
+                        "StartTime": "5.800063",
+                        "Weight": "62.18482",
+                        "Speed": "0.8759041",
+                        "StartOffset": "0",
+                        "BlendIn": "1",
+                        "EndOffset": "0",
+                        "BlendOut": "1"
+                      },
+                      {
+                        "Animation": "2arm_gesture_7",
+                        "StartTime": "0.6691504",
+                        "Weight": "63.93017",
+                        "Speed": "1.111796",
+                        "StartOffset": "0",
+                        "BlendIn": "0.5",
+                        "EndOffset": "0",
+                        "BlendOut": "0.5"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "Tag": "player",
+                  "Locked": "False",
+                  "AnimationList": {
+                    "Agent": [
+                      {
+                        "Animation": "weightshift_4",
+                        "StartTime": "0.4429268",
+                        "Weight": "10",
+                        "Speed": "0.9957789",
+                        "StartOffset": "0",
+                        "BlendIn": "1",
+                        "EndOffset": "0",
+                        "BlendOut": "1"
+                      },
+                      {
+                        "Animation": "weightshift_4",
+                        "StartTime": "5.534121",
+                        "Weight": "27.70592",
+                        "Speed": "0.8684255",
+                        "StartOffset": "0",
+                        "BlendIn": "1",
+                        "EndOffset": "0",
+                        "BlendOut": "1"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "StringID": "405440",
+            "LanguageID": "0",
+            "ConditionParameter": "0",
+            "ConditionPlotFlag": "-1",
+            "ConditionResult": "True",
+            "ActionParameter": "0",
+            "ActionPlotFlag": "-1",
+            "ActionResult": "True",
+            "text": "If something untoward were to happen I'm sure they'd side with me and then you'd have a situation on your hands.",
+            "TextRequiresReTranslation": "False",
+            "TextRequiresReRecording": "False",
+			"Speaker": "demo200cr_bandit",
+            "icon": "0",
+            "FastPath": "0",
+            "LineVisibility": "0",
+            "Ambient": "False",
+            "SkipLine": "False",
+            "StageAtCurrentLocation": "False",
+            "CameraLocked": "False",
+            "SecondaryCameraDelay": "0",
+            "Emotion": "0",
+            "RevertAnimation": "False",
+            "LockAnimations": "False",
+            "PlaySoundEvents": "True",
+            "RoboBradSeed": "0",
+            "RoboBradSeedOverride": "False",
+            "RoboBradLocked": "False",
+            "PreviewStageUseFirstMatch": "True",
+            "PreviewStagePosition": "0,0,0",
+            "PreviewStageOrientation": "0,0,0",
+            "UseAnimationDuration": "False",
+            "NoVOInGame": "False",
+            "Narration": "False",
+            "PreCacheVO": "False",
+            "TransitionList": {
+              "Agent": {
+                "IsLink": "False",
+                "LineIndex": "6"
+              }
+            },
+            "AnimationListList": {
+              "Agent": [
+                {
+                  "Tag": "henchman 1",
+                  "Locked": "False",
+                  "AnimationList": {
+                    "Agent": {
+                      "Animation": "weightshift_4",
+                      "StartTime": "0.83909",
+                      "Weight": "10",
+                      "Speed": "0.8015625",
+                      "StartOffset": "0",
+                      "BlendIn": "1",
+                      "EndOffset": "0",
+                      "BlendOut": "1"
+                    }
+                  }
+                },
+                {
+                  "Tag": "henchman 2",
+                  "Locked": "False",
+                  "AnimationList": {
+                    "Agent": [
+                      {
+                        "Animation": "weightshift_5",
+                        "StartTime": "0.5397049",
+                        "Weight": "10",
+                        "Speed": "0.9779665",
+                        "StartOffset": "0",
+                        "BlendIn": "1",
+                        "EndOffset": "0",
+                        "BlendOut": "1"
+                      },
+                      {
+                        "Animation": "weightshift_4",
+                        "StartTime": "3.875447",
+                        "Weight": "29.85015",
+                        "Speed": "0.9346752",
+                        "StartOffset": "0",
+                        "BlendIn": "1",
+                        "EndOffset": "0",
+                        "BlendOut": "1"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "Tag": "henchman 3",
+                  "Locked": "False",
+                  "AnimationList": {
+                    "Agent": [
+                      {
+                        "Animation": "weightshift_5",
+                        "StartTime": "0.5384103",
+                        "Weight": "10",
+                        "Speed": "0.7588054",
+                        "StartOffset": "0",
+                        "BlendIn": "1",
+                        "EndOffset": "0",
+                        "BlendOut": "1"
+                      },
+                      {
+                        "Animation": "weightshift_7",
+                        "StartTime": "4.914187",
+                        "Weight": "69.62675",
+                        "Speed": "0.9751808",
+                        "StartOffset": "0",
+                        "BlendIn": "1",
+                        "EndOffset": "0",
+                        "BlendOut": "1"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "Tag": "owner",
+                  "Locked": "False",
+                  "AnimationList": {
+                    "Agent": [
+                      {
+                        "Animation": "weightshift_4",
+                        "StartTime": "0.7110143",
+                        "Weight": "39.1699",
+                        "Speed": "0.7713858",
+                        "StartOffset": "0",
+                        "BlendIn": "1",
+                        "EndOffset": "0",
+                        "BlendOut": "1"
+                      },
+                      {
+                        "Animation": "larm_gesture_5",
+                        "StartTime": "0.8207465",
+                        "Weight": "54.7029",
+                        "Speed": "0.5007172",
+                        "StartOffset": "0",
+                        "BlendIn": "0.5",
+                        "EndOffset": "0",
+                        "BlendOut": "0.5"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "Tag": "player",
+                  "Locked": "False",
+                  "AnimationList": {
+                    "Agent": {
+                      "Animation": "weightshift_6",
+                      "StartTime": "0.5953358",
+                      "Weight": "10",
+                      "Speed": "0.8078017",
+                      "StartOffset": "0",
+                      "BlendIn": "1",
+                      "EndOffset": "0",
+                      "BlendOut": "1"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "StringID": "405441",
+            "LanguageID": "0",
+            "ConditionParameter": "0",
+            "ConditionPlotFlag": "-1",
+            "ConditionResult": "True",
+            "ActionParameter": "0",
+            "ActionPlotFlag": "-1",
+            "ActionResult": "True",
+            "text": "So anyway, would you like a drink?",
+            "TextRequiresReTranslation": "False",
+            "TextRequiresReRecording": "False",
+			"Speaker": "demo200cr_bandit",
+            "icon": "0",
+            "FastPath": "0",
+            "LineVisibility": "0",
+            "Ambient": "False",
+            "SkipLine": "False",
+            "StageAtCurrentLocation": "False",
+            "CameraLocked": "False",
+            "SecondaryCameraDelay": "0",
+            "Emotion": "0",
+            "RevertAnimation": "False",
+            "LockAnimations": "False",
+            "PlaySoundEvents": "True",
+            "RoboBradSeed": "0",
+            "RoboBradSeedOverride": "False",
+            "RoboBradLocked": "False",
+            "PreviewStageUseFirstMatch": "True",
+            "PreviewStagePosition": "0,0,0",
+            "PreviewStageOrientation": "0,0,0",
+            "UseAnimationDuration": "False",
+            "NoVOInGame": "False",
+            "Narration": "False",
+            "PreCacheVO": "False",
+            "TransitionList": {
+              "Agent": [
+                {
+                  "IsLink": "True",
+                  "LineIndex": "0"
+                },
+                {
+                  "IsLink": "True",
+                  "LineIndex": "2"
+                }
+              ]
+            },
+            "AnimationListList": {
+              "Agent": [
+                {
+                  "Tag": "henchman 1",
+                  "Locked": "False",
+                  "AnimationList": {
+                    "Agent": {
+                      "Animation": "weightshift_5",
+                      "StartTime": "0.5000805",
+                      "Weight": "40.91251",
+                      "Speed": "0.9870271",
+                      "StartOffset": "0",
+                      "BlendIn": "1",
+                      "EndOffset": "0",
+                      "BlendOut": "1"
+                    }
+                  }
+                },
+                {
+                  "Tag": "henchman 2",
+                  "Locked": "False",
+                  "AnimationList": {
+                    "Agent": {
+                      "Animation": "weightshift_5",
+                      "StartTime": "0.4989057",
+                      "Weight": "49.20499",
+                      "Speed": "0.984328",
+                      "StartOffset": "0",
+                      "BlendIn": "1",
+                      "EndOffset": "0",
+                      "BlendOut": "1"
+                    }
+                  }
+                },
+                {
+                  "Tag": "henchman 3",
+                  "Locked": "False",
+                  "AnimationList": {
+                    "Agent": {
+                      "Animation": "weightshift_5",
+                      "StartTime": "0.5044338",
+                      "Weight": "46.25446",
+                      "Speed": "0.9970472",
+                      "StartOffset": "0",
+                      "BlendIn": "1",
+                      "EndOffset": "0",
+                      "BlendOut": "1"
+                    }
+                  }
+                },
+                {
+                  "Tag": "owner",
+                  "Locked": "False",
+                  "AnimationList": {
+                    "Agent": {
+                      "Animation": "head_glance_right",
+                      "StartTime": "0.5198829",
+                      "Weight": "19.66033",
+                      "Speed": "0.6656067",
+                      "StartOffset": "0",
+                      "BlendIn": "0.5",
+                      "EndOffset": "0",
+                      "BlendOut": "0.5"
+                    }
+                  }
+                },
+                {
+                  "Tag": "player",
+                  "Locked": "False",
+                  "AnimationList": {
+                    "Agent": {
+                      "Animation": "weightshift_5",
+                      "StartTime": "0.4996954",
+                      "Weight": "44.86404",
+                      "Speed": "0.986142",
+                      "StartOffset": "0",
+                      "BlendIn": "1",
+                      "EndOffset": "0",
+                      "BlendOut": "1"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "PlayerLineList": {
+        "Agent": [
+          {
+            "StringID": "405442",
+            "LanguageID": "0",
+            "ConditionParameter": "0",
+            "ConditionPlotFlag": "-1",
+            "ConditionResult": "True",
+            "ActionParameter": "0",
+            "ActionPlotFlag": "-1",
+            "ActionResult": "True",
+            "text": "0`yes`Sure`Why yes, thank you.",
+            "TextRequiresReTranslation": "False",
+            "TextRequiresReRecording": "False",
+            "Speaker": "PLAYER",
+            "icon": "0",
+            "FastPath": "0",
+            "LineVisibility": "0",
+            "Ambient": "False",
+            "SkipLine": "False",
+            "StageAtCurrentLocation": "False",
+            "CameraLocked": "False",
+            "SecondaryCameraDelay": "0",
+            "Emotion": "0",
+            "RevertAnimation": "False",
+            "LockAnimations": "False",
+            "PlaySoundEvents": "True",
+            "RoboBradSeed": "0",
+            "RoboBradSeedOverride": "False",
+            "RoboBradLocked": "False",
+            "PreviewStageUseFirstMatch": "True",
+            "PreviewStagePosition": "0,0,0",
+            "PreviewStageOrientation": "0,0,0",
+            "UseAnimationDuration": "False",
+            "NoVOInGame": "False",
+            "Narration": "False",
+            "PreCacheVO": "False",
+            "TransitionList": {
+              "Agent": {
+                "IsLink": "False",
+                "LineIndex": "1"
+              }
+            }
+          },
+          {
+            "StringID": "405443",
+            "LanguageID": "0",
+            "ConditionParameter": "0",
+            "ConditionPlotFlag": "-1",
+            "ConditionResult": "True",
+            "ActionParameter": "0",
+            "ActionPlotFlag": "-1",
+            "ActionResult": "True",
+            "TextRequiresReTranslation": "False",
+            "TextRequiresReRecording": "False",
+            "Speaker": "PLAYER",
+            "icon": "0",
+            "FastPath": "0",
+            "LineVisibility": "0",
+            "Ambient": "False",
+            "SkipLine": "False",
+            "StageAtCurrentLocation": "False",
+            "CameraLocked": "False",
+            "SecondaryCameraDelay": "0",
+            "Emotion": "0",
+            "RevertAnimation": "False",
+            "LockAnimations": "False",
+            "PlaySoundEvents": "True",
+            "RoboBradSeed": "0",
+            "RoboBradSeedOverride": "False",
+            "RoboBradLocked": "False",
+            "PreviewStageUseFirstMatch": "True",
+            "PreviewStagePosition": "0,0,0",
+            "PreviewStageOrientation": "0,0,0",
+            "UseAnimationDuration": "False",
+            "NoVOInGame": "False",
+            "Narration": "False",
+            "PreCacheVO": "False"
+          },
+          {
+            "StringID": "405444",
+            "LanguageID": "0",
+            "ConditionParameter": "0",
+            "ConditionPlotFlag": "-1",
+            "ConditionResult": "True",
+            "ActionParameter": "0",
+            "ActionPlotFlag": "-1",
+            "ActionResult": "True",
+            "text": "2`no`Nope.`No thank you.",
+            "TextRequiresReTranslation": "False",
+            "TextRequiresReRecording": "False",
+            "Speaker": "PLAYER",
+            "icon": "0",
+            "FastPath": "0",
+            "LineVisibility": "0",
+            "Ambient": "False",
+            "SkipLine": "False",
+            "StageAtCurrentLocation": "False",
+            "CameraLocked": "False",
+            "SecondaryCameraDelay": "0",
+            "Emotion": "0",
+            "RevertAnimation": "False",
+            "LockAnimations": "False",
+            "PlaySoundEvents": "True",
+            "RoboBradSeed": "0",
+            "RoboBradSeedOverride": "False",
+            "RoboBradLocked": "False",
+            "PreviewStageUseFirstMatch": "True",
+            "PreviewStagePosition": "0,0,0",
+            "PreviewStageOrientation": "0,0,0",
+            "UseAnimationDuration": "False",
+            "NoVOInGame": "False",
+            "Narration": "False",
+            "PreCacheVO": "False",
+            "TransitionList": {
+              "Agent": {
+                "IsLink": "False",
+                "LineIndex": "2"
+              }
+            }
+          },
+          {
+            "StringID": "405445",
+            "LanguageID": "0",
+            "ConditionParameter": "0",
+            "ConditionPlotFlag": "-1",
+            "ConditionResult": "True",
+            "ActionParameter": "0",
+            "ActionPlotFlag": "-1",
+            "ActionResult": "True",
+            "TextRequiresReTranslation": "False",
+            "TextRequiresReRecording": "False",
+            "Speaker": "PLAYER",
+            "icon": "0",
+            "FastPath": "0",
+            "LineVisibility": "0",
+            "Ambient": "False",
+            "SkipLine": "False",
+            "StageAtCurrentLocation": "False",
+            "CameraLocked": "False",
+            "SecondaryCameraDelay": "0",
+            "Emotion": "0",
+            "RevertAnimation": "False",
+            "LockAnimations": "False",
+            "PlaySoundEvents": "True",
+            "RoboBradSeed": "0",
+            "RoboBradSeedOverride": "False",
+            "RoboBradLocked": "False",
+            "PreviewStageUseFirstMatch": "True",
+            "PreviewStagePosition": "0,0,0",
+            "PreviewStageOrientation": "0,0,0",
+            "UseAnimationDuration": "False",
+            "NoVOInGame": "False",
+            "Narration": "False",
+            "PreCacheVO": "False"
+          },
+          {
+            "StringID": "405446",
+            "LanguageID": "0",
+            "ConditionParameter": "0",
+            "ConditionPlotURI": "21651",
+            "ConditionPlotFlag": "1",
+            "ConditionResult": "True",
+            "ActionParameter": "0",
+            "ActionPlotFlag": "-1",
+            "ActionResult": "True",
+            "text": "1`politics`You're a bandit.`Actually, the man outside says you're a bandit.",
+            "TextRequiresReTranslation": "False",
+            "TextRequiresReRecording": "False",
+            "Speaker": "PLAYER",
+            "icon": "0",
+            "Comment": "This option only appears for the player if he's spoken with the real barkeep outside.",
+            "FastPath": "0",
+            "LineVisibility": "0",
+            "Ambient": "False",
+            "SkipLine": "False",
+            "StageAtCurrentLocation": "False",
+            "CameraLocked": "False",
+            "SecondaryCameraDelay": "0",
+            "Emotion": "0",
+            "RevertAnimation": "False",
+            "LockAnimations": "False",
+            "PlaySoundEvents": "True",
+            "RoboBradSeed": "0",
+            "RoboBradSeedOverride": "False",
+            "RoboBradLocked": "False",
+            "PreviewStageUseFirstMatch": "True",
+            "PreviewStagePosition": "0,0,0",
+            "PreviewStageOrientation": "0,0,0",
+            "UseAnimationDuration": "False",
+            "NoVOInGame": "False",
+            "Narration": "False",
+            "PreCacheVO": "False",
+            "TransitionList": {
+              "Agent": {
+                "IsLink": "False",
+                "LineIndex": "3"
+              }
+            }
+          },
+          {
+            "StringID": "405447",
+            "LanguageID": "0",
+            "ConditionParameter": "0",
+            "ConditionPlotFlag": "-1",
+            "ConditionResult": "True",
+            "ActionParameter": "0",
+            "ActionPlotFlag": "-1",
+            "ActionResult": "True",
+            "TextRequiresReTranslation": "False",
+            "TextRequiresReRecording": "False",
+            "Speaker": "PLAYER",
+            "icon": "0",
+            "FastPath": "0",
+            "LineVisibility": "0",
+            "Ambient": "False",
+            "SkipLine": "False",
+            "StageAtCurrentLocation": "False",
+            "CameraLocked": "False",
+            "SecondaryCameraDelay": "0",
+            "Emotion": "0",
+            "RevertAnimation": "False",
+            "LockAnimations": "False",
+            "PlaySoundEvents": "True",
+            "RoboBradSeed": "0",
+            "RoboBradSeedOverride": "False",
+            "RoboBradLocked": "False",
+            "PreviewStageUseFirstMatch": "True",
+            "PreviewStagePosition": "0,0,0",
+            "PreviewStageOrientation": "0,0,0",
+            "UseAnimationDuration": "False",
+            "NoVOInGame": "False",
+            "Narration": "False",
+            "PreCacheVO": "False",
+            "TransitionList": {
+              "Agent": {
+                "IsLink": "False",
+                "LineIndex": "4"
+              }
+            }
+          },
+          {
+            "StringID": "405448",
+            "LanguageID": "0",
+            "ConditionParameter": "0",
+            "ConditionPlotFlag": "-1",
+            "ConditionResult": "True",
+            "ActionParameter": "0",
+            "ActionPlotFlag": "-1",
+            "ActionResult": "True",
+            "TextRequiresReTranslation": "False",
+            "TextRequiresReRecording": "False",
+            "Speaker": "PLAYER",
+            "icon": "0",
+            "FastPath": "0",
+            "LineVisibility": "0",
+            "Ambient": "False",
+            "SkipLine": "False",
+            "StageAtCurrentLocation": "False",
+            "CameraLocked": "False",
+            "SecondaryCameraDelay": "0",
+            "Emotion": "0",
+            "RevertAnimation": "False",
+            "LockAnimations": "False",
+            "PlaySoundEvents": "True",
+            "RoboBradSeed": "0",
+            "RoboBradSeedOverride": "False",
+            "RoboBradLocked": "False",
+            "PreviewStageUseFirstMatch": "True",
+            "PreviewStagePosition": "0,0,0",
+            "PreviewStageOrientation": "0,0,0",
+            "UseAnimationDuration": "False",
+            "NoVOInGame": "False",
+            "Narration": "False",
+            "PreCacheVO": "False",
+            "TransitionList": {
+              "Agent": {
+                "IsLink": "False",
+                "LineIndex": "5"
+              }
+            }
+          }
+        ]
+      },
+      "CinematicsInfoList": {
+        "Agent": [
+          {
+            "Place": "barkeep",
+            "TagOverride": "True",
+            "Tag": "OWNER",
+            "MappingRequired": "True",
+            "HelmetOverride": "False",
+            "Helmet": "0",
+            "WeaponsOverride": "False",
+            "Weapons": "0",
+            "LookAtOverride": "False",
+            "HeadLookAtOverride": "False",
+            "PoseOverride": "False",
+            "Pose": "-1",
+            "LockPose": "False",
+            "TransitionDelay": "0",
+            "ActivationAction": "0",
+            "PreviousPose": "-1"
+          },
+          {
+            "Place": "hench1",
+            "TagOverride": "True",
+            "Tag": "HENCHMAN 1",
+            "MappingRequired": "True",
+            "HelmetOverride": "False",
+            "Helmet": "0",
+            "WeaponsOverride": "False",
+            "Weapons": "0",
+            "LookAtOverride": "False",
+            "HeadLookAtOverride": "False",
+            "PoseOverride": "False",
+            "Pose": "-1",
+            "LockPose": "False",
+            "TransitionDelay": "0",
+            "ActivationAction": "0",
+            "PreviousPose": "-1"
+          },
+          {
+            "Place": "hench2",
+            "TagOverride": "True",
+            "Tag": "HENCHMAN 2",
+            "MappingRequired": "True",
+            "HelmetOverride": "False",
+            "Helmet": "0",
+            "WeaponsOverride": "False",
+            "Weapons": "0",
+            "LookAtOverride": "False",
+            "HeadLookAtOverride": "False",
+            "PoseOverride": "False",
+            "Pose": "-1",
+            "LockPose": "False",
+            "TransitionDelay": "0",
+            "ActivationAction": "0",
+            "PreviousPose": "-1"
+          },
+          {
+            "Place": "hench3",
+            "TagOverride": "True",
+            "Tag": "HENCHMAN 3",
+            "MappingRequired": "True",
+            "HelmetOverride": "False",
+            "Helmet": "0",
+            "WeaponsOverride": "False",
+            "Weapons": "0",
+            "LookAtOverride": "False",
+            "HeadLookAtOverride": "False",
+            "PoseOverride": "False",
+            "Pose": "-1",
+            "LockPose": "False",
+            "TransitionDelay": "0",
+            "ActivationAction": "0",
+            "PreviousPose": "-1"
+          },
+          {
+            "Place": "player",
+            "TagOverride": "True",
+            "Tag": "PLAYER",
+            "MappingRequired": "True",
+            "HelmetOverride": "False",
+            "Helmet": "0",
+            "WeaponsOverride": "False",
+            "Weapons": "0",
+            "LookAtOverride": "False",
+            "HeadLookAtOverride": "False",
+            "PoseOverride": "False",
+            "Pose": "-1",
+            "LockPose": "False",
+            "TransitionDelay": "0",
+            "ActivationAction": "0",
+            "PreviousPose": "-1"
+          }
+        ]
+      }
+    }
+  }
+}

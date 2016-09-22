@@ -219,13 +219,15 @@ int32 Combat_HandleCommandAttack(AActor* oAttacker, AActor* oTarget, int32 nComm
 	return COMMAND_RESULT_SUCCESS;
 }
 
-int32 Combat_GetAttackHand(AActor* oCreature)
+int32 Combat_GetAttackHand(AActor* aCreature)
 {
+	ADA2UE4Creature* oCreature = Cast<ADA2UE4Creature>(aCreature);
+
 	int32 nHand = 0;
 	if (GetWeaponStyle(oCreature) == WEAPONSTYLE_DUAL)
 	{
-		nHand = GetLocalInt(oCreature, COMBAT_LAST_WEAPON);
-		SetLocalInt(oCreature, COMBAT_LAST_WEAPON, !nHand);
+		nHand = oCreature->COMBAT_LAST_WEAPON;
+		oCreature->COMBAT_LAST_WEAPON = !nHand;
 	}
 
 	return nHand;
@@ -245,6 +247,8 @@ int32 Combat_GetAttackType(AActor* oAttacker, AActor* oWeapon)
 
 FCombatAttackResultStruct Combat_PerformAttack(AActor* oAttacker, AActor* oTarget, AActor* oWeapon, float fDamageOverride, int32 nAbility)
 {
+	//ADA2UE4Item* oWeapon = Cast<ADA2UE4Item>(aWeapon);
+
 	FCombatAttackResultStruct stRet;
 	float   fDamage = 0.0f;
 	int32     nAttackType = Combat_GetAttackType(oAttacker, oWeapon);
@@ -401,7 +405,9 @@ FCombatAttackResultStruct Combat_PerformAttack(AActor* oAttacker, AActor* oTarge
 		// Certain projectiles modify the damage type done by a ranged weapon
 		// This is defined in PRJ_BASE.
 		// ---------------------------------------------------------------------
-		int32 nProjectileIndex = GetLocalInt(oWeapon, PROJECTILE_OVERRIDE);
+		//TODO PROJECTILE_OVERRIDE
+		LogError("PROJECTILE_OVERRIDE!!");
+		int32 nProjectileIndex = 0;//Cast<ADA2UE4Item>(oWeapon)->PROJECTILE_OVERRIDE;
 		if (nProjectileIndex)
 		{
 			int32 nDamageTypeOverride = GetM2DAInt(TABLE_PROJECTILES, "DamageType", nProjectileIndex);

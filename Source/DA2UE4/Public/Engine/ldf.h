@@ -1,18 +1,32 @@
 //TODO Int to String reflection function, better readability
 
 #pragma once
-#include "Engine.h"
+
 #include "m2da_constants_h.h"
-#include "var_constants_h.h"
 #include "effect_constants_h.h"
 #include "ai_constants_h.h"
+#include "plot_constants_h.h"
 #include "STypes.h"
 
 //forward declarations
+class Engine;
 class ADA2UE4Creature;
 class ADA2UE4PlayerController;
 class ADA2UE4Item;
-class ADA2UE4Module;
+class UDA2UE4GameInstance;
+class ADA2UE4Party;
+class UDA2UE4GameInstance;
+class UAnimationSequence;
+
+/* Stencil index mapping to PP_OutlineColored */
+const int32 STENCIL_FRIENDLY_OUTLINE = 252;
+const int32 STENCIL_NEUTRAL_OUTLINE = 253;
+const int32 STENCIL_ENEMY_OUTLINE = 254;
+const int32 STENCIL_ITEMHIGHLIGHT = 255;
+
+//constants
+const FName ActionTarget = "ActionTarget";
+const FName PrefersRange = "PrefersRange";
 
 //are in achievment_core_h
 const int32 GAME_DIFFICULTY_CASUAL = 0;
@@ -37,7 +51,7 @@ const int32 WEAPONSTYLE_TWOHANDED = 3;
 const int32 OBJECT_TYPE_INVALID = 0;
 //const int32 OBJECT_TYPE_GUI = 1;
 //const int32 OBJECT_TYPE_TILE = 2;
-//const int32 OBJECT_TYPE_MODULE = 4;
+const int32 OBJECT_TYPE_MODULE = 4;
 //const int32 OBJECT_TYPE_AREA = 8;
 //const int32 OBJECT_TYPE_STORE = 16;
 const int32 OBJECT_TYPE_CREATURE = 32;
@@ -48,7 +62,7 @@ const int32 OBJECT_TYPE_PLACEABLE = 512;
 //const int32 OBJECT_TYPE_AREAOFEFFECTOBJECT = 2048;
 const int32 OBJECT_TYPE_WAYPOINT = 4096;
 //const int32 OBJECT_TYPE_SOUND = 16384;
-//const int32 OBJECT_TYPE_PARTY = 32768;
+const int32 OBJECT_TYPE_PARTY = 32768;
 //const int32 OBJECT_TYPE_MAPPATCH = 65536;
 //const int32 OBJECT_TYPE_VFX = 131072;
 //const int32 OBJECT_TYPE_MAP = 262144;
@@ -71,7 +85,7 @@ const int32 LOG_CHANNEL_AI = 100;
 const int32 LOG_CHANNEL_THREAT = 101;
 const int32 LOG_CHANNEL_THREAT_DATA = 102;
 //const int32 LOG_CHANNEL_LOOT = 200;
-//const int32 LOG_CHANNEL_PLOT = 300;
+const int32 LOG_CHANNEL_PLOT = 300;
 //const int32 LOG_CHANNEL_CONVERSATION = 400;
 const int32 LOG_CHANNEL_EVENTS = 500;
 //const int32 LOG_CHANNEL_EVENTS_PLACEABLES = 501;
@@ -160,8 +174,8 @@ const int32 PROPERTY_ATTRIBUTE_RANGED_CRIT_MODIFIER = 23;
 const int32 PROPERTY_ATTRIBUTE_RANGED_AIM_SPEED = 24;
 // const int32 PROPERTY_SIMPLE_THREAT_DECREASE_RATE = 40;
 const int32 PROPERTY_SIMPLE_CURRENT_CLASS = 27;
-const int32 PROPERTY_ATTRIBUTE_ABILITY_COST_MODIFIER = 41; //DHK
- 
+const int32 PROPERTY_ATTRIBUTE_FATIGUE = 41; //DHK 41 is in effect_upkeep
+//const int32 PROPERTY_ATTRIBUTE_ABILITY_COST_MODIFIER = 60; 
 const int32 PROPERTY_ATTRIBUTE_MISSILE_SHIELD = 22;
 // const int32 PROPERTY_ATTRIBUTE_REGENERATION_HEALTH_COMBAT = 28;
 // const int32 PROPERTY_ATTRIBUTE_REGENERATION_STAMINA = 29;
@@ -333,20 +347,20 @@ const int32 COMMAND_ADDBEHAVIOR_DONTCLEAR = 0;
 const int32 COMMAND_ADDBEHAVIOR_SOFTCLEAR = 1;
 const int32 COMMAND_ADDBEHAVIOR_HARDCLEAR = 2;
 
-// Game Modes
-const int32 GM_INVALID = -1;
-const int32 GM_EXPLORE = 0;
-const int32 GM_COMBAT = 1;
-const int32 GM_DEAD = 2;
-const int32 GM_GUI = 3;
-const int32 GM_CONVERSATION = 4;
-const int32 GM_FLYCAM = 5;
-const int32 GM_FIXED = 6;
-const int32 GM_PREGAME = 7;
-const int32 GM_LOADING = 8;
-const int32 GM_MOVIE = 9;
-const int32 GM_CHARGEN = 10;
-const int32 GM_PARTYPICKER = 11;
+// Game Modes match egamemode in stypes.h
+const int32 GM_INVALID = 0;
+const int32 GM_EXPLORE = 1;
+const int32 GM_COMBAT = 2;
+const int32 GM_DEAD = 3;
+const int32 GM_GUI = 4;
+const int32 GM_CONVERSATION = 5;
+const int32 GM_FLYCAM = 6;
+const int32 GM_FIXED = 7;
+const int32 GM_PREGAME = 8;
+const int32 GM_LOADING = 9;
+const int32 GM_MOVIE = 10;
+const int32 GM_CHARGEN = 11;
+const int32 GM_PARTYPICKER = 12;
 
 // Gender Types
 const int32 GENDER_INVALID = 0;
@@ -374,21 +388,57 @@ template <typename ObjClass>
 static FORCEINLINE ObjClass* LoadObjFromPath(const FName& Path)
 {
 	if (Path == NAME_None) return NULL;
+	
 	return Cast<ObjClass>(StaticLoadObject(ObjClass::StaticClass(), NULL, *Path.ToString()));
 }
 
-static FORCEINLINE UBlueprint* LoadBlueprintFromPath(const FName& PathToBlueprint)
+static FORCEINLINE UAnimSequence* LoadAnimationSequenceFromPath(const FName& Path)
 {
-	UBlueprint* blueprint = Cast<UBlueprint>(LoadObjFromPath<UObject>(PathToBlueprint));
-	return blueprint;
+	if (Path == NAME_None) return NULL;
+	
+	return LoadObjFromPath<UAnimSequence>(Path);
 }
+
+template <typename ObjClass>
+static FORCEINLINE ObjClass* LoadBlueprintFromPath(const FName& Path, const FName& BlueprintName)
+{
+	if (Path == NAME_None) return NULL;
+	FString cName = BlueprintName.ToString().Append(FString("_C"));
+	TArray<UObject*> tempArray;
+	if (EngineUtils::FindOrLoadAssetsByPath(*Path.ToString(), tempArray, EngineUtils::ATL_Class))
+	{
+		for (int32 i = 0; i < tempArray.Num(); ++i)
+		{
+			UObject* temp = tempArray[i];
+			if (temp == NULL || (!Cast<ObjClass>(temp)) || (temp->GetName().Compare(cName) != 0))
+			{
+				continue;
+			}
+
+			return Cast<ObjClass>(temp);
+		}
+	}
+
+	return NULL;
+}
+
+FString GetRealName(FString instance);
+
+//hashes and such
+int64 GetNewHash(FString sString, int32 bGuid = 0 /*FALSE_*/);
 
 //void HandleTable();
 FString GetJSON(int32 n2DA);
 
 int32 GetJsonNodeCount(FString table);
 
-FString GetJsonNode(FString table, FString key, FString sRow);
+FString GetJsonNode(FString table, FString key, FString sRow, FString keyID = "ID");
+
+FString GetConvAnimString(FString sField);
+
+FString GetConvAnimType(FString sField);
+
+UAnimSequence* GetConvAnimation(FString AnimationResource);
 
 /** @brief Gets the current world via game singleton
 *
@@ -400,6 +450,8 @@ UWorld* GetCurrentWorld();
 ADA2UE4PlayerController* GetCurrentPlayerController();
 
 int32 GetGameSettings(int32 nSetting);
+
+AActor* GetActorFromName(FName name);
 
 //DA
 
@@ -424,6 +476,8 @@ void LogTrace(int32 nChannel = LOG_CHANNEL_GENERAL, FString sLogEntry = "", AAct
 * @author Brenon
 */
 FString IntToString(int32 nInteger);
+
+FString Int64ToString(int64 nInteger);
 
 /** @brief Converts an integer to a hexadecimal FString.
 *
@@ -472,98 +526,6 @@ FString FloatToString(float fFloat, int32 nWidth = 18, int32 nDecimals = 9);
 */
 int32 FloatToInt(float fFloat);
 
-/** @brief Retrieves a local integer variable stored on an AActor.
-*
-* Returns the value of the integer variable with the name sVarName which is stored
-* on the AActor aActor. If no such variable is stored on the AActor aActor, 0 is
-* returned. To change the value of a local integer value, use SetLocalInt().
-*
-* @param aActor - The Object the variable is stored on.
-* @param nVarName - The ID of the integer variable to retrieve.
-* @returns Returns the value of the integer variable. Returns 0 on error.
-* @sa SetLocalInt()
-* @author Brenon
-*/
-
-/** @brief Gets a local event variable on an AActor.
-*
-* Gets a local event variable sVarName on the specified
-* AActor.
-*
-* @param aActor - Object to get the variable from.
-* @param nVarName - The ID of the variable to retrieve.
-* @returns Returns the event variable, returns an invalid event on error.
-* @sa SetLocalEvent()
-* @author Brenon
-*/
-FGameEvent GetLocalEvent(AActor* aActor, FName sVarName);
-
-/** @brief Sets a local event variable on an AActor.
-*
-* Sets a local event variable sVarName on the specified
-* AActor.
-*
-* @param aActor - Object to set the variable on.
-* @param nVarName - The ID of the variable to set.
-* @param evEvent - The value of the event variable to set.
-* @sa GetLocalEvent()
-* @author Brenon
-*/
-void SetLocalEvent(AActor* aActor, FName sVarName, FGameEvent evEvent);
-
-/** @brief Retrieves a local integer variable stored on an AActor.
-*
-* Returns the value of the integer variable with the name sVarName which is stored
-* on the AActor* aActor. If no such variable is stored on the AActor* aActor, 0 is
-* returned. To change the value of a local integer value, use SetLocalInt().
-*
-* @param aActor - The Object the variable is stored on.
-* @param sVarName - The name of the integer variable to retrieve.
-* @returns Returns the value of the integer variable. Returns 0 on error.
-* @sa SetLocalInt()
-* @author Brenon
-*/
-int32 GetLocalInt(AActor* oObject, FName sVarName);
-
-/** @brief Stores a local integer variable on an AActor.
-*
-* Sets the value of the local integer variable with the name sVarName on the AActor
-* aActor to the integer value nValue.
-*
-* @param aActor - Object to store the var on.
-* @param nVarName - The ID of the integer variable to store.
-* @param nValue - The value of the integer to store.
-* @sa GetLocalInt()
-* @author Brenon
-*/
-void SetLocalInt(AActor* oObject, FName sVarName, int32 nValue);
-
-/** @brief Gets a local floating point variable off of an AActor.
-*
-* Gets a local floating point variable sVarName on the specified
-* AActor.
-*
-* @param oActor - Object to get the var on.
-* @param sVarName - The name of the floating point variable to retrieve.
-* @returns Returns the floating point variable, returns 0.0f on error.
-* @sa SetLocalFloat()
-* @author Brenon
-*/
-float GetLocalFloat(AActor* aActor, FName sVarName);
-
-/** @brief Sets a local floating point variable on an AActor.
-*
-* Sets a local floating point variable sVarName on the specified
-* AActor.
-*
-* @param aActor - Object to set the variable on.
-* @param sVarName - The name of the floating point variable to set.
-* @param fValue - The value of the variable to set.
-* @sa GetLocalFloat()
-* @author Brenon
-*/
-void SetLocalFloat(AActor* oObject, FName sVarName, float fValue);
-
 /** @brief Gets the team members given a team ID
 *
 * @param nTeamId - The team ID to get the members of
@@ -597,12 +559,20 @@ int32 GetTeamId(AActor* aActor);
 */
 AActor* GetPartyLeader();
 
+/** @brief Returns the AActor* for the party
+*
+*
+* @param aActor - Returns the AActor* for the party
+* @author Adriana
+*/
+ADA2UE4Party* GetParty(AActor* aActor = nullptr);
+
 /** @brief Gets the module/game instance from world
 *
 * @returns module
 * @author DHK
 */
-ADA2UE4Module* GetModule();
+UDA2UE4GameInstance* GetModule();
 
 /** @brief Sets the group ID of the specified AActor.
 *
@@ -694,57 +664,6 @@ void SetGroupHostility(int32 nGroupA, int32 nGroupB, int32 bHostile);
 */
 int32 IsObjectHostile(AActor* oSource, AActor* oTarget);
 
-/** @brief Sets a local AActor* variable on an AActor.
-*
-* Sets a local AActor* variable sVarName on the specified
-* AActor.
-*
-* @param aActor - Object to set the variable on.
-* @param nVarName - The ID of the AActor* variable to set.
-* @param oValue - The value of the AActor* variable.
-* @sa GetLocalObject()
-* @author Brenon
-*/
-void SetLocalObject(AActor* aActor, FName sVarName, AActor* oValue);
-
-/** @brief Gets a local AActor* variable on an AActor.
-*
-* Gets a local AActor* variable sVarName on the specified
-* AActor.
-*
-* @param aActor - Object to get the variable from.
-* @param nVarName - The ID of the AActor* variable to retrieve.
-* @returns Returns the AActor* variable, returns an invalid AActor* on error.
-* @sa SetLocalObject()
-* @author Brenon
-*/
-AActor* GetLocalObject(AActor* aActor, FName sVarName);
-
-/** @brief Get a local variable of type resource on an AActor
-*
-* Gets a local variable of type resource on the specified AActor
-*
-* @param oActor The AActor* from which to get the variable
-* @param nVarName The ID of the variable
-* @returns Returns the value of the variable or an empty resource name on error.
-* @sa SetLocalResource()
-* @author Hesky
-*/
-FString GetLocalResource(AActor* oObject, FName sVarName);
-
-/** @brief Gets a local FString variable on an AActor.
-*
-* Gets a local FString variable sVarName on the specified
-* AActor.
-*
-* @param oActor - Object to get the variable from.
-* @param nVarName - The ID of the FString variable to retrieve.
-* @returns Returns the FString variable, returns an empty FString on error.
-* @sa SetLocalString()
-* @author Brenon
-*/
-FString GetLocalString(AActor* oObject, FName sVarName);
-
 FCommand Command(int32 nCommandType = COMMAND_TYPE_INVALID);
 
 /** @brief This returns a float associated with the specified command
@@ -786,7 +705,7 @@ FString GetCommandString(FCommand cCommand, int32 nIndex);
 *   @param nIndex - The nth float being set. Defaults to 0
 *   @author Gabo
 */
-FCommand SetCommandFloat(FCommand cCommand, float nCommandFloat, int32 nIndex);
+FCommand SetCommandFloat(FCommand cCommand, float nCommandFloat);
 
 /** @brief This sets an integer associated with the specified command
 *
@@ -796,7 +715,7 @@ FCommand SetCommandFloat(FCommand cCommand, float nCommandFloat, int32 nIndex);
 *   @param nIndex - The nth integer being set. Defaults to 0
 *   @author Sam
 */
-FCommand SetCommandInt(FCommand cCommand, int32 nCommandInt, int32 nIndex);
+FCommand SetCommandInt(FCommand cCommand, int32 nCommandInt);
 
 /** @brief This sets an AActor* associated with the specified command
 *
@@ -806,11 +725,11 @@ FCommand SetCommandInt(FCommand cCommand, int32 nCommandInt, int32 nIndex);
 *   @param nIndex - The nth AActor* being set. Defaults to 0
 *   @author Jose
 */
-FCommand SetCommandObject(FCommand cCommand, AActor* nCommandObject, int32 nIndex);
+FCommand SetCommandObject(FCommand cCommand, AActor* nCommandObject);
 
-FCommand SetCommandVector(FCommand cCommand, FVector vVector, int32 nIndex);
+FCommand SetCommandVector(FCommand cCommand, FVector vVector);
 
-FCommand SetCommandString(FCommand cCommand, FString sString, int32 nIndex);
+FCommand SetCommandString(FCommand cCommand, FString sString);
 
 /** @brief Creates a blank effect
 *
@@ -892,7 +811,7 @@ int32 GetEffectInteger(FEffect efEffect, int32 nIndex);
 * @sa GetEffectIntegerRef()
 * @author MarkB
 */
-FEffect SetEffectInteger(FEffect efEffect, int32 nIndex, int32 nValue);
+FEffect SetEffectInteger(FEffect efEffect, int32 nValue);
 
 /** @brief Set the creator of an effect
 *
@@ -916,7 +835,7 @@ FEffect SetEffectCreator(FEffect efEffect, AActor* oCreator);
 * @sa GetEffectFloatRef()
 * @author MarkB
 */
-FEffect SetEffectFloat(FEffect efEffect, int32 nIndex, float fValue);
+FEffect SetEffectFloat(FEffect efEffect, float fValue);
 
 /** @brief Sets the specified float on the effect
 *
@@ -931,7 +850,7 @@ FEffect SetEffectFloat(FEffect efEffect, int32 nIndex, float fValue);
 * @sa GetEffectObject()
 * @author Noel
 */
-FEffect SetEffectObject(FEffect efEffect, int32 nIndex, AActor* oValue);
+FEffect SetEffectObject(FEffect efEffect, AActor* oValue);
 
 /** @brief Returns the hero player
 *
@@ -1020,7 +939,7 @@ FGameEvent SetEventCreator(FGameEvent evEvent, AActor* oCreator);
 * @sa GetEventObjectRef()
 * @author MarkB
 */
-FGameEvent SetEventObject(FGameEvent evEvent, int32 nIndex, AActor* oValue);
+FGameEvent SetEventObject(FGameEvent evEvent, AActor* oValue);
 
 /** @brief Sets the specified integer on the event.
 *
@@ -1034,7 +953,7 @@ FGameEvent SetEventObject(FGameEvent evEvent, int32 nIndex, AActor* oValue);
 * @sa GetEventIntegerRef()
 * @author MarkB
 */
-FGameEvent SetEventInteger(FGameEvent evEvent, int32 nIndex, int32 nValue);
+FGameEvent SetEventInteger(FGameEvent evEvent, int32 nValue);
 
 /** @brief Sets the specified float on the event.
 *
@@ -1048,7 +967,7 @@ FGameEvent SetEventInteger(FGameEvent evEvent, int32 nIndex, int32 nValue);
 * @sa GetEventFloatRef()
 * @author MarkB
 */
-FGameEvent SetEventFloat(FGameEvent evEvent, int32 nIndex, float fValue);
+FGameEvent SetEventFloat(FGameEvent evEvent, float fValue);
 
 /** @brief Sets the specified vector on the event.
 *
@@ -1061,7 +980,7 @@ FGameEvent SetEventFloat(FGameEvent evEvent, int32 nIndex, float fValue);
 * on an event, as the array of values on the event expands as needed.
 * @author MarkB
 */
-FGameEvent SetEventVector(FGameEvent evEvent, int32 nIndex, FVector vValue);
+FGameEvent SetEventVector(FGameEvent evEvent, FVector vValue);
 
 /** @brief Sets the specified FString on the event.
 *
@@ -1074,7 +993,7 @@ FGameEvent SetEventVector(FGameEvent evEvent, int32 nIndex, FVector vValue);
 * on an event, as the array of values on the event expands as needed.
 * @author MarkB
 */
-FGameEvent SetEventString(FGameEvent evEvent, int32 nIndex, FString sValue);
+FGameEvent SetEventString(FGameEvent evEvent, FString sValue);
 
 /** @brief Signals the event to the specified AActor.
 *
@@ -1085,7 +1004,7 @@ FGameEvent SetEventString(FGameEvent evEvent, int32 nIndex, FString sValue);
 * @sa SignalEventToDataSet()
 * @author Brenon
 */
-void SignalEvent(AActor* oObject, FGameEvent evEvent, int32 bProcessImmediate = FALSE_);
+void SignalEvent(UObject* oObject, FGameEvent evEvent, int32 bProcessImmediate = FALSE_);
 
 /** @brief Signals a delayed event to the specified AActor.
 *
@@ -1099,7 +1018,7 @@ void SignalEvent(AActor* oObject, FGameEvent evEvent, int32 bProcessImmediate = 
 *
 * @author MarkB
 */
-void DelayEvent(float fSeconds, AActor* oObject, FGameEvent evEvent, FString scriptname = "");
+void DelayEvent(float fSeconds, UObject* oObject, FGameEvent evEvent, FString scriptname = "");
 
 /** @brief Gets the current event for the event script.
 *
@@ -1112,7 +1031,7 @@ void DelayEvent(float fSeconds, AActor* oObject, FGameEvent evEvent, FString scr
 * @sa HandleEvent()
 * @author Brenon
 */
-FGameEvent GetCurrentEvent(AActor* oObject);
+FGameEvent GetCurrentEvent(UObject* oObject);
 
 /** @brief Gets the type of event.
 *
@@ -1139,13 +1058,13 @@ FString GetEventString(FGameEvent evEvent, int32 nIndex);
 
 /** @brief Returns TRUE_ if a creature is a member of a player's party
 *
-* This function returns TRUE_ if oPlayer and oCreature are in the same party
+* This function returns TRUE_ if oPlayer and aActor are in the same party
 *
 * @param oPlayer
-* @param oCreature
+* @param aActor
 * @author Sam
 */
-int32 IsFollower(AActor* oCreature);
+int32 IsFollower(AActor* aActor);
 
 /** @brief Shows a warning.
 *
@@ -1187,7 +1106,7 @@ FString GetCurrentScriptName(FGameEvent ev);
 * @return Returns the FString specified by the parameters. Returns an empty FString on error.
 * @author Brenon, Georg
 */
-FString GetM2DAString(int32 n2DA, FString sColumn, int32 nRow, FString s2DA = "");
+FString GetM2DAString(int32 n2DA, FString sColumn, int32 nRow);
 
 /** @brief Returns a 2DA value in integer format.
 *
@@ -1203,21 +1122,25 @@ FString GetM2DAString(int32 n2DA, FString sColumn, int32 nRow, FString s2DA = ""
 * @sa Set2DAInt()
 * @author Brenon, Georg
 */
-int32 GetM2DAInt(int32 n2DA, FString sColumn, int32 nRow, FString s2DA = "");
+int32 GetM2DAInt(int32 n2DA, FString sColumn, int32 nRow);
 
-float GetM2DAFloat(int32 n2DA, FString sColumn, int32 nRow, FString s2DA = "");
+float GetM2DAFloat(int32 n2DA, FString sColumn, int32 nRow);
 
 /** @brief Check if a modal ability is active in a creature
 *
 * Check if a modal ability is active in a creature.
 *
-* @param oCreature - the creature in which to check the modal ability
+* @param aActor - the creature in which to check the modal ability
 * @param nAbilityId - modal ability to check if it's active
 * @returns 1 if active. 0 if inactive.
 * @sa SetModalAbility
 * @author Jose
 */
-int32 IsModalAbilityActive(AActor* oCreature, int32 nAbilityId);
+int32 IsModalAbilityActive(AActor* aActor, int32 nAbilityId);
+
+int32 IsModalAbility(int32 nAbility);
+
+int32 IsAbilityActive(AActor* aActor, int32 nAbilityID);
 
 /** @brief Returns the list of effects that are currently applied to an AActor.
 *
@@ -1231,7 +1154,7 @@ int32 IsModalAbilityActive(AActor* oCreature, int32 nAbilityId);
 * @param nDurationType - Optionally filter the array by DurationType (EFFECT_DURATION_TYPE_INVALID means no filter).
 * @author Sam, Georg, Gabo
 */
-TArray<FEffect> GetEffects(AActor* oCreature, int32 nEffectType = EFFECT_TYPE_INVALID, int32 nAbilityId = 0, AActor* oCreator = nullptr, int32 nDurationType = EFFECT_DURATION_TYPE_INVALID, int32 nEffectId = -1);
+TArray<FEffect> GetEffects(AActor* aActor, int32 nEffectType = EFFECT_TYPE_INVALID, int32 nAbilityId = 0, AActor* oCreator = nullptr, int32 nDurationType = EFFECT_DURATION_TYPE_INVALID, int32 nEffectId = -1);
 
 /** @brief Returns whether or not a creature has effects matching the filter criteria
 *
@@ -1242,7 +1165,7 @@ TArray<FEffect> GetEffects(AActor* oCreature, int32 nEffectType = EFFECT_TYPE_IN
 * @param nAbilityId - Optionally filter the returned array to include only effects with a matching ability id (-1 means no filter).
 * @author Georg
 */
-int32 GetHasEffects(AActor* oCreature, int32 nEffectType = EFFECT_TYPE_INVALID, int32 nAbilityId = -1);
+int32 GetHasEffects(AActor* aActor, int32 nEffectType = EFFECT_TYPE_INVALID, int32 nAbilityId = -1);
 
 /** @brief Remove an effect
 *
@@ -1259,31 +1182,31 @@ void RemoveEffect(AActor* oTarget, FEffect eEffect);
 * This function sets the Combat State on a creature.
 * ** If you are not Georg and you are using this function, you're in trouble!**
 *
-* @param oCreature - the creature whose combat state we are setting
+* @param aActor - the creature whose combat state we are setting
 * @param nCombatState - the combat state (TRUE_ or FALSE_)
 * @param nInstantEquipWeapon - if TRUE_ don't play enter/exit animations, just pop weapons in or out of the creature's hands
 * @returns 0
 * @sa GetCombatState
 * @author Jose
 */
-void SetCombatState(AActor* oCreature, int32 nCombatState, int32 nInstantEquipWeapon = FALSE_);
+void SetCombatState(AActor* aActor, int32 nCombatState, int32 nInstantEquipWeapon = FALSE_);
 
 /** @brief This function gets the Combat State of a creature
 *
 * This function gets the Combat State of a creature
 *
-* @param oCreature - the creature whose combat state we are querying
+* @param aActor - the creature whose combat state we are querying
 * @returns TRUE_ if the creature is in combat, FALSE_ otherwise
 * @sa SetCombatState
 * @author Jose
 */
-int32 GetCombatState(AActor* oCreature);
+int32 GetCombatState(AActor* aActor);
 
 /** @brief Returns creature's stealth state
 *
-* @param oCreature - oid of creature of interest
+* @param aActor - oid of creature of interest
 **/
-int32 GetStealthEnabled(AActor* oCreature);
+int32 GetStealthEnabled(AActor* aActor);
 
 /** @brief Get the boolean value of the indicated GUI Attribute. Note: In the PC Build of the game you can use the console command "explore" to browse the attribute tree.
 *
@@ -1315,7 +1238,7 @@ FString GetStringByStringId(int32 nId);
 * Displays an animated message or number floating over a creature
 * indicating damage taken, critical hits, etc.
 *
-* @param oCreature - The creature to display the floaty over.
+* @param aActor - The creature to display the floaty over.
 * @param sMessage - The text of the message.
 * @param nStyle - The visual style of the floaty.
 * @param nColour - The text color, in hex (eg. 0xff0000 is red).
@@ -1326,35 +1249,35 @@ FString GetStringByStringId(int32 nId);
 * the duration is completely ignored, this is controlled through ActionScript!
 * @author Henry
 */
-void DisplayFloatyMessage(AActor* oCreature, FString sMessage, int32 nStyle = FLOATY_MESSAGE, int32 nColor = 16777215, float fDuration = 1.f);
+void DisplayFloatyMessage(AActor* aActor, FString sMessage, int32 nStyle = FLOATY_MESSAGE, int32 nColor = 16777215, float fDuration = 1.f);
 
-/** @brief Determine whether oCreature has nAbilityID in their list of abilities
+/** @brief Determine whether aActor has nAbilityID in their list of abilities
 *
-* Determine whether oCreature has nAbilityID in their list of abilities
+* Determine whether aActor has nAbilityID in their list of abilities
 *
-* @param oCreature - the creature
+* @param aActor - the creature
 * @param nAbilityID - the ability identifier
-* @returns Returns TRUE_ if oCreature has the specified ability
+* @returns Returns TRUE_ if aActor has the specified ability
 * @author Sophia, Jose
 */
-int32 HasAbility(AActor* oCreature, int32 nAbility);
+int32 HasAbility(AActor* aActor, int32 nAbility);
 
 /** @brief Returns the rank of a creature
 *
 * Returns the CreatureRank of a creature, representing its relative combat difficulty.
 *
-* @param oCreature - The creature
+* @param aActor - The creature
 * @returns The CREATURE_RANK_* constant associated with the creature.
 * @author Georg
 */
-int32 GetCreatureRank(AActor* oCreature);
+int32 GetCreatureRank(AActor* aActor);
 
 /** @brief Returns TRUE_ if the AActor* is currently being controlled by the player
 *   Note - this can be TRUE_ for the main player character, and also for any
 *   party members selected by the user (which can be more than one).
 *
 *
-* @param oCreature - Check this creature to determine if it is controlled by the player
+* @param aActor - Check this creature to determine if it is controlled by the player
 * @author Sam
 */
 int32 IsControlled(AActor* aActor);
@@ -1383,55 +1306,55 @@ void DisplayPortraitMessage(AActor* oPlayerCreature, FString sMessage, int32 nCo
 
 /** @brief Get the number of entries in the threat table
 *
-* @param oCreature - owner of the threat table
+* @param aActor - owner of the threat table
 * @returns table size
 * @author Jose
 */
-int32 GetThreatTableSize(AActor* oCreature);
+int32 GetThreatTableSize(AActor* aActor);
 
 /** @brief Get the enemy id on a specific index of the threat table
 *
-* @param oCreature - owner of the threat table
+* @param aActor - owner of the threat table
 * @param i - index
 * @returns enemy id
 * @author Jose
 */
-AActor* GetThreatEnemy(AActor* oCreature, int32 i);
+AActor* GetThreatEnemy(AActor* aActor, int32 i);
 
 /** @brief Get the threat value on a specific index of the table
 *
-* @param oCreature - owner of the threat table
+* @param aActor - owner of the threat table
 * @param i - index
 * @returns threat value
 * @author Jose
 */
-float GetThreatValueByIndex(AActor* oCreature, int32 i);
+float GetThreatValueByIndex(AActor* aActor, int32 i);
 
 /** @brief Get the threat value for a specific enemy on the table
 *
-* @param oCreature - owner of the threat table
+* @param aActor - owner of the threat table
 * @param oEnemy - enemy id
 * @returns threat value
 * @author Jose
 */
-float GetThreatValueByObjectID(AActor* oCreature, AActor* oEnemy);
+float GetThreatValueByObjectID(AActor* aActor, AActor* oEnemy);
 
 /** @brief Change the threat value for a given enemy
 *
-* @param oCreature - owner of the threat table
+* @param aActor - owner of the threat table
 * @param oEnemy - enemy for which the value should be updated
 * @param fThreatChange - threat delta
 * @author Jose
 */
-void UpdateThreatTable(AActor* oCreature, AActor* oEnemy, float fThreatChange);
+void UpdateThreatTable(AActor* aActor, AActor* oEnemy, float fThreatChange);
 
 /** @brief Remove the threat entry for the given enemy
 *
-* @param oCreature - owner of the threat table
+* @param aActor - owner of the threat table
 * @param oEnemy - enemy for which the entry should be removed
 * @author Jose
 */
-void ClearEnemyThreat(AActor* oCreature, AActor* oEnemy);
+void ClearEnemyThreat(AActor* aActor, AActor* oEnemy);
 
 /** @brief Is this AActor* dead?
 *
@@ -1469,13 +1392,13 @@ int32 HasDeathEffect(AActor* oActor, int32 bCheckForDeathEvent = FALSE_);
 */
 int32 IsPerceiving(AActor* oidA, AActor* oidB);
 
-int32 GetCreatureGender(AActor* oCreature);
+int32 GetCreatureGender(AActor* aActor);
 
-int32 GetCreatureRacialType(AActor* oCreature);
+int32 GetCreatureRacialType(AActor* aActor);
 
-/** @brief Get the specified attribute from oCreature
+/** @brief Get the specified attribute from aActor
 *
-* Get oCreature's Property value.
+* Get aActor's Property value.
 * Property types have slightly different definitions of each of the 4 value types.
 * A SIMPLE or DERIVED property has a BASE and TOTAL value as the same number and
 * doesn't have CURRENT or MODIFIER.
@@ -1485,32 +1408,32 @@ int32 GetCreatureRacialType(AActor* oCreature);
 * a CURRENT value, which must be between the property min and the TOTAL value.
 * Properties are defined in Properties.xls.
 *
-* @param oCreature - the creature whose stat is being requested
+* @param aActor - the creature whose stat is being requested
 * @param nProperty - the property (stat) we want to know about
 * @param nValueType - the type of value of the property we want to know about
 * (TOTAL, BASE, CURRENT, MODIFIER)
-* @returns Returns oCreature's Attribute Value
+* @returns Returns aActor's Attribute Value
 * @author Gabo
 */
-float GetCreatureProperty(AActor* oCreature, int32 nProperty, int32 nValueType = PROPERTY_VALUE_TOTAL);
+float GetCreatureProperty(AActor* aActor, int32 nProperty, int32 nValueType = PROPERTY_VALUE_TOTAL);
 
-/** @brief Set the specified value of a given property on a oCreature
+/** @brief Set the specified value of a given property on a aActor
 *
 * Sets the specified value of the selected property on a creature.
 * Doesn't work for TOTAL values. Use BASE instead. See GetCreatureProperty for more details
 *
-* @param oCreature - the creature whose property we want to set.
+* @param aActor - the creature whose property we want to set.
 * @param nProperty - the property (stat) we want to modify.
 * @param nValueType - the type of value of the property we want to modify (BASE, CURRENT, MODIFIER)
-* @returns Returns oCreature's Attribute Value
+* @returns Returns aActor's Attribute Value
 * @author Gabo
 */
-void SetCreatureProperty(AActor* oCreature, int32 nProperty, float fNewValue, int32 nValueType = PROPERTY_VALUE_BASE);
+void SetCreatureProperty(AActor* aActor, int32 nProperty, float fNewValue, int32 nValueType = PROPERTY_VALUE_BASE);
 
 /** @returns reflected property
 *  @author DHK
 */
-FActorProperty GetProperty(AActor* aActor, FName sVarName);
+FActorProperty GetProperty(AActor* aActor, int32 nProperty);
 
 /** @brief Determines if an AActor* exists and is valid.
 *
@@ -1554,10 +1477,10 @@ float RandomFloat();
 * Returns the item in the specified equip slot for a creature
 *
 * @param nSlot - the equip slot to be examined
-* @param oCreature - the creature to examine
+* @param aActor - the creature to examine
 * @author Noel
 */
-AActor* GetItemInEquipSlot(int32 nSlot, AActor* oCreature, int32 nWeaponSet = INVALID_WEAPON_SET);
+AActor* GetItemInEquipSlot(int32 nSlot, AActor* aActor, int32 nWeaponSet = INVALID_WEAPON_SET);
 
 /** @brief Gets the BaseItemType of an item
 *
@@ -1575,7 +1498,7 @@ int32 GetBaseItemType(AActor* oItem);
 * @param oActor - The creature that may be perceiving hostiles
 * @author Gabo.
 */
-int32 IsPerceivingHostiles(AActor* oCreature);
+int32 IsPerceivingHostiles(AActor* aActor);
 
 /** @brief Indicates if the party of a creature is perceiving any hostiles
 *
@@ -1584,7 +1507,7 @@ int32 IsPerceivingHostiles(AActor* oCreature);
 * @param oActor - The creature whose party may be perceiving hostiles
 * @author Gabo.
 */
-int32 IsPartyPerceivingHostiles(AActor* oCreature);
+int32 IsPartyPerceivingHostiles(AActor* aActor);
 
 /** @brief Returns the party list for the creature
 * //DHK seems to be for player party only
@@ -1592,7 +1515,7 @@ int32 IsPartyPerceivingHostiles(AActor* oCreature);
 * @param oActor - The AActor* to test for returning the party
 * @author Adriana
 */
-TArray<AActor*> GetPartyList(AActor* oCreature = nullptr);
+TArray<AActor*> GetPartyList(AActor* aActor = nullptr);
 
 /** @brief Queries the active status of an AActor
 *
@@ -1632,7 +1555,17 @@ void SetObjectActive(AActor* aActor, int32 nActive, int32 nAnimation = 0, int32 
 * @sa SetGameMode
 * @author Jose
 */
-int32 GetGameMode();
+EGameMode GetGameMode();
+
+/** @brief This function sets the current game mode.
+*
+* This function sets the current game mode for a specific player. A game mode can be combat, explore, dialog etc'
+*
+* @param nMode - the mode to set the game to: GM_*
+* @sa GetGameMode
+* @author Jose
+*/
+void SetGameMode(int32 nMode);
 
 int32 IsImmortal(AActor* oActor);
 
@@ -1651,10 +1584,10 @@ void PlaySoundSet(AActor* oTarget, int32 nSoundSetEntry, float fProbabilityOverr
 *
 * Gets the AppearanceType of a creature
 *
-* @param oCreature - A creature
+* @param aActor - A creature
 * @author Georg Zoeller
 */
-int32 GetAppearanceType(AActor* oCreature);
+int32 GetAppearanceType(AActor* aActor);
 
 /** @brief Get a party follower's approval rating
 *
@@ -1668,19 +1601,19 @@ int32 GetFollowerApproval(AActor* oFollower);
 *
 * Returns an array of hostile creatures
 *
-* @param oCreature - Creature to test against
+* @param aActor - Creature to test against
 * @param obHostile - Filter to only retrieve hostile creatures.
 * @author Adriana
 */
-TArray<AActor*> GetPerceivedCreatureList(AActor* oCreature, int32 bHostile = FALSE_);
+TArray<AActor*> GetPerceivedCreatureList(AActor* aActor, int32 bHostile = FALSE_);
 
 /** @brief Get follower state.
 *
-* @param oCreature - Party follower
+* @param aActor - Party follower
 * @returns the state of the follower.
 * @author Jacques Lebrun
 */
-int32 GetFollowerState(AActor* oCreature);
+int32 GetFollowerState(AActor* aActor);
 
 /** @brief Set a placeable's current health
 *
@@ -1706,17 +1639,6 @@ void SetAILevel(AActor* oActor, int32 nAILevel);
 */
 int32 ClearAmbientDialogs(AActor* oObject = nullptr);
 
-/** @brief Begins a conversation with the given AActor
-*
-* If rConversationFile is specified then that file will be used, otherwise
-* the conversation specified on the creature will be used
-*
-* @param * oTarget - The AActor* that will own the conversation
-* @param rConversationFile (optional) - The name of a dlg file to be used (*.con)
-* @author Jon Thompson
-*/
-int32 BeginConversation(AActor* oTarget, FString rConversationFile = "");
-
 /** @brief Returns the current difficulty of the game.
 *
 * Returns the current difficulty of the game.
@@ -1730,13 +1652,13 @@ int32 GetGameDifficulty();
 *
 * @author Jacques
 */
-int32 GetPackage(AActor* oCreature);
+int32 GetPackage(AActor* aActor);
 
 /** @brief Returns the AI package of a creature.
 *
 * @author Jacques
 */
-int32 GetPackageAI(AActor* oCreature);
+int32 GetPackageAI(AActor* aActor);
 
 /** @brief This function clears the command list for a given AActor
 *
@@ -1897,11 +1819,11 @@ void SetObjectInteractive(AActor* aActor, int32 nValue);
 
 /** @brief Returns a list of ability IDs for each AOE in which a creature is in.
 *
-* @param oCreature - The creature being queried
+* @param aActor - The creature being queried
 * @returns an array of ability ids.
 * @author Gabo
 */
-TArray<int32> GetAbilitiesDueToAOEs(AActor* oCreature);
+TArray<int32> GetAbilitiesDueToAOEs(AActor* aActor);
 
 /** @brief
 *
@@ -1917,16 +1839,19 @@ UWorld* GetArea(AActor* oActor);
 * This function gets the combat target of a creature. This target is set when using an attack or
 * ability command and is cleared (to target invalid) when combat state is set to false.
 *
-* @param oCreature - the creature whose combat target we are querying
+* @param aActor - the creature whose combat target we are querying
 * @returns the id of the creature's target. Will be invalid if the creature has no target.
 * @sa GetAttackTarget
 * @author Gabo
 */
-AActor* GetAttackTarget(AActor* oCreature);
+AActor* GetAttackTarget(AActor* aActor);
+
+/*DHK*/
+void SetAttackTarget(AActor* aActor, AActor* aTarget);
 
 /** @brief Returns the active weaponset on a creature
 *
-*  Returns the weaponset currently active by oCreature.
+*  Returns the weaponset currently active by aActor.
 *
 *  0 - WeaponSet 1 (1 in the Toolset)
 *  1 - Weaponset 2 (2 in the Toolset)
@@ -1941,7 +1866,7 @@ int32 GetActiveWeaponSet(AActor* aActor);
 /** @brief Returns the ID number of the targeted party member for those tactic
 *          targets which are generated on a per-follower basis.
 *
-* @param oCreature - The creature to query.
+* @param aActor - The creature to query.
 * @param nIndex - The tactic index.
 * @return The ID number of the party member.
 * @author Cody Watts
@@ -1951,7 +1876,7 @@ AActor* GetTacticTargetObject(AActor* aActor, int32 nIndex);
 /** @brief Returns the ID number of the party member being referenced in
 *          those conditions which are generated on a per-follower basis.
 *
-* @param oCreature - the creature to query.
+* @param aActor - the creature to query.
 * @param nIndex - the tactic index.
 * @return The ID number of the party member.
 * @author Cody Watts
@@ -1987,11 +1912,11 @@ FVector GetLocation(AActor* aActor);
 *   Zero can imply that either the tactics are disabled by the user, or they don't exist.
 *   for this creature (a non-party creature).
 *
-* @param oCreature - the creature to query.
+* @param aActor - the creature to query.
 * @return - the number of available tactics.
 * @author Jacques
 */
-int32 GetNumTactics(AActor* oCreature);
+int32 GetNumTactics(AActor* aActor);
 
 /** @brief Returns the number of rows in the specified 2da.
 *
@@ -2004,61 +1929,61 @@ int32 GetNumTactics(AActor* oCreature);
 * @returns Returns the number of rows in the 2DA, returns 0 on error.
 * @author Brenon, Georg
 */
-int32 GetM2DARows(int32 n2DA, FString s2DA = "");
+int32 GetM2DARows(int32 n2DA);
 
 /** @brief Returns whether the specified tactic is enabled.
 *
-* @param oCreature - the creature to query.
+* @param aActor - the creature to query.
 * @param nIndex - the tactic index.
 * @return TRUE_ if the tactic is enabled.
 * @author Jacques
 */
-int32 IsTacticEnabled(AActor* oCreature, int32 nIndex);
+int32 IsTacticEnabled(AActor* aActor, int32 nIndex);
 
 /** @brief Returns the command item tag for the specified tactic.
 *
-* @param oCreature - the creature to query.
+* @param aActor - the creature to query.
 * @param nIndex - the tactic index.
 * @return The item tag, or empty FString if not applicable.
 * @author Jacques
 */
-FString GetTacticCommandItemTag(AActor* oCreature, int32 nIndex);
+FString GetTacticCommandItemTag(AActor* aActor, int32 nIndex);
 
 /** @brief Returns the target type for the specified tactic.
 *
-* @param oCreature - the creature to query.
+* @param aActor - the creature to query.
 * @param nIndex - the tactic index.
 * @return The target type.
 * @author Jacques
 */
-int32 GetTacticTargetType(AActor* oCreature, int32 nIndex);
+int32 GetTacticTargetType(AActor* aActor, int32 nIndex);
 
 /** @brief Returns the condition id of the specified tactic
 *
-* @param oCreature - the creature to query.
+* @param aActor - the creature to query.
 * @param nIndex - the tactic index.
 * @return The condition id.
 * @author Jacques
 */
-int32 GetTacticCondition(AActor* oCreature, int32 nIndex);
+int32 GetTacticCondition(AActor* aActor, int32 nIndex);
 
 /** @brief Returns the command type for the specified tactic.
 *
-* @param oCreature - the creature to query.
+* @param aActor - the creature to query.
 * @param nIndex - the tactic index.
 * @return The command type.
 * @author Jacques
 */
-int32 GetTacticCommand(AActor* oCreature, int32 nIndex);
+int32 GetTacticCommand(AActor* aActor, int32 nIndex);
 
 /** @brief Returns the command parameter for the specified tactic.
 * Can be the ability ID or item ID. Zero for none or not applicable.
-* @param oCreature - the creature to query.
+* @param aActor - the creature to query.
 * @param nIndex - the tactic index.
 * @return The target type.
 * @author Jacques
 */
-int32 GetTacticCommandParam(AActor* oCreature, int32 nIndex);
+int32 GetTacticCommandParam(AActor* aActor, int32 nIndex);
 
 /** @brief Gets the stack Size of an item
 *
@@ -2072,7 +1997,7 @@ int32 GetItemStackSize(AActor* oItem);
 
 /** @brief Get the remaining time for an ability to be used
 *
-* @param oCreature - owner of the ability
+* @param aActor - owner of the ability
 * @param nAbilityId - ability to check the cooldown
 * @param sSourceItemTag - if an item ability, specify the specific item providing the ability.
 * If an empty FString, the engine will grab the first item with this ability,
@@ -2081,7 +2006,7 @@ int32 GetItemStackSize(AActor* oItem);
 * @sa SetCooldown
 * @author Jose
 */
-float GetRemainingCooldown(AActor* oCreature, int32 nAbilityId, FString sSourceItemTag = "");
+float GetRemainingCooldown(AActor* aActor, int32 nAbilityId, FString sSourceItemTag = "");
 
 /** @brief This function return the center of a cluster of creatures
 *
@@ -2212,12 +2137,12 @@ int32 IsHumanoid(AActor* aActor);
 
 /** @brief Gets the weapon style used by a creature
 *
-* @param oCreature - the creature whose weapon style we are querying
+* @param aActor - the creature whose weapon style we are querying
 * @returns the weapon style (0 - none, 1 - single (with or without shield), 2 - dual, 3 - two handed)
 * @sa GetWeaponStyle
 * @author Gabo
 */
-int32 GetWeaponStyle(AActor* oCreature);
+int32 GetWeaponStyle(AActor* aActor);
 
 /** @brief Determines if there is a line of sight between two objects.
 *
@@ -2344,7 +2269,7 @@ int32 GetItemEquipSlot(AActor* oItem);
 * @returns Whether or not it is allowed to kill the creature permanently.
 * @author Georg
 */
-int32 GetCanDiePermanently(AActor* oCreature);
+int32 GetCanDiePermanently(AActor* aActor);
 
 /** @brief EffectImpact Constructor.
 *
@@ -2390,7 +2315,7 @@ void SetAttackDuration(AActor* aActor, float fDuration);
 *
 * Enables/Disables the weapon trail for a creature.
 *
-* @param oCreature - the creature
+* @param aActor - the creature
 * @param bEnable - TRUE/FALSE
 * @param nTypeID - Weapon Trail ID from WT_** 2da
 * @param fFinishTime - If disabling, how long to fade out the trail
@@ -2442,7 +2367,7 @@ AActor* GetObjectByTag(FString sTag, int32 nNth = 0, int32 nObjectType = OBJECT_
 * function will switch the animation being played immediately, without creating
 * another command.
 *
-* @param oCreature - The creature that will interact
+* @param aActor - The creature that will interact
 * @param oTarget - the placeable or creature to interact with
 * @param nInteractionId - The type of interaction (see SyncPlaceableAnims and SyncCreatureAnims)
 * @param nPose - The pose loop animation to use
@@ -2450,4 +2375,13 @@ AActor* GetObjectByTag(FString sTag, int32 nNth = 0, int32 nObjectType = OBJECT_
 * @param nPlayExit - Will play an exit animation after the loops end or if the command is canceled
 * @author Gabo
 */
-void InteractWithObject(AActor* oCreature, AActor* oTarget, int32 nInteractionId, int32 nPose = 1, int32 nLoops = 0, int32 bPlayExit = 1, int32 bSkipReposition = 0);
+void InteractWithObject(AActor* aActor, AActor* oTarget, int32 nInteractionId, int32 nPose = 1, int32 nLoops = 0, int32 bPlayExit = 1, int32 bSkipReposition = 0);
+
+/** @brief Destroy the specified AActor. !!GEORG SAYS: DO NOT USE. EVER. Use core_h.Safe_Destroy_Object instead!!
+*
+* @param aActor - Object to destroy
+* @param nDelay - Time in milliseconds to delay the destruction of the AActor. Immediate destruction by default
+* @sa CreateObject
+* @author Jose
+*/
+void DestroyObject(AActor* aActor, int32 nDelay = 0);

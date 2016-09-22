@@ -5,11 +5,10 @@
 
 
 // Sets default values
-ADA2UE4Item::ADA2UE4Item(const class FObjectInitializer& ObjectInitializer)
-	: Super(ObjectInitializer)
+ADA2UE4Item::ADA2UE4Item()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	// PrimaryActorTick.bCanEverTick = true;
 
 }
 
@@ -21,9 +20,9 @@ void ADA2UE4Item::BeginPlay()
 }
 
 // Called every frame
-void ADA2UE4Item::Tick( float DeltaTime )
-{
-	Super::Tick( DeltaTime );
-
-}
+// void ADA2UE4Item::Tick( float DeltaTime )
+// {
+// 	Super::Tick( DeltaTime );
+// 
+// }
 

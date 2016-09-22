@@ -12,10 +12,8 @@ UCLASS()
 class DA2UE4_API ADA2UE4TargetPoint : public ATargetPoint
 {
 	GENERATED_BODY()
-
-public:
-	ADA2UE4TargetPoint(const class FObjectInitializer& ObjectInitializer);
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Location)
-	int32 nIndex;
+	
+	
+	
 };

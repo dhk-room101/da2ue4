@@ -3,10 +3,14 @@
 #ifndef __DA2UE4_H__
 #define __DA2UE4_H__
 
-//set globals //DHK
-#define DEBUG 
+#define DEBUG
 
 #include "Engine.h"
-#include "EngineMinimal.h"
+
+#include "DA2UE4SaveGame.h"
+#include "Kismet/GameplayStatics.h"
+
+DECLARE_LOG_CATEGORY_EXTERN(LogDA2UE4, Log, All);
+
 
 #endif

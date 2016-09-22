@@ -1,7 +1,13 @@
 #include "DA2UE4.h"
-#include "DA2UE4Creature.h"
-#include "ui_h.h"
 #include "sys_stealth_h.h"
+
+#include "ldf.h"
+#include "log_h.h"
+#include "DA2UE4Creature.h"
+#include "core_h.h"
+#include "core_difficulty_h.h"
+#include "effect_upkeep_h.h" //Property moved to ldf.h
+#include "ui_h.h"
 
 void DropStealth(AActor* oTarget)
 {

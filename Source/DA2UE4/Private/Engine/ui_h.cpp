@@ -1,5 +1,10 @@
 #include "DA2UE4.h"
 #include "DA2UE4Creature.h"
+
+#include "m2da_constants_h.h"
+#include "log_h.h"
+#include "core_h.h"
+
 #include "ldf.h"
 #include "ui_h.h"
 

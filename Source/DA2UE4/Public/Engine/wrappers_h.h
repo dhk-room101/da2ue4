@@ -1,6 +1,8 @@
 #pragma once
 
-#include "STypes.h"
+class Engine;
+
+#include "ldf.h"
 
 int32 WR_ClearAllCommands(AActor* oActor, int32 bHardClear = FALSE_);
 
@@ -16,3 +18,7 @@ void WR_SetObjectActive(AActor* aActor, int32 bStatus, int32 nAnimation = -1, in
 int32 WR_TriggerPerception(AActor* oPerceiver, AActor* oPerceivedCreature);
 
 void WR_SetGameMode(int32 nGameMode);
+
+int32 WR_GetPlotFlag(int64 nPlotHash, int32 nFlag); //int32 nCallScript = FALSE_ in original
+
+void WR_SetPlotFlag(int64 nPlotHash, int32 nFlag, int32 nValue); //int32 nCallScript = FALSE_ in original

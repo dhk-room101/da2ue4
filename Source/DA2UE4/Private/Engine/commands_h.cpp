@@ -85,11 +85,11 @@ void SetCommandResult(AActor* aActor, int32 nResult)
 FCommand CommandPlayAnimation(int32 nAnimation, int32 nLoops, int32 bPlayNext, int32 bBlendIn, int32 bRandomizeOffset)
 {
 	FCommand cCommand = Command(COMMAND_TYPE_PLAY_ANIMATION);
-	cCommand = SetCommandInt(cCommand, nAnimation, 0);
-	cCommand = SetCommandInt(cCommand, nLoops, 1);
-	cCommand = SetCommandInt(cCommand, bPlayNext, 2);
-	cCommand = SetCommandInt(cCommand, bBlendIn, 3);
-	cCommand = SetCommandInt(cCommand, bRandomizeOffset, 4);
+	cCommand = SetCommandInt(cCommand, nAnimation);
+	cCommand = SetCommandInt(cCommand, nLoops);
+	cCommand = SetCommandInt(cCommand, bPlayNext);
+	cCommand = SetCommandInt(cCommand, bBlendIn);
+	cCommand = SetCommandInt(cCommand, bRandomizeOffset);
 	return cCommand;
 }
 
@@ -97,42 +97,42 @@ FCommand CommandPlayAnimation(int32 nAnimation, int32 nLoops, int32 bPlayNext, i
 FCommand CommandMoveAwayFromObject(AActor* oTarget, float fAwayDistance, int32 bRunToLocation)
 {
 	FCommand cCommand = Command(COMMAND_TYPE_MOVE_TO_LOCATION);
-	cCommand = SetCommandFloat(cCommand, fAwayDistance, 0);
+	cCommand = SetCommandFloat(cCommand, fAwayDistance);
 	return cCommand;
 }
 
 FCommand CommandAttack(AActor* oTarget, int32 nForcedResult)
 {
 	FCommand cCommand = Command(COMMAND_TYPE_ATTACK);
-	cCommand = SetCommandObject(cCommand, oTarget, 0);
-	cCommand = SetCommandInt(cCommand, nForcedResult, 0);
+	cCommand = SetCommandObject(cCommand, oTarget);
+	cCommand = SetCommandInt(cCommand, nForcedResult);
 	return cCommand;
 }
 
 FCommand CommandSwitchWeaponSet(int32 nWeaponSet)
 {
 	FCommand cCommand = Command(COMMAND_TYPE_SWITCH_WEAPON_SETS);
-	cCommand = SetCommandInt(cCommand, nWeaponSet, 0);
+	cCommand = SetCommandInt(cCommand, nWeaponSet);
 	return cCommand;
 }
 
-FCommand CommandMoveToActor(AActor* oTarget, int bRunToLocation, float fMinRange, int bUseOriginalPosition, float fMaxRange)
+FCommand CommandMoveToActor(AActor* oTarget, int32 bRunToLocation, float fMinRange, int32 bUseOriginalPosition, float fMaxRange)
 {
 	FCommand cCommand = Command(COMMAND_TYPE_MOVE_TO_OBJECT);
-	cCommand = SetCommandObject(cCommand, oTarget, 0);
-	cCommand = SetCommandInt(cCommand, bRunToLocation, 0);
-	cCommand = SetCommandFloat(cCommand, fMinRange, 0);
-	cCommand = SetCommandInt(cCommand, bUseOriginalPosition, 1);
-	cCommand = SetCommandFloat(cCommand, fMaxRange, 1);
+	cCommand = SetCommandObject(cCommand, oTarget);
+	cCommand = SetCommandInt(cCommand, bRunToLocation);
+	cCommand = SetCommandFloat(cCommand, fMinRange);
+	cCommand = SetCommandInt(cCommand, bUseOriginalPosition);
+	cCommand = SetCommandFloat(cCommand, fMaxRange);
 	return cCommand;
 }
 
 FCommand CommandMoveToLocation(FVector vVector, int32 bRunToLocation, int32 bDeactivateAtEnd)
 {
 	FCommand cCommand = Command(COMMAND_TYPE_MOVE_TO_LOCATION);
-	cCommand = SetCommandVector(cCommand, vVector, 0);
-	cCommand = SetCommandInt(cCommand, bRunToLocation, 0);
-	cCommand = SetCommandInt(cCommand, bDeactivateAtEnd, 1);
+	cCommand = SetCommandVector(cCommand, vVector);
+	cCommand = SetCommandInt(cCommand, bRunToLocation);
+	cCommand = SetCommandInt(cCommand, bDeactivateAtEnd);
 	return cCommand;
 }
 
@@ -145,46 +145,46 @@ FCommand CommandMoveToMultiLocations(TArray<FVector> vVectors, int32 bRunToLocat
 FCommand CommandUseAbility(int32 nAbilityId, AActor* oTarget, FVector vTarget, float fConjureTime, FString sAbilitySourceItemTag)
 {
 	FCommand cCommand = Command(COMMAND_TYPE_USE_ABILITY);
-	cCommand = SetCommandInt(cCommand, nAbilityId, 0);
-	cCommand = SetCommandObject(cCommand, oTarget, 0);
-	cCommand = SetCommandVector(cCommand, vTarget, 0);
-	cCommand = SetCommandFloat(cCommand, fConjureTime, 0);
-	cCommand = SetCommandString(cCommand, sAbilitySourceItemTag, 0);
+	cCommand = SetCommandInt(cCommand, nAbilityId);
+	cCommand = SetCommandObject(cCommand, oTarget);
+	cCommand = SetCommandVector(cCommand, vTarget);
+	cCommand = SetCommandFloat(cCommand, fConjureTime);
+	cCommand = SetCommandString(cCommand, sAbilitySourceItemTag);
 	return cCommand;
 }
 
 FCommand CommandFly(FVector vVector, int32 bIgnorePathing)
 {
 	FCommand cCommand = Command(COMMAND_TYPE_FLY);
-	cCommand = SetCommandVector(cCommand, vVector, 0);
+	cCommand = SetCommandVector(cCommand, vVector);
 	return cCommand;
 }
 
 FCommand CommandUseObject(AActor* oTarget, int32 nAction)
 {
 	FCommand cCommand = Command(COMMAND_TYPE_USE_OBJECT);
-	cCommand = SetCommandInt(cCommand, nAction, 0);
+	cCommand = SetCommandInt(cCommand, nAction);
 	return cCommand;
 }
 
 FCommand CommandWait(float fSeconds)
 {
 	FCommand cCommand = Command(COMMAND_TYPE_WAIT);
-	cCommand = SetCommandFloat(cCommand, fSeconds, 0);
+	cCommand = SetCommandFloat(cCommand, fSeconds);
 	return cCommand;
 }
 
 FCommand CommandDeathBlow(AActor* oTarget, int32 nDeathType)
 {
 	FCommand cCommand = Command(COMMAND_TYPE_DEATHBLOW);
-	cCommand = SetCommandObject(cCommand, oTarget, 0);
-	cCommand = SetCommandInt(cCommand, nDeathType, 0);
+	cCommand = SetCommandObject(cCommand, oTarget);
+	cCommand = SetCommandInt(cCommand, nDeathType);
 	return cCommand;
 }
 
 FCommand CommandJumpToLocation(FVector vVector)
 {
 	FCommand cCommand = Command(COMMAND_TYPE_JUMP_TO_LOCATION);
-	cCommand = SetCommandVector(cCommand, vVector, 0);
+	cCommand = SetCommandVector(cCommand, vVector);
 	return cCommand;
 }
